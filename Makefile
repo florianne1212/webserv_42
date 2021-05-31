@@ -20,11 +20,9 @@ OBJ_DIR = obj
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.c), $(notdir $(file))))
-#SRC = main.cpp
+SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
-
 
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 

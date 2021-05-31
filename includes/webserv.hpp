@@ -1,1 +1,6 @@
-//.hpp pour les protoype de fonction
+#ifndef WEBSERV_HPP
+# define WEBSERV_HPP
+
+#include <includes.hpp>
+
+#endif
