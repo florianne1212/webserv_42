@@ -20,7 +20,6 @@ struct SocketA //les sockets autres que les socket listen
 
 //////////////template de fonction split//////////////////////
 
-#include <cstddef>
 
 struct split
 {
