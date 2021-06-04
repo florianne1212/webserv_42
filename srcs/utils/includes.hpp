@@ -24,7 +24,6 @@
 # include <cstring>
 
 //Project .hpp
-# include "pair.hpp"
 # include "usable.hpp"
 # include "typedef.hpp"
 # include "client.hpp"
