@@ -15,7 +15,7 @@ NAME		= webserv
 CC =		g++
 
 SRC_DIR = 	$(shell find srcs -type d)
-INC_DIR = 	$(shell find includes -type d)
+INC_DIR = 	$(shell find srcs -type d)
 OBJ_DIR = obj
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)

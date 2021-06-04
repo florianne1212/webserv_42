@@ -1,15 +1,10 @@
 #include "webserv.hpp"
 
-void selector(fdStorage fdList)
+void selector(list<client> clientList)
 {
-	timeval to;
-
-	to.tv_sec = 0;
-	to.tv_usec = 0;
-
-	if (select(FD_SETSIZE, &(fdList->second), &(fdList->second), NULL, &to) > 0)
+	if (poll(clientList.size(), clientList, 1000) > 0)
 	{
-		for (std::vector<client>::iterator it = fdList->first.begin(); it < fdList->first.end(); it++)
+		for (std::list<client>::iterator clientList.begin(); it < clientList.end(); it++)
 		{
 			if (*it->readable())
 				*it->read();
@@ -21,18 +16,13 @@ void selector(fdStorage fdList)
 
 int eventLoop()
 {
-	fd_set rfds;
- 	fdStorage fdList;
+ 	list<client>	clientList;
 
-	FD_ZERO(&rfds);
-	fdList.second = rfds;
 	while (1)
 	{
 		//ecoute
-		fdList->first.push_back(client(fd));
-		FD_SET(fd, &(fdList->second));
-		//
-		selector(fdList);
+		//fill clientList
+		selector(clientList);
 	}
 	return 0;
 }
