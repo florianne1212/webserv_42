@@ -69,4 +69,8 @@ fclean:			clean
 				@echo "Deleting Binary File $(_YELLOW)$(NAME)$(_WHITE) ... \c"
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-.PHONY: all clean flcean re show
+donuts :		
+				@gcc donuts.c -o donuts
+				@./donuts
+
+.PHONY: all clean flcean re show donuts

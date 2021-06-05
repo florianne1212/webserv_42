@@ -12,7 +12,7 @@ struct usable
 		state_type	state;
 
 		usable()
-		: value(), state()
+		: value(), state(false)
 		{}
 
 		template<class U>
@@ -20,8 +20,8 @@ struct usable
 		: value(pr.value), state(pr.state)
 		{}
 
-		usable (const value_type& a, const state_type& b)
-		: value(a), state(b)
+		usable (const value_type& a)
+		: value(a), state(true)
 		{}
 
 		usable& operator= (const usable& pr)
