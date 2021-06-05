@@ -4,11 +4,11 @@
 class config:
 {
 	private :
-		FD					_setupFile;
+		FD								_setupFile;
 
 		std::map<std::string, server>	_serverList;
-		std::string			_pathErrorFile;
-		size_t				_bodyMaxSize;
+		std::string						_pathErrorFile;
+		size_t							_bodyMaxSize;
 
 	public :
 		setup(std::string setupFile)

@@ -4,7 +4,8 @@
 class Server
 {
 	private:
-		map<std::string, Routes>		_routes;
+		std::map<std::string, Routes>	_routes;
+		std::string						_ip;// add methode
 		int								_port;
 		usable<size_t>					_bodyMaxSize;
 
