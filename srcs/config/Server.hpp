@@ -5,14 +5,15 @@ class Server
 {
 	private:
 		std::map<std::string, Routes>	_routes;
-		std::string						_ip;// add methode
-		int								_port;
+		usable<std::string>				_ip;
+		usable<int>						_port;
+		usable<std::string>				_uploadDir;
 		usable<size_t>					_bodyMaxSize;
-
 
 	public:
 		Server();
 		Server(const &server toCopie);
+		void setIp(std::string ip);
 		void setPort(int port);
 		void setBodyMaxSize(size_t bodyMaxSize);
 		void addRoutes(std::string root, Routes routes);

@@ -1,21 +1,24 @@
 #ifndef WEBSERV_SETUP_HPP
 # define WEBSERV_SETUP_HPP
 
-class config:
+class Config
 {
 	private :
-		FD								_setupFile;
-
 		std::map<std::string, server>	_serverList;
-		std::string						_pathErrorFile;
+		vector<std::string>				_pathErrorFile;
 		size_t							_bodyMaxSize;
 
+		void	parser(std::strin setupFile);
+		std::string getExpression(std::string str);
+		size_t getValue(std::string str);
+
 	public :
-		setup(std::string setupFile)
-		: _setupFile(setupFile), _serverList(), _pathErrorFile("serverFile/error.html"), _bodyMaxSize(1)
-		{}
+		setup(std::string setupFile);
 
-		void	parser(void)
+		class ErrorParsing : public std::exception
+		{
+			virtual const char * what() const throw;
+		};
 
-}
+};
 #endif

@@ -6,14 +6,19 @@ Server::Server(const &server toCopie)
 : _name(toCopie._name), _port(toCopie._port), _bodyMaxSize(toCopie._bodyMaxSize)
 {}
 
+void Server::setIp(std::string ip)
+{
+	_ip = usable<std::string>(ip);
+}
+
 void Server::setPort(int port)
 {
-	_port = port;
+	_port = usable<int>(port);
 }
 
 void setBodyMaxSize(size_t bodyMaxSize)
 {
-	_bodyMaxSize = bodyMaxSize;
+	_bodyMaxSize = usable<size_t>(bodyMaxSize);
 }
 
 bool addRoutes(std::string root, Routes routes)

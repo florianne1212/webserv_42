@@ -1,6 +1,6 @@
 Ahahahaha mais tout !!!!!
 
-Florianne : 
+Florianne :
 WIP :
 TODO:
 Tout !!
@@ -8,17 +8,16 @@ Tout !!
 
 
 Tanguy :
-WIP :
+WIP : Config
 TODO:
 Tout aussi!
 
 
-Laurent : 
-WIP : CGI 
+Laurent :
+WIP : CGI
 TODO:
 Ben oui Tout !!
 
 
 
-Questions diverses : 
-
+Questions diverses :
