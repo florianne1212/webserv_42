@@ -10,8 +10,8 @@ class ClientSocket : public ASocket
 		ClientSocket();
 
 	protected :
-		char* _bareRequest; //ou un vector<char> ?
-		char* _bareAnswer; //ou un vector<char> ?
+		std::string _bareRequest; //ou un vector<char> ?
+		std::string _bareAnswer; //ou un vector<char> ?
 
 	public :
 		ClientSocket(int fd);
