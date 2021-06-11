@@ -1,3 +1,5 @@
+#include "Routes.hpp"
+
 Routes::Routes()
 : _httpRequest(), _httpRedirection(), _rooted(), _autoIndex(), _directoryPage(), _bodyMaxSize()
 {}
@@ -7,40 +9,58 @@ Routes::Routes(const Routes & toCopie)
 _autoIndex(toCopie._autoIndex), _directoryPage(toCopie._directoryPage), _bodyMaxSize(toCopie._bodyMaxSize)
 {}
 
-void Routes::setHttpRequest(char httpRequest)
+bool Routes::setHttpRequest(char httpRequest)
 {
-	_httpRequest = usable<char>(httpRequest)
+	if (_httpRequest.state == true)
+		return false;
+	_httpRequest = usable<char>(httpRequest);
+	return true;
 }
 
-void Routes::setHttpRedirection(pair<int, std::string> httpRedirection)
+bool Routes::setHttpRedirection(std::pair<int, std::string> httpRedirection)
 {
-	_httpRedirection = usable<pair<int, std::string> >(httpRedirection);
+	if (_httpRequest.state == true)
+		return false;
+	_httpRedirection = usable<std::pair<int, std::string> >(httpRedirection);
+	return true;
 }
 
-void Routes::setRooted(std::string rooted)
+bool Routes::setRooted(std::string rooted)
 {
+	if (_httpRequest.state == true)
+		return false;
 	_rooted = usable<std::string>(rooted);
+	return true;
 }
 
-void Routes::setAutoIndex(bool autoIndex)
+bool Routes::setAutoIndex(bool autoIndex)
 {
+	if (_httpRequest.state == true)
+		return false;
 	_autoIndex = usable<bool>(autoIndex);
+	return true;
 }
 
-void Routes::setDirectoryPage(std::string directoryPage)
+bool Routes::setDirectoryPage(std::string directoryPage)
 {
+	if (_httpRequest.state == true)
+		return false;
 	_directoryPage = usable<std::string>(directoryPage);
+	return true;
 }
 
-void Routes::setBodyMaxSize()
+bool Routes::setBodyMaxSize(size_t bodyMaxSize)
 {
+	if (_httpRequest.state == true)
+		return false;
 	_bodyMaxSize = usable<size_t>(bodyMaxSize);
+	return true;
 }
 
-vector<std::string> getHttpRequest(void) const
+std::vector<std::string> Routes::getHttpRequest(void) const
 {
-	vector<std::string> ret;
-	size_t tmp;
+	std::vector<std::string> ret;
+	char tmp;
 
 	if (_httpRequest.state == false)
 		tmp = 7;
