@@ -7,24 +7,24 @@ class Routes;
 class Routes
 {
 	protected :
-		usable<char >						_httpRequest;
+		usable<std::vector<std::string> >			_httpRequest;
 		usable<std::pair<size_t , std::string> >	_httpRedirection;
-		usable<std::string>					_rooted;
-		usable<bool>						_autoIndex;
-		usable<std::string>					_directoryPage;
-		usable<size_t>						_bodyMaxSize;
+		usable<std::string>							_root;
+		usable<bool>								_autoIndex;
+		usable<std::string>							_directoryPage;
+		usable<size_t>								_bodyMaxSize;
 
 	public :
 		Routes();
 		Routes(const Routes & toCopie);
-		bool setHttpRequest(char httpRequest);
-		bool setHttpRedirection(std::pair<int, std::string> httpRedirection);
-		bool setRooted(std::string rooted);
-		bool setAutoIndex(bool autoIndex);
+		bool setHttpRequest(std::string httpRequest);
+		bool setHttpRedirection(std::string httpRedirection);
+		bool setRoot(std::string root);
+		bool setAutoIndex(std::string autoIndex);
 		bool setDirectoryPage(std::string directoryPage);
 		bool setBodyMaxSize(size_t bodyMaxSize);
 
-		std::vector<std::string> getHttpRequest(void) const;
+		void putRoutes();
 };
 
 #endif

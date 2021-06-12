@@ -14,12 +14,15 @@ class Config
 		size_t getValue(std::string::iterator &it, std::string::iterator end, std::string err);
 		void	parser(std::string setupFile);
 		void	parserServer(std::string::iterator &it, std::string &buffer);
+		void	parserRoutes(std::string::iterator &it, std::string &buffer, Server &serv);
 
 	public :
 		Config(std::string setupFile);
 		bool addServer(std::string name, Server &server);
 		bool setPathErrorFile(std::string pathErrorFile);
 		bool setBodyMaxSize(size_t bodyMaxSize);
+
+		void	putConfig();
 
 };
 #endif

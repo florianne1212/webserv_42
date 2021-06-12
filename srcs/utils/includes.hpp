@@ -12,11 +12,9 @@
 
 //CPP LIB
 # include <iostream>
+# include <fstream>
 # include <string>
 # include <vector>
-# include <list>
-# include <queue>
-# include <stack>
 # include <map>
 # include <algorithm>
 # include <exception>
@@ -26,6 +24,8 @@
 //Project .hpp
 # include "usable.hpp"
 # include "client.hpp"
+# include "Routes.hpp"
+# include "Server.hpp"
 # include "Config.hpp"
 
 #endif

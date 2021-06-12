@@ -14,6 +14,8 @@ class Server
 		usable<std::string>				_uploadDir;
 		usable<size_t>					_bodyMaxSize;
 
+
+
 	public:
 		Server();
 		Server(const Server &toCopie);
@@ -21,6 +23,8 @@ class Server
 		bool setPort();
 		bool setBodyMaxSize(size_t bodyMaxSize);
 		bool addRoutes(std::string root, Routes routes);
+
+		void	putServer();
 };
 
 #endif

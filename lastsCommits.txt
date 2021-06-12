@@ -4,6 +4,12 @@ sur le modele
 -date : auteur : Nouveautes et changements effectues (en mettant les commits les plus recents en debut de fichier)
 
 -------------------------------------------------------------------------------------------------------------------
+12/06/2021: tanguy
+
+fin parser config
+mise a jour des include en consequence
+ajout d'un test.json pour le parser
+
 07/06/2021: tanguy
 
 debut parsing config file
