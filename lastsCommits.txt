@@ -4,13 +4,17 @@ sur le modele
 -date : auteur : Nouveautes et changements effectues (en mettant les commits les plus recents en debut de fichier)
 
 -------------------------------------------------------------------------------------------------------------------
+23/06/2021 : laurent
+Fonction pour Floriane dans utils
+Urldecoder.cpp, qui transforme les + en ' ' et les % hex hex en leur valeur 
+
+
 18/06/2021 : laurent
 CGIHandler
 partie fork, pipes et execve en place
 manque :	la recolte des differentes infos (fonctions en place , ce sont les sources qui manquent)
 			idem recueil des differentes infos renvoyees par le CGI
 			+/- boucles et petit parsing pour les infos chunked, unchunked
-
 
 12/06/2021: tanguy
 
