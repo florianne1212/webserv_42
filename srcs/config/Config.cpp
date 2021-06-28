@@ -109,6 +109,7 @@ Config::Config(std::string configFile)
 	catch (std::string err)
 	{
 		std::cerr << err << std::endl;
+		return ;
 	}
 	putConfig();
 }
@@ -205,6 +206,7 @@ void	Config::parser(std::string setupFile)
 					{
 						it += 2;
 						parserServer(it, buffer);
+						it--;
 					}
 					else if (*(it + 1) == '[' && *(it + 2) ==  '{' && *(it + 3) == '"')
 					{
@@ -223,7 +225,6 @@ void	Config::parser(std::string setupFile)
 						}
 						if (*it != ']')
 							throw std::string("Error \"server\" in array: Config scope");
-						it++;
 					}
 					else
 						throw std::string("Error in difining parametre \"server\": Config scope");
@@ -234,8 +235,10 @@ void	Config::parser(std::string setupFile)
 				throw std::string("No match parametre: Config scope");
 			it++;
 		}
-		else if (*it == ',' || *it == '}')
+		if (*it == ',' && *(it + 1) == '"')
 			it++;
+		else if (*(it) == '}' && (it + 1) == buffer.end())
+			break;
 		else
 			throw std::string("Bad Format: Config scope");
 	}
@@ -342,8 +345,11 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 				throw std::string("No match parametre: Server scope");
 			it++;
 		}
-		else if (*it == ',')
+		
+		if (*it == ',' && (*(it + 1) == '"' || *(it + 1) == '{'))
 			it++;
+		else if (*(it) == '}')
+			break;
 		else
 			throw std::string("File bad Format: Server scope");
 	}
@@ -454,8 +460,10 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				throw std::string("No match parametre: Routes scope");
 			it++;
 		}
-		else if (*it == ',')
+		if (*it == ',' && (*(it + 1) == '"' || *(it + 1) == '{'))
 			it++;
+		else if (*(it) == '}')
+			break;
 		else
 			throw std::string("File bad Format: Routes scope");
 	}

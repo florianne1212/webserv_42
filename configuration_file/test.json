@@ -1,30 +1,32 @@
 {
   "error_path": "404 /www/error.html",
-  "client_body_max_size": "100",
+  "client_body_max_size": "100     ",
   "server": [
     {
       "server_name": "test",
-      "listen": "80",
-      "client_body_max_size": "50",
+      "listen": "   80   ",
+      "upload_file":"/Download",
+      "client_body_max_size": "   50    ",
+	  "upload_pass" : "  		/download    ",
       "routes": {
-        "location": "/images",
-        "autoIndex": "on",
-        "httpRequest": "GET"
+        "location": "    /images    ",
+        "autoIndex": "    on    ",
+        "httpRequest": "     GET     DELETE     "
       }
     },
     {
-      "server_name": "test2",
-      "listen": "127.0.0.2:443",
+      "server_name": "   test2    ",
+      "listen": "    127.0.0.2:443   ",
       "routes": [
         {
-          "location": "/",
-          "directory_page": "/www/index.html",
-          "root": "/www",
-          "client_body_max_size": "10"
+          "location": "  /   ",
+          "directory_page": "   /www/index.html   ",
+          "root": "        /www      ",
+          "client_body_max_size": "   10   "
         },
         {
-          "location": "/youtube",
-          "httpRedirection": "301https://youtube.com"
+          "location": "    /youtube    ",
+          "httpRedirection": "    301     https://youtube.com   "
         }
       ]
     }

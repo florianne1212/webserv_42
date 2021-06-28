@@ -1,0 +1,6 @@
+{
+	"server":{
+        "server_name": "test",
+        "listen": "80"
+	}
+}
