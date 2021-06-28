@@ -6,7 +6,7 @@
 class Config
 {
 	private :
-		std::map<std::string, Server>	_serverList;
+		std::map<std::string, Server>	_serverList; //string est le nom du serveur
 		std::map<int, std::string>		_pathErrorFile;
 		usable<size_t>					_bodyMaxSize;
 

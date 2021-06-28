@@ -4,6 +4,9 @@ sur le modele
 -date : auteur : Nouveautes et changements effectues (en mettant les commits les plus recents en debut de fichier)
 
 -------------------------------------------------------------------------------------------------------------------
+28/06/2021 : laurent
+modif main
+
 28/06/2021 : tanguy
 sauvegarde des mise a jour de config + server + routes
 
