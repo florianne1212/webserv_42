@@ -4,9 +4,12 @@ sur le modele
 -date : auteur : Nouveautes et changements effectues (en mettant les commits les plus recents en debut de fichier)
 
 -------------------------------------------------------------------------------------------------------------------
+28/06/2021 : tanguy
+sauvegarde des mise a jour de config + server + routes
+
 23/06/2021 : laurent
 Fonction pour Floriane dans utils
-Urldecoder.cpp, qui transforme les + en ' ' et les % hex hex en leur valeur 
+Urldecoder.cpp, qui transforme les + en ' ' et les % hex hex en leur valeur
 
 
 18/06/2021 : laurent

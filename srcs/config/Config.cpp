@@ -1,6 +1,34 @@
 #include "Config.hpp"
 
-std::string Config::getExpression(std::string::iterator &it, std::string::iterator end, std::string err)
+static std::vector<std::string> cppSplit(std::string str)
+{
+	std::vector<std::string> ret;
+	std::string token;
+	size_t i = 0;
+
+	while (str.size())
+	{
+		if (::isspace(str[i]))
+		{
+			while (::isspace(str[i]) && i < str.size())
+				i++;
+			str.erase(0, i);
+			i = 0;
+		}
+		else
+		{
+			while (!::isspace(str[i]) && i < str.size())
+				i++;
+	   		token = str.substr(0, i);
+	   		ret.push_back(token);
+			str.erase(0, i);
+			i = 0;
+		}
+	}
+	return ret;
+}
+
+std::vector<std::string> Config::getExpression(std::string::iterator &it, std::string::iterator end, std::string err)
 {
 	it++;
 	std::string::iterator begin(it);
@@ -9,32 +37,31 @@ std::string Config::getExpression(std::string::iterator &it, std::string::iterat
 		it++;
 	if (it == end)
 		throw std::string("Expression not found in " + err);
-	return std::string(begin, it);
+	return cppSplit(std::string(begin, it));
 }
 
 size_t Config::getValue(std::string::iterator &it, std::string::iterator end, std::string err)
 {
 	it++;
 	std::string::iterator begin(it);
-	int num;
 
 	while (*it != '"' && it != end)
 		it++;
 	if (it == end)
 		throw std::string("Expression not found in " + err);
-	std::string ret(begin, it);
-	if (ret.find_first_not_of("0123456789") != std::string::npos)
+	std::vector<std::string> ret = cppSplit(std::string(begin, it));
+	if (ret.size() != 1)
 		throw std::string("Expression not found in " + err);
-	if ((num = atoi(ret.c_str())) < 0)
-		throw std::string("Error in difining parametre " + err);
-	return num;
+	if (ret[0].find_first_not_of("0123456789") != std::string::npos)
+		throw std::string("Expression not found in " + err);
+	return atoi(ret[0].c_str());
 }
 void	Config::putConfig()
 {
 	if (_bodyMaxSize.state == true)
-		std::cout <<  "bodyMaxSize:" << _bodyMaxSize.value << std::endl;
+		std::cout <<  "bodyMaxSize: " << _bodyMaxSize.value << std::endl;
 	for (std::map<int, std::string>::iterator it = _pathErrorFile.begin(); it != _pathErrorFile.end(); it++)
-		std::cout << it->first << " " << it->second << std::endl;
+		std::cout << "errorPath: " << it->first << " " << it->second << std::endl;
 	for (std::map<std::string, Server>::iterator it = _serverList.begin(); it != _serverList.end(); it++)
 	{
 		std::cout << it->first << ":" << std::endl;
@@ -42,12 +69,42 @@ void	Config::putConfig()
 	}
 }
 
-Config::Config(std::string setupFile)
+void	Config::checker()
+{
+	struct stat useless;
+	for (std::map<int, std::string>::iterator it = _pathErrorFile.begin(); it != _pathErrorFile.end(); it++)
+		if (stat(it->second.c_str(), &useless) != 0)
+			throw std::string(it->second + " is a unknow error file");
+	for (std::map<std::string, Server>::iterator it = _serverList.begin(); it != _serverList.end(); it++)
+		it->second.checker();
+}
+
+void	Config::removeIsSpace(std::string &buffer)
+{
+	std::string::iterator it = buffer.begin();
+	while (it != buffer.end())
+	{
+		if (*it == '"')
+		{
+			it++;
+		 	while (*it != '"' && it != buffer.end())
+				it++;
+			it++;
+		}
+		else if (::isspace(*it))
+			it = buffer.erase(it);
+		else
+			it++;
+	}
+}
+
+Config::Config(std::string configFile)
 : _serverList(), _pathErrorFile(), _bodyMaxSize()
 {
 	try
 	{
-		parser(setupFile);
+		parser(configFile);
+		checker();
 	}
 	catch (std::string err)
 	{
@@ -64,23 +121,21 @@ bool Config::addServer(std::string name, Server &server)
 	return true;
 }
 
-bool Config::setPathErrorFile(std::string pathErrorFile)
+bool Config::setPathErrorFile(std::vector<std::string> pathErrorFile)
 {
 	std::string num;
-	size_t i;
 	int errorNum;
-	if ((i = pathErrorFile.find("/")) == std::string::npos)
+
+	if (pathErrorFile.size() != 2)
 		return false;
-	num = pathErrorFile.substr(0, i);
-	pathErrorFile.erase(0, i);
-	if (num.find_first_not_of("0123456789") != std::string::npos)
+	if (pathErrorFile[0].find_first_not_of("0123456789") != std::string::npos)
 		return false;
-	errorNum = atoi(num.c_str());
+	errorNum = atoi(pathErrorFile[0].c_str());
 	if (errorNum > 599 || errorNum < 300)
 		return false;
 	if (_pathErrorFile.find(errorNum) != _pathErrorFile.end())
 		return false;
-	_pathErrorFile[errorNum] = pathErrorFile;
+	_pathErrorFile[errorNum] = pathErrorFile[1];
 	return true;
 
 }
@@ -100,9 +155,11 @@ void	Config::parser(std::string setupFile)
 
 	//get file and del white space
 	std::getline(ifs, buffer, '\0');
-	buffer.erase(std::remove_if(buffer.begin(), buffer.end(), ::isspace), buffer.end());
+	removeIsSpace(buffer);
+	//buffer.erase(std::remove_if(buffer.begin(), buffer.end(), ::isspace), buffer.end());
 
 	//parser json
+	std::vector<std::string> ret;
 	std::string toCompare;
 	std::string::iterator it = buffer.begin();
 	if (*it != '{')
@@ -112,7 +169,10 @@ void	Config::parser(std::string setupFile)
 	{
 		if (*it == '"')
 		{
-			toCompare = getExpression(it , buffer.end(), "\"unknow\": Config scope");
+			ret = getExpression(it , buffer.end(), "\"unknow\": Config scope");
+			if (ret.size() != 1)
+				throw std::string("No match parametre: Config scope");
+			toCompare = ret[0];
 			it++;
 			if (strcmp(toCompare.c_str(), "error_path") == 0)
 			{
@@ -145,7 +205,6 @@ void	Config::parser(std::string setupFile)
 					{
 						it += 2;
 						parserServer(it, buffer);
-						std::cout << *(it  - 1) << *it << *(it + 1) << std::endl;
 					}
 					else if (*(it + 1) == '[' && *(it + 2) ==  '{' && *(it + 3) == '"')
 					{
@@ -175,7 +234,7 @@ void	Config::parser(std::string setupFile)
 				throw std::string("No match parametre: Config scope");
 			it++;
 		}
-		else if (*it == ',')
+		else if (*it == ',' || *it == '}')
 			it++;
 		else
 			throw std::string("Bad Format: Config scope");
@@ -185,13 +244,17 @@ void	Config::parser(std::string setupFile)
 void Config::parserServer(std::string::iterator &it, std::string &buffer)
 {
 	Server tmp;
+	std::vector<std::string> ret;
 	std::string toCompare, name;
 
 	while (*it != '}' && it != buffer.end())
 	{
 		if (*it == '"')
 		{
-			toCompare = getExpression(it , buffer.end(), "\"unknow\": Server scope");
+			ret = getExpression(it , buffer.end(), "\"unknow\": Server scope");
+			if (ret.size() != 1)
+				throw std::string("No match parametre: Server scope");
+			toCompare = ret[0];
 			it++;
 			if (strcmp(toCompare.c_str(), "server_name") == 0)
 			{
@@ -199,8 +262,11 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 				{
 					it++;
 					if (name != "")
-							throw std::string("Error in difining parametre \"server_name\": Server scope");
-							name = getExpression(it , buffer.end(), "\"server_name\": Server scope");
+						throw std::string("Error in difining parametre \"server_name\": Server scope");
+					ret = getExpression(it , buffer.end(), "\"server_name\": Server scope");
+					if (ret.size() != 1)
+						throw std::string("Error in difining parametre \"server_name\": Server scope");
+					name = ret[0];
 				}
 				else
 					throw std::string("Error in difining parametre \"server_name\": Server scope");
@@ -211,12 +277,23 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 				{
 					it++;
 					if (tmp.setIp(getExpression(it , buffer.end(), "\"listen\": Server scope")) == false)
-					throw std::string("Error in difining parametre \"listen\": Server scope");
+						throw std::string("Error in difining parametre \"listen\": Server scope");
 					if (tmp.setPort() == false)
 						throw std::string("Error in difining parametre \"listen\": Server scope");
 				}
 				else
 					throw std::string("Error in difining parametre \"listen\": Server scope");
+			}
+			else if (strcmp(toCompare.c_str(), "upload_pass") == 0)
+			{
+				if (*(it) == ':' && *(it + 1) == '"')
+				{
+					it++;
+					if (tmp.setUploadDir(getExpression(it , buffer.end(), "\"upload_pass\": Server scope")) == false)
+						throw std::string("Error in difining parametre \"upload_pass\": Server scope");
+				}
+				else
+					throw std::string("Error in difining parametre \"upload_pass\": Server scope");
 			}
 			else if (strcmp(toCompare.c_str(), "client_body_max_size") == 0)
 			{
@@ -280,13 +357,17 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server &serv)
 {
 	Routes tmp;
+	std::vector<std::string> ret;
 	std::string toCompare, name;
 
 	while (*it != '}' && it != buffer.end())
 	{
 		if (*it == '"')
 		{
-			toCompare = getExpression(it , buffer.end(), "\"unknow\": Routes scope");
+			ret = getExpression(it , buffer.end(), "\"unknow\": Routes scope");
+			if (ret.size() != 1)
+				throw std::string("No match parametre: Routes scope");
+			toCompare = ret[0];
 			it++;
 			if (strcmp(toCompare.c_str(), "location") == 0)
 			{
@@ -294,8 +375,11 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				{
 					it++;
 					if (name != "")
-							throw std::string("Error in difining parametre \"location\": Routes scope");
-							name = getExpression(it , buffer.end(), "\"location\": Routes scope");
+						throw std::string("Error in difining parametre \"location\": Routes scope");
+					ret = getExpression(it , buffer.end(), "\"location\": Routes scope");
+					if (ret.size() != 1)
+						throw std::string("Error in difining parametre \"location\": Routes scope");
+					name = ret[0];
 				}
 				else
 					throw std::string("Error in difining parametre \"location\": Routes scope");
@@ -380,4 +464,240 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 	it++;
 	if (serv.addRoutes(name, tmp) == false)
 		throw std::string("Error redifining \"" + name + "\": Routes scope");
+}
+
+usable<std::string> Config::getPathErrorFile(int errorVal) const
+{
+	std::map<int, std::string>::const_iterator it;
+	it = _pathErrorFile.find(errorVal);
+	if (it != _pathErrorFile.end())
+		return usable<std::string>(it->second);
+	return usable<std::string>();
+}
+
+size_t Config::getBodyMaxSize(std::string serverName, std::string path) const
+{
+	size_t ret;
+
+	if (_bodyMaxSize.state == false)
+		ret = 1000000;
+	else
+		ret = _bodyMaxSize.value;
+
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+	{
+		if (server->second._bodyMaxSize.state == true)
+			ret = server->second._bodyMaxSize.value;
+
+		size_t i = 1;
+		std::string toCompare;
+		std::map<std::string, Routes>::const_iterator routes;
+		while (i != std::string::npos)
+		{
+			toCompare = path.substr(0,i);
+			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
+			{
+				if (routes->second._bodyMaxSize.state == true)
+					ret = routes->second._bodyMaxSize.value;
+			}
+			i++;
+			i = path.find('/', i);
+		}
+		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
+		{
+			if (routes->second._bodyMaxSize.state == true)
+				ret = routes->second._bodyMaxSize.value;
+		}
+	}
+
+	return ret;
+}
+
+std::string Config::getIp(std::string serverName) const
+{
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+	{
+		if (server->second._ip.state == true)
+			return server->second._ip.value;
+		else
+			return "127.0.0.2";
+	}
+	return std::string();
+}
+
+unsigned short Config::getPort(std::string serverName) const
+{
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+	{
+		if (server->second._port.state == true)
+			return server->second._port.value;
+		else
+			return 0;
+	}
+	return 0;
+}
+
+usable<std::string> Config::getUploadDir(std::string serverName) const
+{
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+			return server->second._uploadDir;
+	return usable<std::string>();
+}
+
+std::vector<std::string> Config::getHttpRequest(std::string serverName, std::string path) const
+{
+	std::vector<std::string> ret;
+
+	ret.push_back("GET");
+	ret.push_back("POST");
+	ret.push_back("DELETE");
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+	{
+		size_t i = 1;
+		std::string toCompare;
+		std::map<std::string, Routes>::const_iterator routes;
+		while (i != std::string::npos)
+		{
+			toCompare = path.substr(0,i);
+			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
+			{
+				if (routes->second._httpRequest.state == true)
+					ret = routes->second._httpRequest.value;
+			}
+			i++;
+			i = path.find('/', i);
+		}
+		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
+		{
+			if (routes->second._httpRequest.state == true)
+				ret = routes->second._httpRequest.value;
+		}
+	}
+	return ret;
+}
+
+usable<std::pair<size_t , std::string> > Config::getHttpRedirection(std::string serverName, std::string path) const
+{
+	usable<std::pair<size_t , std::string> > ret;
+
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+	{
+		size_t i = 1;
+		std::string toCompare;
+		std::map<std::string, Routes>::const_iterator routes;
+		while (i != std::string::npos)
+		{
+			toCompare = path.substr(0,i);
+			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
+			{
+				if (routes->second._httpRedirection.state == true)
+					ret = routes->second._httpRedirection;
+			}
+			i++;
+			i = path.find('/', i);
+		}
+		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
+		{
+			if (routes->second._httpRedirection.state == true)
+				ret = routes->second._httpRedirection;
+		}
+	}
+	return ret;
+}
+
+usable<std::string> Config::getRoot(std::string serverName, std::string path) const
+{
+	usable<std::string> ret;
+
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+	{
+		size_t i = 1;
+		std::string toCompare;
+		std::map<std::string, Routes>::const_iterator routes;
+		while (i != std::string::npos)
+		{
+			toCompare = path.substr(0,i);
+			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
+			{
+				if (routes->second._root.state == true)
+					ret = routes->second._root;
+			}
+			i++;
+			i = path.find('/', i);
+		}
+		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
+		{
+			if (routes->second._root.state == true)
+				ret = routes->second._root;
+		}
+	}
+	return ret;
+}
+
+bool Config::getAutoIndex(std::string serverName, std::string path) const
+{
+	bool ret;
+
+	ret = 0;
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+	{
+		size_t i = 1;
+		std::string toCompare;
+		std::map<std::string, Routes>::const_iterator routes;
+		while (i != std::string::npos)
+		{
+			toCompare = path.substr(0,i);
+			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
+			{
+				if (routes->second._autoIndex.state == true)
+					ret = routes->second._autoIndex.value;
+			}
+			i++;
+			i = path.find('/', i);
+		}
+		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
+		{
+			if (routes->second._autoIndex.state == true)
+				ret = routes->second._autoIndex.value;
+		}
+	}
+	return ret;
+}
+
+usable<std::string> Config::getDirectoryPage(std::string serverName, std::string path) const
+{
+	usable<std::string> ret;
+
+	std::map<std::string, Server>::const_iterator server;
+	if ((server = _serverList.find(serverName)) != _serverList.end())
+	{
+		size_t i = 1;
+		std::string toCompare;
+		std::map<std::string, Routes>::const_iterator routes;
+		while (i != std::string::npos)
+		{
+			toCompare = path.substr(0,i);
+			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
+			{
+				if (routes->second._root.state == true)
+					ret = routes->second._root;
+			}
+			i++;
+			i = path.find('/', i);
+		}
+		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
+		{
+			if (routes->second._root.state == true)
+				ret = routes->second._root;
+		}
+	}
+	return ret;
 }

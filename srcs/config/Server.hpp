@@ -7,24 +7,26 @@ class Server;
 
 class Server
 {
-	private:
+	private :
 		std::map<std::string, Routes>	_routes;
 		usable<std::string>				_ip;
 		usable<unsigned short>			_port;
 		usable<std::string>				_uploadDir;
 		usable<size_t>					_bodyMaxSize;
 
+		void	putServer();
+		void 	checker();
 
-
-	public:
+	public :
 		Server();
 		Server(const Server &toCopie);
-		bool setIp(std::string ip);
+		bool setIp(std::vector<std::string> ip);
 		bool setPort();
+		bool setUploadDir(std::vector<std::string> uploadDir);
 		bool setBodyMaxSize(size_t bodyMaxSize);
 		bool addRoutes(std::string root, Routes routes);
 
-		void	putServer();
+		friend class Config;
 };
 
 #endif

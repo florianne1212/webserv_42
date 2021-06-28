@@ -3,18 +3,30 @@
 void Server::putServer()
 {
 	if (_bodyMaxSize.state == true)
-		std::cout <<  "- bodyMaxSize :" << _bodyMaxSize.value << std::endl;
+		std::cout <<  "- bodyMaxSize: " << _bodyMaxSize.value << std::endl;
 	if (_uploadDir.state == true)
-		std::cout <<  "- uploadDir :" << _uploadDir.value << std::endl;
+		std::cout <<  "- uploadDir: " << _uploadDir.value << std::endl;
 	if (_ip.state == true)
-		std::cout <<  "- ip :" << _ip.value << std::endl;
+		std::cout <<  "- ip: " << _ip.value << std::endl;
 	if (_port.state == true)
-		std::cout << "- port :" << _port.value << std::endl;
+		std::cout << "- port: " << _port.value << std::endl;
 	for (std::map<std::string, Routes>::iterator it = _routes.begin(); it != _routes.end(); it++)
 	{
 		std::cout << "- " << it->first << ":" << std::endl;
 		it->second.putRoutes();
 	}
+}
+
+void Server::checker()
+{
+	struct stat useless;
+	if (_ip.state == true && _port.state == false)
+		throw std::string("error in listen configuration");
+	if (_uploadDir.state)
+		if (stat(_uploadDir.value.c_str(), &useless) != 0)
+			throw std::string(_uploadDir.value + " is a unknow upload directory");
+	for (std::map<std::string, Routes>::iterator it = _routes.begin(); it != _routes.end(); it++)
+		it->second.checker();
 }
 
 Server::Server()
@@ -25,15 +37,15 @@ Server::Server(const Server &toCopie)
 : _routes(toCopie._routes), _ip(toCopie._ip), _port(toCopie._port), _uploadDir(toCopie._uploadDir),  _bodyMaxSize(toCopie._bodyMaxSize)
 {}
 
-bool Server::setIp(std::string ip)
+bool Server::setIp(std::vector<std::string> ip)
 {
-	if (_ip.state == true || _port.state == true)
+	if (_ip.state == true || _port.state == true || ip.size() != 1)
 		return false;
-	if (ip.find_first_not_of("0123456789.:") != std::string::npos)
+	if (ip[0].find_first_not_of("0123456789.:") != std::string::npos)
 		return false;
-	if (ip.find_first_of(".:") != std::string::npos)
+	if (ip[0].find_first_of(".:") != std::string::npos)
 	{
-		std::string tmp(ip);
+		std::string tmp(ip[0]);
 		int val;
 		size_t j;
 		size_t k = 0;
@@ -53,7 +65,7 @@ bool Server::setIp(std::string ip)
 		if (val > 254 && val < 0)
 			return false;
 	}
-	_ip = usable<std::string>(ip);
+	_ip = usable<std::string>(ip[0]);
 	return true;
 }
 
@@ -83,6 +95,13 @@ bool Server::setPort()
 		return true;
 	}
 	return false;
+}
+bool Server::setUploadDir(std::vector<std::string>  uploadDir)
+{
+	if (_uploadDir.state == true || uploadDir.size() != 1)
+		return false;
+	_uploadDir = usable<std::string>(uploadDir[0]);
+	return true;
 }
 
 bool Server::setBodyMaxSize(size_t bodyMaxSize)

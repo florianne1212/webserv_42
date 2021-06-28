@@ -3,22 +3,33 @@
 void Routes::putRoutes()
 {
 	if (_bodyMaxSize.state == true)
-		std::cout <<  "  - bodyMaxSize :" << _bodyMaxSize.value << std::endl;
+		std::cout <<  "  - bodyMaxSize: " << _bodyMaxSize.value << std::endl;
 	if (_directoryPage.state == true)
-		std::cout <<  "  - directoryPage :" << _directoryPage.value << std::endl;
+		std::cout <<  "  - directoryPage: " << _directoryPage.value << std::endl;
 	if (_root.state == true)
-		std::cout <<  "  - root :" << _root.value << std::endl;
+		std::cout <<  "  - root: " << _root.value << std::endl;
 	if (_autoIndex.state == true)
-		std::cout <<  "  - autoIndex :" << _autoIndex.value << std::endl;
+		std::cout <<  "  - autoIndex: " << _autoIndex.value << std::endl;
 	if (_httpRedirection.state == true)
-		std::cout << "  - httpRedirection :" << _httpRedirection.value.first << "=>" << _httpRedirection.value.second << std::endl;
+		std::cout << "  - httpRedirection: " << _httpRedirection.value.first << "=>" << _httpRedirection.value.second << std::endl;
 	if (_httpRequest.state == true)
 	{
-		std::cout << "  - httpRequest :";
+		std::cout << "  - httpRequest: ";
 		for (std::vector<std::string>::iterator it = _httpRequest.value.begin(); it != _httpRequest.value.end(); it++)
 			std::cout << *it << " ";
 		std::cout << std::endl;
 	}
+}
+
+void Routes::checker()
+{
+	struct stat useless;
+	if (_root.state)
+		if (stat(_root.value.c_str(), &useless) != 0)
+			throw std::string(_root.value + " is a unknow file or directory");
+	if (_directoryPage.state)
+		if (stat(_directoryPage.value.c_str(), &useless) != 0)
+			throw std::string(_directoryPage.value + " is a unknow file");
 }
 
 Routes::Routes()
@@ -30,79 +41,64 @@ Routes::Routes(const Routes & toCopie)
 _autoIndex(toCopie._autoIndex), _directoryPage(toCopie._directoryPage), _bodyMaxSize(toCopie._bodyMaxSize)
 {}
 
-bool Routes::setHttpRequest(std::string httpRequest)
+bool Routes::setHttpRequest(std::vector<std::string> httpRequest)
 {
 	if (_httpRequest.state == true)
 		return false;
 
 	std::vector<std::string> ret;
+	size_t i = 0;
 
-	while (httpRequest.size())
+	while (i < httpRequest.size())
 	{
-		if (strncmp(httpRequest.c_str(), "GET", 3) == 0)
-		{
-			ret.push_back(httpRequest.substr(0, 3));
-			httpRequest.erase(0, 3);
-		}
-		else if (strncmp(httpRequest.c_str(), "POST", 4) == 0)
-		{
-			ret.push_back(httpRequest.substr(0, 4));
-			httpRequest.erase(0, 4);
-		}
-		else if (strncmp(httpRequest.c_str(), "DELETE", 6) == 0)
-		{
-			ret.push_back(httpRequest.substr(0, 6));
-			httpRequest.erase(0, 6);
-		}
-		else
+		if (httpRequest[i] == "GET" && httpRequest[i] == "POST" && httpRequest[i] ==  "DELETE")
 			return false;
+		i++;
 	}
-	_httpRequest = usable<std::vector<std::string> >(ret);
+	_httpRequest = usable<std::vector<std::string> >(httpRequest);
 	return true;
 }
 
-bool Routes::setHttpRedirection(std::string httpRedirection)
+bool Routes::setHttpRedirection(std::vector<std::string> httpRedirection)
 {
-	if (_httpRedirection.state == true)
+	if (_httpRedirection.state == true || httpRedirection.size() != 2)
 		return false;
-
-	int ret = atoi(httpRedirection.substr(0, 3).c_str());
+	int ret = atoi(httpRedirection[0].c_str());
 	if (ret < 100 || ret > 599)
 		return false;
- 	httpRedirection.erase(0, 3);
-	_httpRedirection = usable<std::pair<int, std::string> >(std::pair<int, std::string >(ret, httpRedirection));
+	_httpRedirection = usable<std::pair<int, std::string> >(std::pair<int, std::string >(ret, httpRedirection[1]));
 	return true;
 }
 
-bool Routes::setRoot(std::string root)
+bool Routes::setRoot(std::vector<std::string> root)
 {
-	if (_root.state == true)
+	if (_root.state == true || root.size() != 1)
 		return false;
-	_root = usable<std::string>(root);
+	_root = usable<std::string>(root[0]);
 	return true;
 }
 
-bool Routes::setAutoIndex(std::string autoIndex)
+bool Routes::setAutoIndex(std::vector<std::string> autoIndex)
 {
 	bool ret;
 
-	if (_autoIndex.state == true)
+	if (_autoIndex.state == true || autoIndex.size() != 1)
 		return false;
-	if (autoIndex != "on" && autoIndex != "off")
+	if (autoIndex[0] != "on" && autoIndex[0] != "off")
 		return false;
-	if (autoIndex == "on")
+	if (autoIndex[0] == "on")
 		ret = 1;
-	if (autoIndex == "off")
+	if (autoIndex[0] == "off")
 		ret = 0;
 	_autoIndex = usable<bool>(ret);
 	return true;
 }
 
-bool Routes::setDirectoryPage(std::string directoryPage)
+bool Routes::setDirectoryPage(std::vector<std::string> directoryPage)
 {
-	if (_directoryPage.state == true)
+	if (_directoryPage.state == true || directoryPage.size() != 1)
 		return false;
-	_directoryPage = usable<std::string>(directoryPage);
+	_directoryPage = usable<std::string>(directoryPage[0]);
 	return true;
 }
 

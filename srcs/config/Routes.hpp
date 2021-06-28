@@ -6,7 +6,7 @@ class Routes;
 
 class Routes
 {
-	protected :
+	private :
 		usable<std::vector<std::string> >			_httpRequest;
 		usable<std::pair<size_t , std::string> >	_httpRedirection;
 		usable<std::string>							_root;
@@ -14,17 +14,21 @@ class Routes
 		usable<std::string>							_directoryPage;
 		usable<size_t>								_bodyMaxSize;
 
+		void putRoutes();
+		void checker();
+
 	public :
 		Routes();
 		Routes(const Routes & toCopie);
-		bool setHttpRequest(std::string httpRequest);
-		bool setHttpRedirection(std::string httpRedirection);
-		bool setRoot(std::string root);
-		bool setAutoIndex(std::string autoIndex);
-		bool setDirectoryPage(std::string directoryPage);
+		bool setHttpRequest(std::vector<std::string> httpRequest);
+		bool setHttpRedirection(std::vector<std::string> httpRedirection);
+		bool setRoot(std::vector<std::string> root);
+		bool setAutoIndex(std::vector<std::string> autoIndex);
+		bool setDirectoryPage(std::vector<std::string> directoryPage);
 		bool setBodyMaxSize(size_t bodyMaxSize);
 
-		void putRoutes();
+		friend class Server;
+		friend class Config;
 };
 
 #endif
