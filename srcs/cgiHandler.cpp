@@ -31,7 +31,7 @@ void cgiHandler::creationVectorEnviron(void){
 	contentLength("Content-Length");
 	contentType("Content-Type");
 	gatewayInterface();
-	pathInfo("/scriptname+pathinfo");//////////////////
+	pathIman nfo("/scriptname+pathinfo");//////////////////
 	// pathTranslated("j'y comprend rien!");////////////SHOULD
 	queryString("la sequence query string");
 	remoteAddr("je ne sais pas ou on cherche cette putain d'adresse IP!");
