@@ -13,6 +13,6 @@ php-curl php-gd php-intl php-soap php-xml php-xmlrpc php-zip \
 #wget for downloading 
 wget vim
 
-COPY ./srcs/webserv /root/
+COPY webserv /root/
 WORKDIR /root/
 CMD ["/bin/bash", "./webserv"]

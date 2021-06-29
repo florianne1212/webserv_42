@@ -157,7 +157,6 @@ void	Config::parser(std::string setupFile)
 	//get file and del white space
 	std::getline(ifs, buffer, '\0');
 	removeIsSpace(buffer);
-	//buffer.erase(std::remove_if(buffer.begin(), buffer.end(), ::isspace), buffer.end());
 
 	//parser json
 	std::vector<std::string> ret;
