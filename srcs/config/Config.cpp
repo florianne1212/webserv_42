@@ -521,6 +521,36 @@ size_t Config::getBodyMaxSize(std::string serverName, std::string path) const
 	return ret;
 }
 
+usable<std::string> Config::getServerName(std::string ip) const
+{
+	std::string adr_ip;
+	size_t port_ip;
+
+	if (strncmp(ip.c_str(), "localhost", 9) == 0)
+	{
+		if (ip.substr(0, 9).find_first_not_of("0123456789:") != std::string::npos)
+			return usable<std::string>();
+		else
+			adr_ip = "127.0.0.2";
+	}
+	else if (ip.find_first_not_of("0123456789.:") != std::string::npos)
+		return usable<std::string>();
+	else
+	{
+		adr_ip = ip.substr(0, ip.find(":"));
+	}
+	port_ip = atoi(ip.substr(ip.find(":")).c_str());
+
+	for (std::map<std::string, Server>::const_iterator it = _serverList.begin(); it != _serverList.end(); it++)
+	{
+		if (adr_ip == getIp(it->first) && port_ip == getPort(it->first))
+		{
+			return usable<std::string>(it->first);
+		}
+	}
+	return usable<std::string>();
+}
+
 std::string Config::getIp(std::string serverName) const
 {
 	std::map<std::string, Server>::const_iterator server;
@@ -618,9 +648,9 @@ usable<std::pair<size_t , std::string> > Config::getHttpRedirection(std::string 
 	return ret;
 }
 
-usable<std::string> Config::getRoot(std::string serverName, std::string path) const
+usable<std::pair<std::string, std::string> > Config::getRoot(std::string serverName, std::string path) const
 {
-	usable<std::string> ret;
+	usable<std::pair<std::string, std::string> > ret;
 
 	std::map<std::string, Server>::const_iterator server;
 	if ((server = _serverList.find(serverName)) != _serverList.end())
@@ -634,7 +664,9 @@ usable<std::string> Config::getRoot(std::string serverName, std::string path) co
 			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
 			{
 				if (routes->second._root.state == true)
-					ret = routes->second._root;
+				{
+					ret = usable<std::pair<std::string, std::string> >(std::pair<std::string, std::string>(toCompare, routes->second._root.value));
+				}
 			}
 			i++;
 			i = path.find('/', i);
@@ -642,7 +674,7 @@ usable<std::string> Config::getRoot(std::string serverName, std::string path) co
 		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
 		{
 			if (routes->second._root.state == true)
-				ret = routes->second._root;
+				ret = usable<std::pair<std::string, std::string> >(std::pair<std::string, std::string>(path, routes->second._root.value));
 		}
 	}
 	return ret;

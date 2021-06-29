@@ -29,13 +29,14 @@ class Config
 		usable<std::string> getPathErrorFile(int errorVal) const;
 		size_t getBodyMaxSize(std::string serverName, std::string path) const;
 		//geter Server
+		usable<std::string> getServerName(std::string ip) const;
 		std::string getIp(std::string serverName) const;
 		unsigned short getPort(std::string serverName) const;
 		usable<std::string> getUploadDir(std::string serverName) const; //a revoir
 		//geter Routes
 		std::vector<std::string> getHttpRequest(std::string serverName, std::string path) const;
 		usable<std::pair<size_t , std::string> > getHttpRedirection(std::string serverName, std::string path) const;
-		usable<std::string> getRoot(std::string serverName, std::string path) const;
+		usable<std::pair<std::string, std::string> > getRoot(std::string serverName, std::string path) const;
 		bool getAutoIndex(std::string serverName, std::string path) const;
 		usable<std::string> getDirectoryPage(std::string serverName, std::string path) const;
 
