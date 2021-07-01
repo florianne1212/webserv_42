@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include "parseChunkedBody.hpp"
 
 class ParseBody
 {
@@ -18,6 +19,7 @@ private:
 	std::string _body;
 	State _state;
 	int _count;
+	ParseChunkedBody _parseChunkedBody;
 public:
     ParseBody();
 	ParseBody(std::string ParseBody);

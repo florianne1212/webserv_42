@@ -13,6 +13,7 @@ class Request
 		std::string _methods;
 		std::string _url;
 		std::string _version;
+		std::string _body;
 		std::map<std::string, std::string> _headers;
 		
 
@@ -25,11 +26,13 @@ class Request
 		std::vector<std::string> createMethods();
 		std::string getMethods();
 		std::string getUrl();
+		std::string getBody();
 		std::string getVersion();
 		std::map<std::string, std::string> getHeaders();
 
 		void setMethods(std::string str);
 		void setUrl(std::string str);
+		void setBody(std::string str);
 		void setVersion(std::string str);
 		void setHeaders(std::map<std::string, std::string> header);
 };

@@ -28,6 +28,8 @@ void PostMethod::handlePost(Client &client, Request &request, Response &response
 	File filePost(request.getUrl());
 
 	if (filePost.isPresent()) {
+		
+		filePost.fileAppend(request.getUrl(), request.getBody());
 		response.setStatus(200);
 		//o create o append	
 	}

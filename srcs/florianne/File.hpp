@@ -41,6 +41,7 @@ class File{
 		std::string find_content();
 		std::string convert_int_to_string(int);
 		struct stat getStat();
+		bool fileAppend(std::string filename, std::string to_append);
 
 
 };

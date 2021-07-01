@@ -50,6 +50,12 @@ std::string	Request::getUrl()
 	return(this->_url);
 }
 
+std::string	Request::getBody()
+{
+	return(this->_body);
+}
+
+
 std::string	Request::getVersion()
 {
 	return(this->_version);
@@ -73,6 +79,11 @@ void	Request::setUrl(std::string str)
 void	Request::setVersion(std::string str)
 {
 	this->_version = str;
+}
+
+void	Request::setBody(std::string str)
+{
+	this->_body = str;
 }
 
 void Request::setHeaders(std::map<std::string, std::string> header)

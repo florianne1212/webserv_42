@@ -35,13 +35,13 @@ ParseBody& ParseBody::operator=(ParseBody const & ope)
 
 void ParseBody::parse_chunked(char c)
 {
-	std::cout << "\n TUU \n";
-	if (_body.find("\r\n") == std::string::npos)
+	_parseChunkedBody.parse(c);
+	if(_parseChunkedBody.get_state() == ParseChunkedBody::S_END)
 	{
-		_body.push_back(c); 
-	}
-	else
+		_body = _parseChunkedBody.get_Body();
+		std::cout << "_FINAL BODY " << _body;
 		_state = S_END;
+	}
 }
 
 void ParseBody::parse_identity(char c, std::map<std::string, std::string> _headers)

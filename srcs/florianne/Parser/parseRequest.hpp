@@ -65,6 +65,11 @@ class ParseRequest
 			return(_path);
 		}
 
+		std::string get_body()
+		{
+			return(_body);
+		}
+		
 		int get_major()
 		{
 			return(_major);
