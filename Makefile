@@ -6,7 +6,7 @@
 #    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/05/31 11:21:34 by tguilbar         ###   ########.fr        #
+#    Updated: 2021/07/01 14:28:40 by tguilbar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ OBJ_DIR = obj
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
+#SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 

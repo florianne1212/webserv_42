@@ -22,3 +22,17 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 int	ClientSocket::getFd(void) const{
 	return (_fd);
 }
+
+void ClientSocket::read(Config datas, FDList listFD)
+{
+	(void)datas;
+	(void)listFD;
+	//a fair
+}
+
+void ClientSocket::write(Config datas, FDList listFD)
+{
+	(void)datas;
+	(void)listFD;
+	//a fair
+}

@@ -98,6 +98,10 @@ void	Config::removeIsSpace(std::string &buffer)
 	}
 }
 
+Config::Config()
+: _serverList(), _pathErrorFile(), _bodyMaxSize()
+{}
+
 Config::Config(std::string configFile)
 : _serverList(), _pathErrorFile(), _bodyMaxSize()
 {
@@ -109,9 +113,9 @@ Config::Config(std::string configFile)
 	catch (std::string err)
 	{
 		std::cerr << err << std::endl;
-		return ;
+		exit(1);
 	}
-	putConfig();
+	//putConfig();
 }
 
 bool Config::addServer(std::string name, Server &server)
@@ -154,6 +158,8 @@ void	Config::parser(std::string setupFile)
 	std::ifstream ifs(setupFile.c_str());
 	std::string buffer;
 
+	if (ifs.fail())
+		throw std::string("Invalid Config File");
 	//get file and del white space
 	std::getline(ifs, buffer, '\0');
 	removeIsSpace(buffer);

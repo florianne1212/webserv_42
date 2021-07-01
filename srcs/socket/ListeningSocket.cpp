@@ -19,3 +19,12 @@ ListeningSocket & ListeningSocket::operator=(const ListeningSocket & other){
 int	ListeningSocket::getFd(void) const{
 	return (_fd);
 }
+
+void ListeningSocket::read(Config datas, FDList listFD)
+{
+	(void)datas;
+	socklen_t i = 0;
+
+	ClientSocket *newClient  = new ClientSocket(accept(_fd, NULL, &i));
+	listFD.addSocket(newClient);
+}

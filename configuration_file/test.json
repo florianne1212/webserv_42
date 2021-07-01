@@ -5,9 +5,8 @@
     {
       "server_name": "test",
       "listen": "   80   ",
-      "upload_file":"/Download",
+      "upload_pass":"/Download",
       "client_body_max_size": "   50    ",
-	  "upload_pass" : "  		/download    ",
       "routes": {
         "location": "    /images    ",
         "autoIndex": "    on    ",

@@ -1,4 +1,4 @@
-#include <sys/select.h>
+#include <poll.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
@@ -7,6 +7,7 @@
 #include <string.h>
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <fcntl.h>
 
 #define PORT 8080
@@ -136,8 +137,11 @@ int main(void)
 					std::cout << "Ecoute sur le port " << htons(sin.sin_port) << "..\n";
 					csock = accept(sock, (SOCKADDR *)&csin, &sizeCsin);
 					fcntl(csock, F_SETFL, O_NONBLOCK);
-					FD_ZERO(&rfds);
-					FD_SET(csock, &rfds);
+					pollfd tmp;
+					tmp.fd = csock;
+					tmp.events = POLLIN;
+					std::vector<pollfd> fds;
+					fds.push_back(tmp);
 					if(csock == SOCKET_ERROR)
 					{
 						perror("accept");
@@ -146,7 +150,7 @@ int main(void)
 					else
 					{
 						std::cout << "Une connexion vient d'être ouvert entre le serveur et le client (" << inet_ntoa(csin.sin_addr) << ":" << htons(csin.sin_port) << ")\n";
-						if (select(FD_SETSIZE, &rfds, &rfds, NULL, &to) > 0)
+						if (poll(fds.begin()), fds.size(), 1000) > 0)
 						{
 							log_recv(csock);
 							if (send_page(csock) == -1)

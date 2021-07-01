@@ -20,6 +20,7 @@ class Config
 		void	parserRoutes(std::string::iterator &it, std::string &buffer, Server &serv);
 
 	public :
+		Config();
 		Config(std::string setupFile);
 		bool addServer(std::string name, Server &server);
 		bool setPathErrorFile(std::vector<std::string> pathErrorFile);

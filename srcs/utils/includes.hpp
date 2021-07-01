@@ -2,10 +2,10 @@
 # define WEBSERV_INCLUDES_HPP
 
 //C LIB
-#include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <poll.h>
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -16,6 +16,7 @@
 # include <fstream>
 # include <string>
 # include <vector>
+# include <list>
 # include <map>
 # include <algorithm>
 # include <exception>
@@ -24,7 +25,9 @@
 
 //Project .hpp
 # include "usable.hpp"
-# include "client.hpp"
+//# include "client.hpp"
+# include "ASocket.hpp"
+# include "FDList.hpp"
 # include "Routes.hpp"
 # include "Server.hpp"
 # include "Config.hpp"

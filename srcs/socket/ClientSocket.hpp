@@ -20,6 +20,8 @@ class ClientSocket : public ASocket
 		ClientSocket & operator=(const ClientSocket & other);
 
 		virtual int	getFd(void) const;
+		virtual void read(Config datas, FDList listFD);
+		virtual void write(Config datas, FDList listFD);
 
 };
 

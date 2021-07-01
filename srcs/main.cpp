@@ -1,46 +1,44 @@
 // #include "webserv.hpp"
-#include "./config/Config.hpp"
+#include "Includes.hpp"
 
-void selector(list<client> clientList)
+void selector(Config datas, FDList listFD)
 {
-	if (poll(clientList.size(), clientList, 1000) > 0)
+	(void)datas;
+	if (poll(listFD.getPollList(), listFD.getSizePollList(), 1000) > 0)
 	{
-		for (std::list<client>::iterator clientList.begin(); it < clientList.end(); it++)
+		for (std::list<ASocket *>::iterator it = listFD.getSocketList().begin(); it != listFD.getSocketList().end(); it++)
 		{
-			if (*it->readable())
-				*it->read();
-			else if (*it->writable())
-				*it->write();
+			if ((*it)->getReadStatus())
+				(*it)->read(datas, listFD);
+			else if ((*it)->getWriteStatus())
+				(*it)->write(datas, listFD);
 		}
 	}
 }
 
-int eventLoop()
+int eventLoop(Config datas, FDList listFD)
 {
- 	list<client>	clientList;
-
 	while (1)
 	{
-		//ecoute
-		//fill clientList
-		selector(clientList);
+		selector(datas, listFD);
 	}
 	return 0;
 }
 
 int main(int argc, char* argv[])
 {
-	Config* datas;
+	Config	datas;
+	FDList	listFD;
 
 	if (argc > 2)
 		return (1);
 	else if (argc == 2)
-		datas = new Config((std::string)argv[1]);
+		datas = Config((std::string)argv[1]);
 	else 
-		datas = new Config("chemin par defaut");
+		datas = Config("chemin par defaut");
 	
 	//setup
 	//ouvrir socket
-	return eventLoop();
-	delete (datas);
+	std::cout << "START" << std::endl;
+	return eventLoop(datas, listFD);
 }

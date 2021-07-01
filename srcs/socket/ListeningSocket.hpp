@@ -1,6 +1,8 @@
 #ifndef LISTENINGSOCKET_HPP
 #define LISTENINGSOCKET_HPP
 
+class Config;
+class FDList;
 
 #include "ASocket.hpp"
 
@@ -18,7 +20,7 @@ class ListeningSocket : public ASocket
 		ListeningSocket & operator=(const ListeningSocket & other);
 
 		virtual int	getFd(void) const;
-		//methode connect()
+		virtual void read(Config datas, FDList listFD);		//methode connect()
 };
 
 #endif
