@@ -20,12 +20,12 @@ OBJ_DIR = obj
 
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
-SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
-#SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp
+#SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
+SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
-CFLAGS = -Wall -Wextra -Werror -std=c++98
+CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address
 
 IFLAGS = $(foreach dir, $(INC_DIR), -I$(dir))
 # Colors

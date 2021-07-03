@@ -29,7 +29,9 @@ class Config
 		//geter Config
 		usable<std::string> getPathErrorFile(int errorVal) const;
 		size_t getBodyMaxSize(std::string serverName, std::string path) const;
-		//geter Server
+		std::map<std::string, Server>::const_iterator getServerBegin(void) const;
+		std::map<std::string, Server>::const_iterator getServerEnd(void) const;
+		//geter Server		
 		usable<std::string> getServerName(std::string ip) const;
 		std::string getIp(std::string serverName) const;
 		unsigned short getPort(std::string serverName) const;

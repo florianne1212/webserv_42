@@ -20,7 +20,8 @@ class ListeningSocket : public ASocket
 		ListeningSocket & operator=(const ListeningSocket & other);
 
 		virtual int	getFd(void) const;
-		virtual void read(Config datas, FDList listFD);		//methode connect()
+		virtual void read(Config *datas, FDList *listFD);		//methode connect()
+		virtual void write(Config *datas, FDList *istFD);	//useless methode
 };
 
 #endif

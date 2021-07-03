@@ -21,8 +21,7 @@ class FDList
 
         std::list<ASocket *> getSocketList(void) const;
         std::list<struct pollfd> getFileList(void) const;
-        pollfd *getPollList(void) const; //attention retourne un tab malloc
-        size_t getSizePollList(void) const;
+        bool myPoll(void);
 };
 
 #endif

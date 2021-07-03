@@ -21,11 +21,12 @@ class ASocket
 		ASocket & operator=(const ASocket & other);
 
 		virtual int	getFd(void) const = 0;
-		virtual void read(Config datas, FDList listFD) = 0;
-		virtual void write(Config datas, FDList listFD) = 0;
+		virtual void read(Config *datas, FDList *listFD) = 0;
+		virtual void write(Config *datas, FDList *listFD) = 0;
 		bool getReadStatus(void) const;
 		bool getWriteStatus(void) const;
 		struct pollfd getPollFD(void) const;
+		void setPollFD(struct pollfd toSet);
 };
 
 #include "ClientSocket.hpp"

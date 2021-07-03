@@ -1,6 +1,6 @@
 #include "ClientSocket.hpp"
 
-ClientSocket::ClientSocket(int fd) : ASocket(fd), _bareRequest(0), _bareAnswer(0){}
+ClientSocket::ClientSocket(int fd) : ASocket(fd), _bareRequest(), _bareAnswer(){}
 
 ClientSocket::~ClientSocket(){}
 //en fonction, probable delete[] a faire ou pas si vector
@@ -23,14 +23,14 @@ int	ClientSocket::getFd(void) const{
 	return (_fd);
 }
 
-void ClientSocket::read(Config datas, FDList listFD)
+void ClientSocket::read(Config *datas, FDList *listFD)
 {
 	(void)datas;
 	(void)listFD;
 	//a fair
 }
 
-void ClientSocket::write(Config datas, FDList listFD)
+void ClientSocket::write(Config *datas, FDList *listFD)
 {
 	(void)datas;
 	(void)listFD;

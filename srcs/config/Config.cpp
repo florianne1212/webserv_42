@@ -105,16 +105,8 @@ Config::Config()
 Config::Config(std::string configFile)
 : _serverList(), _pathErrorFile(), _bodyMaxSize()
 {
-	try
-	{
-		parser(configFile);
-		checker();
-	}
-	catch (std::string err)
-	{
-		std::cerr << err << std::endl;
-		exit(1);
-	}
+	parser(configFile);
+	checker();
 	//putConfig();
 }
 
@@ -525,6 +517,16 @@ size_t Config::getBodyMaxSize(std::string serverName, std::string path) const
 	}
 
 	return ret;
+}
+
+std::map<std::string, Server>::const_iterator Config::getServerBegin(void) const
+{
+	return _serverList.begin();
+}
+
+std::map<std::string, Server>::const_iterator Config::getServerEnd(void) const
+{
+	return _serverList.end();
 }
 
 usable<std::string> Config::getServerName(std::string ip) const

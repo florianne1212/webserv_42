@@ -140,8 +140,6 @@ int main(void)
 					pollfd tmp;
 					tmp.fd = csock;
 					tmp.events = POLLIN;
-					std::vector<pollfd> fds;
-					fds.push_back(tmp);
 					if(csock == SOCKET_ERROR)
 					{
 						perror("accept");
@@ -150,7 +148,7 @@ int main(void)
 					else
 					{
 						std::cout << "Une connexion vient d'être ouvert entre le serveur et le client (" << inet_ntoa(csin.sin_addr) << ":" << htons(csin.sin_port) << ")\n";
-						if (poll(fds.begin()), fds.size(), 1000) > 0)
+						if (poll(&tmp, 1, 1000) > 0)
 						{
 							log_recv(csock);
 							if (send_page(csock) == -1)

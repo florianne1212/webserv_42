@@ -35,3 +35,8 @@ bool ASocket::getWriteStatus(void) const {
 struct pollfd ASocket::getPollFD(void) const{
 	return (_pollFD);
 }
+
+void ASocket::setPollFD(struct pollfd toSet)
+{
+	_pollFD = toSet;
+}
