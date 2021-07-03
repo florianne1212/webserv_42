@@ -31,7 +31,7 @@ void cgiHandler::creationVectorEnviron(void){
 	contentLength("Content-Length");
 	contentType("Content-Type");
 	gatewayInterface();
-	pathIman nfo("/scriptname+pathinfo");//////////////////
+	pathInfo("/scriptname+pathinfo");//////////////////
 	// pathTranslated("j'y comprend rien!");////////////SHOULD
 	queryString("la sequence query string");
 	remoteAddr("je ne sais pas ou on cherche cette putain d'adresse IP!");
@@ -297,4 +297,3 @@ std::string cgiHandler::upperCaseAndMinus(const std::string & str)
 	}
 	return (newstr);
 }
-

@@ -1,54 +1,9 @@
-#include <iostream>
-#include <string>
-#include <cctype>
-
-/*
-** ------------------ UrlDecoder --------------------------------------
-**
-** fonction qui transforme un string URL encoded en string URL decoded
-** les signes + sont remplaces par des espaces
-** les caracteres speciaux codes en % hex hex sont remplaces par leur valeur
-*/
-void UrlDecoder(std::string & str)
-{
-	for (size_t i = 0; i < str.length(); ++i)
-	{
-		if (str[i] == '+')
-			str[i] = ' ';
-		if (str[i] == '%' && (i < (str.length() - 2)))
-		{
-			if (isxdigit(str[i + 1]) && (isxdigit(str[i + 2])))
-			{
-				str[i] = static_cast<char>(strtol((str.substr(i + 1, 2)).c_str(), 0, 16));
-				str = str.erase(i + 1, 2);
-			}
-		}
-	}
-}
-
-
-// MAIN DE TEST
-// int main(int argc, char* argv[])
-// {
-// 	if (argc !=2)
-// 		return (0);
-// 	std::string str = argv[1];
-// 	std::cout << str << std::endl;
-
-// 	UrlDecoder(str);
-// 	std::cout << str << std::endl;
-
-// 	return (0);
-// }
-
 #include <map>
 #include <iostream>
 #include <string>
 #include <cstring>
 
-// ---------------------------------------------------------------------------------
-//------------------------- map parseTheUri(string)---------------------------------
-//----------------------------------------------------------------------------------
+
 
 //scheme-- : -------------------------------------path-------------------------------
 //				\									/	 \			/  \			/
@@ -57,7 +12,7 @@ void UrlDecoder(std::string & str)
 //					  user_info@		: port
 
 //parsing simple de l'URL
-//renvoie une map avec chacun des elements
+//renvoie une map aec chacun des elements
 
 std::map<std::string, std::string> parseTheUri(std::string url)
 {
@@ -141,14 +96,13 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 
 }
 
-// MAIN DE TEST
-// int main(int argc,char* argv[])
-// {
-// 	if (argc != 2)
-// 		return (0);
-// 	std::map<std::string, std::string> parseduri = parseTheUri(argv[1]);
-// 	std::map<std::string, std::string>::iterator it;
-// 	for (it = parseduri.begin(); it != parseduri.end(); ++it)
-// 		std::cout << it->first << "->" << it->second <<std::endl;
-// 	return (0);
-// }
+int main(int argc,char* argv[])
+{
+	if (argc != 2)
+		return (0);
+	std::map<std::string, std::string> parseduri = parseTheUri(argv[1]);
+	std::map<std::string, std::string>::iterator it;
+	for (it = parseduri.begin(); it != parseduri.end(); ++it)
+		std::cout << it->first << "->" << it->second <<std::endl;
+	return (0);
+}

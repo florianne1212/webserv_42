@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <exception>
+#include "./florianne/request.hpp"
 
 class cgiHandler
 {
@@ -17,6 +18,8 @@ protected:
 	std::vector<std::string> _monVectorEnv;
 	char** _varEnv;
 	char** _instructionsCGI;
+	Request* _request;
+	std::map<std::string, std::string> _parsedUrl;
 
 
 	cgiHandler();
@@ -49,6 +52,7 @@ private:
 	void serverSoftware(void);
 	void otherMetaVariables(void);
 	std::string upperCaseAndMinus(const std::string & str);
+	std::map<std::string, std::string> cgiHandler::parseTheUri(std::string);
 };
 
 #endif

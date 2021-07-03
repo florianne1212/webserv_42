@@ -4,6 +4,10 @@ sur le modele
 -date : auteur : Nouveautes et changements effectues (en mettant les commits les plus recents en debut de fichier)
 
 -------------------------------------------------------------------------------------------------------------------
+03/07/2021 : laurent
+fonction de parsing de l'URL (ne gere pas host ipv6)
+WIP mettre a jour le cgi handler avec les renseignements derives de Florianne et Tanguy
+
 28/06/2021 : laurent
 modif main
 
