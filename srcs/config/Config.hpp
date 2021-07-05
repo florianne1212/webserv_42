@@ -1,7 +1,7 @@
 #ifndef WEBSERV_SETUP_HPP
 # define WEBSERV_SETUP_HPP
 
-# include "Includes.hpp"
+# include "includes.hpp"
 
 class Config
 {

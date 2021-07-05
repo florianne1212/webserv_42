@@ -53,7 +53,6 @@ void ParseRequest::parse(char c)
 					printf("%s\n", "method can't be that long");
 				_method += c;
 			}
-			
 			break;
 		}
 		case(S_SPACES_BEFORE_PATH):
@@ -184,7 +183,6 @@ void ParseRequest::parse(char c)
 			_parseHeaderFields.parse(c);
 			if(_parseHeaderFields.get_state() == ParseHeaderFields::S_END)
 			{
-				std::cout << "POUI";
 				_state = S_BODY;
 			}
 			break;

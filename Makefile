@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+         #
+#    By: fcoudert <fcoudert@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/07/01 14:28:40 by tguilbar         ###   ########.fr        #
+#    Updated: 2021/07/05 19:00:46 by fcoudert         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,9 +21,9 @@ OBJ_DIR = obj
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 #SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
-SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp
+SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp parseHeaderFields.cpp parseRequest.cpp parseBody.cpp Message.cpp parseChunkedBody.cpp request.cpp
 
-OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
+OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o)) 
 
 CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address
 
