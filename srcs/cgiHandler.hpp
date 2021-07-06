@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstring>
 #include <string>
+#include <cctype>
 #include <unistd.h>
 #include <iostream>
 #include <exception>
@@ -13,20 +14,23 @@
 class cgiHandler
 {
 protected:
-	std::map<std::string,std::string> _monDico; //copie du dico de florianne
 	//les donnees de tanguy du formulaire
 	std::vector<std::string> _monVectorEnv;
 	char** _varEnv;
 	char** _instructionsCGI;
 	Request* _request;
 	std::map<std::string, std::string> _parsedUrl;
+	std::map<std::string, std::string> _headers;
 
-
+private:
 	cgiHandler();
 
 public:
-	cgiHandler(const std::map<std::string, std::string> & floMap);
+	cgiHandler(Request* requestComingFromFlorianne ); //et donnees de Tanguy a mettre
 	~cgiHandler();
+	cgiHandler(cgiHandler const & other);
+	cgiHandler & operator= (const cgiHandler & other);
+
 
 	void creationVectorEnviron(void);
 	void setVarEnv(void);
@@ -54,5 +58,8 @@ private:
 	std::string upperCaseAndMinus(const std::string & str);
 	std::map<std::string, std::string> cgiHandler::parseTheUri(std::string);
 };
+
+void UrlDecoder(std::string & str);
+std::map<std::string, std::string> parseTheUri(std::string url);
 
 #endif

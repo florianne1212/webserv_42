@@ -13,6 +13,11 @@
 
 ClientSocket::ClientSocket(int fd) : ASocket(fd), _bareRequest(), _bareAnswer(){}
 
+// ClientSocket::ClientSocket(int fd, std::string clientAddress, std::string clientPort):
+// 	ASocket(fd), _bareRequest(), _bareAnswer(), _clientAddress(clientAddress),
+// 	_clientPort(clientPort)
+// 	{}
+
 ClientSocket::~ClientSocket(){}
 //en fonction, probable delete[] a faire ou pas si vector
 
@@ -45,7 +50,7 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	char c;
 	ParseRequest _parserequest;
 	ParseHeaderFields _parseheader;
-	
+
 
 	i = 0;
 	::read(_fd, line_buf, 1000);
@@ -75,7 +80,7 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 
 	// for (std::map<std::string, std::string>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
     // 	std::cout << it->first << " => " << it->second << '\n';
-	
+
 	_pollFD.events = POLLOUT;
 }
 
@@ -105,7 +110,7 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 	// middlewares.push_back(new CheckRequest());
 	// middlewares.push_back(new IsConnected());
 
-	
+
 
 	// MiddlewareChain chain(middlewares, client, request, response);
 	// chain();

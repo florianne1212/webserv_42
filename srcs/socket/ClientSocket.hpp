@@ -12,9 +12,12 @@ class ClientSocket : public ASocket
 	protected :
 		std::string _bareRequest; //ou un vector<char> ?
 		std::string _bareAnswer; //ou un vector<char> ?
+		// std::string _clientAddress;
+		// std::string _clientPort;
 
 	public :
 		ClientSocket(int fd);
+		// ClientSocket(int fd, std::string clientAddress, std::string clientPort);
 		virtual ~ClientSocket();
 		ClientSocket(const ClientSocket & other);
 		ClientSocket & operator=(const ClientSocket & other);

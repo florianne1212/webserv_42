@@ -12,8 +12,10 @@ class ListeningSocket : public ASocket
 		ListeningSocket();
 
 	protected :
+		// sockaddr_in _addr;
 
 	public :
+		// ListeningSocket(int fd, sockaddr_in addr);
 		ListeningSocket(int fd);
 		virtual ~ListeningSocket();
 		ListeningSocket(const ListeningSocket & other);

@@ -48,6 +48,7 @@ void openSocket(Config *datas, FDList *listFD)
 		else
 			throw std::string("error to create socket");
 		listFD->addSocket(new ListeningSocket(sock));
+		// listFD->addSocket(new ListeningSocket(sock, sin)); //pour avoir ip et port
 	}
 }
 
@@ -55,14 +56,14 @@ int main(int argc, char* argv[])
 {
 	Config	*datas;
 	FDList	*listFD = new FDList();
-	
+
 	try
 	{
 		if (argc > 2)
 			return (1);
 		else if (argc == 2)
 			datas = new Config((std::string)argv[1]);
-		else 
+		else
 			datas = new Config("chemin par defaut");
 
 		openSocket(datas, listFD);
