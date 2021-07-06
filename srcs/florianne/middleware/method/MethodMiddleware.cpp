@@ -29,7 +29,7 @@ void MethodMiddleware::handle(Client &client, Request &request, Response &respon
 	}
 	else
 	{
-		std::cout << "this method is not handled" << std::endl;
+		std::cout << "this method is not handled : " << request.getMethods() << std::endl;
 	}
 
 

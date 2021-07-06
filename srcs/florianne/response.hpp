@@ -4,13 +4,16 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include "httpStatus.hpp"
 
 class Response
 {
 public:
+	HttpStatus _find_status;
 	int _status;
 	std::map <std::string, std::string> _headers;
 	std::string _body;
+	std::string _response;
 
 public:
 	Response(/* args */);
@@ -18,6 +21,7 @@ public:
 	~Response();
 	Response& operator=(Response const & ope);
 
+	std::string create_response();
 	std::string getBody();
 	int getStatus();
 

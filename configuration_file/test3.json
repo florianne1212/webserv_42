@@ -1,6 +1,12 @@
 {
 	"server":{
         "server_name": "test",
-        "listen": "127.0.0.1:8080"
+		"listen": "127.0.0.1:8080",
+		"routes": [
+		{
+            "location": "  /   ",
+            "directory_page": "   test.html   "
+		}
+		]
 	}
 }

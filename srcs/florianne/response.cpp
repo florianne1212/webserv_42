@@ -1,6 +1,7 @@
 #include "response.hpp"
 
-Response::Response(/* args */)
+Response::Response(/* args */):
+_status(200)
 {
 }
 
@@ -22,6 +23,32 @@ Response& Response::operator=(Response const & ope)
         this->_headers = ope._headers;
     }
     return (*this);
+}
+
+std::string Response::create_response()
+{
+	std::string s = std::to_string(_status);
+	_response.append("HTTP/1.1 ");
+	_response.append(s);
+	_response.append(" ");
+	_response.append(_find_status.find_message(_status));
+	_response.append("\r\n");
+	for (std::map<std::string, std::string>::iterator it=_headers.begin(); it!=_headers.end(); ++it)
+    {
+		_response.append(it->first);
+		_response.append(": ");
+		_response.append(it->second);
+		_response.append("\r\n");
+	}
+	_response.append("\r\n");
+	_response.append(_body);
+	// 	std::cout << it->first << " => " << it->second << '\n';
+	// _response.append("\r\n");
+
+	
+	std::cout << "\n" << _response << "\n";
+
+	return(_response);
 }
 
 std::string Response::getBody()
@@ -48,7 +75,7 @@ void Response::setHeaders(std::string header_name, std::string header_value)
 {
 	_headers.insert(std::pair<std::string, std::string>(header_name, header_value));
 
-	for (std::map<std::string, std::string>::iterator it=_headers.begin(); it!=_headers.end(); ++it)
-    	std::cout << it->first << " => " << it->second << '\n';
+	// for (std::map<std::string, std::string>::iterator it=_headers.begin(); it!=_headers.end(); ++it)
+    // 	std::cout << it->first << " => " << it->second << '\n';
 	std::cout << '\n';
 }
