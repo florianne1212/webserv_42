@@ -12,10 +12,13 @@ void CheckRequest::handle(Client &client, Request &request, Response &response, 
 	(void)response;
 	(void)request;
 
+	if(response.getStatus() == 200)
+	{
+		std::cout << "CHECK REQUEST" << std::endl;
+	}
 
 
-
-	std::cout << "CHECK REQUEST" << std::endl;
+	
 
 	next();
 }

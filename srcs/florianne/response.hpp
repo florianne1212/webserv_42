@@ -23,8 +23,11 @@ public:
 
 	std::string create_response();
 	std::string getBody();
+	std::string Body404();
 	int getStatus();
+	std::string getResponse();
 
+	void cleanResponse();
 	void setBody(std::string str);
 	void setStatus(int status);
 	void setHeaders(std::string header_name, std::string header_value);

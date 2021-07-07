@@ -1,14 +1,7 @@
 #include "ClientSocket.hpp"
 #include "../Parser/parseRequest.hpp"
-#include "../request.hpp"
-#include "../response.hpp"
-#include "../Client.hpp"
-#include "../middleware/IMiddleware.hpp"
-#include "../middleware/MiddlewareChain.hpp"
-#include "../middleware/method/MethodMiddleware.hpp"
-#include "../middleware/before/checkRedir.hpp"
-#include "../middleware/before/isConnected.hpp"
-#include "../middleware/before/checkRequest.hpp"
+#include "../middleware/ManageMiddleware.hpp"
+
 
 
 ClientSocket::ClientSocket(int fd) : ASocket(fd), _bareRequest(), _bareAnswer(){}
@@ -87,36 +80,32 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
 	(void)datas;
-	(void)listFD;
-	const char *req = ""
-		"HTTP/1.1 200 OK\r\n"
-		"Content-Length: 88\r\n"
-		"Content-Type: text/html\r\n"
-		"\r\n"
-		"<html>\r\n"
-		"<body>\r\n"
-		"<h1>Hello, World!</h1>\r\n"
-		"</body>\r\n"
-		"</html>\r\n"
-		;
-	::write(_fd, req, strlen(req));
-	// Client client;
+	// const char *req = ""
+	// 	"HTTP/1.1 200 OK\r\n"
+	// 	"Content-Length: 88\r\n"
+	// 	"Content-Type: text/html\r\n"
+	// 	"\r\n"
+	// 	"<html>\r\n"
+	// 	"<body>\r\n"
+	// 	"<h1>Hello, World!</h1>\r\n"
+	// 	"</body>\r\n"
+	// 	"</html>\r\n"
+	// 	;
+	// ::write(_fd, req, strlen(req));
+	Client client;
 	// Request &request = _request;
-	// Response response;
+	Response response;
 
-	// std::list<IMiddleware *> middlewares;
-	// middlewares.push_back(new MethodMiddleware());
-	// middlewares.push_back(new CheckRedir());
-	// middlewares.push_back(new CheckRequest());
-	// middlewares.push_back(new IsConnected());
+	ManageMiddleware manage;
+
+	manage.middlewareStart(client, _request, response);
 
 
+	response.create_response();
+	::write(_fd, response.getResponse().c_str(), strlen(response.getResponse().c_str()));
 
-	// MiddlewareChain chain(middlewares, client, request, response);
-	// chain();
-
-	// response.create_response();
-
-	// exit(1);
+	listFD->rmSocket(_fd);
+	close(_fd);
+	
 	//a fair
 }
