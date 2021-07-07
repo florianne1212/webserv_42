@@ -10,6 +10,7 @@
 #include <iostream>
 #include <exception>
 #include "./florianne/request.hpp"
+#include "./socket/ClientSocket.hpp"
 
 class cgiHandler
 {
@@ -19,6 +20,7 @@ protected:
 	char** _varEnv;
 	char** _instructionsCGI;
 	Request* _request;
+	ClientSocket* _client;
 	std::map<std::string, std::string> _parsedUrl;
 	std::map<std::string, std::string> _headers;
 
@@ -26,7 +28,7 @@ private:
 	cgiHandler();
 
 public:
-	cgiHandler(Request* requestComingFromFlorianne ); //et donnees de Tanguy a mettre
+	cgiHandler(Request* requestComingFromFlorianne, ClientSocket* client); //et donnees de Tanguy a mettre
 	~cgiHandler();
 	cgiHandler(cgiHandler const & other);
 	cgiHandler & operator= (const cgiHandler & other);

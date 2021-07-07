@@ -12,8 +12,8 @@ class ClientSocket : public ASocket
 	protected :
 		std::string _bareRequest; //ou un vector<char> ?
 		std::string _bareAnswer; //ou un vector<char> ?
-		// std::string _clientAddress;
-		// std::string _clientPort;
+		std::string _clientAddress;
+		std::string _clientPort;
 
 	public :
 		ClientSocket(int fd);
@@ -25,7 +25,8 @@ class ClientSocket : public ASocket
 		virtual int	getFd(void) const;
 		virtual void read(Config *datas, FDList *listFD);
 		virtual void write(Config *datas, FDList *listFD);
-
+		std::string getClientAddress(void) const;
+		std::string getClientPort(void) const;
 };
 
 #endif

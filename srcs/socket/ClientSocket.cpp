@@ -106,6 +106,14 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 
 	listFD->rmSocket(_fd);
 	close(_fd);
-	
+
 	//a fair
+}
+
+std::string ClientSocket::getClientAddress(void) const {
+	return (_clientAddress);
+}
+
+std::string ClientSocket::getClientPort(void) const {
+	return (_clientPort);
 }
