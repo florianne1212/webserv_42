@@ -1,4 +1,3 @@
-// #include "webserv.hpp"
 #include "includes.hpp"
 
 void selector(Config *datas, FDList *listFD)
