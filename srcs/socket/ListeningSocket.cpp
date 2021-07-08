@@ -2,7 +2,7 @@
 
 // ListeningSocket::ListeningSocket(int fd, sockaddr_in addr) : ASocket(fd), _addr(addr) {}
 
-ListeningSocket::ListeningSocket(int fd) : ASocket(fd){}
+ListeningSocket::ListeningSocket(int fd, std::string serverName) : ASocket(fd, serverName){}
 
 ListeningSocket::~ListeningSocket(){}
 
@@ -29,7 +29,7 @@ void ListeningSocket::read(Config *datas, FDList *listFD)
 
 	std::cout << "adding client" << std::endl;
 	int fd = accept(_fd, NULL, &i);
-	ClientSocket *tmp = new ClientSocket(fd);
+	ClientSocket *tmp = new ClientSocket(fd, _serverName);
 	listFD->addSocket(tmp);
 
 	// struct sockaddr_in from;

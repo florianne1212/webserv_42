@@ -73,7 +73,7 @@ void	Config::checker()
 {
 	struct stat useless;
 	for (std::map<int, std::string>::iterator it = _pathErrorFile.begin(); it != _pathErrorFile.end(); it++)
-		if (stat(it->second.c_str(), &useless) != 0)
+		if (stat((WORKPATH + it->second).c_str() , &useless) != 0)
 			throw std::string(it->second + " is a unknow error file");
 	for (std::map<std::string, Server>::iterator it = _serverList.begin(); it != _serverList.end(); it++)
 		it->second.checker();

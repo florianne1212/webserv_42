@@ -23,7 +23,7 @@ void Server::checker()
 	if (_ip.state == true && _port.state == false)
 		throw std::string("error in listen configuration");
 	if (_uploadDir.state)
-		if (stat(_uploadDir.value.c_str(), &useless) != 0)
+		if (stat((WORKPATH + _uploadDir.value).c_str(), &useless) != 0)
 			throw std::string(_uploadDir.value + " is a unknow upload directory");
 	for (std::map<std::string, Routes>::iterator it = _routes.begin(); it != _routes.end(); it++)
 		it->second.checker();

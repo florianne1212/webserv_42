@@ -1,6 +1,7 @@
 #ifndef WEBSERV_INCLUDES_HPP
 # define WEBSERV_INCLUDES_HPP
 
+#define WORKPATH "./workDir"
 //C LIB
 #include <sys/time.h>
 #include <sys/types.h>

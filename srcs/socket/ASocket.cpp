@@ -2,7 +2,7 @@
 
 ASocket::ASocket(void){}
 
-ASocket::ASocket(int fd) : _fd(fd), _pollFD()
+ASocket::ASocket(int fd, std::string ServerName) : _fd(fd), _pollFD(), _serverName(ServerName)
 {
 	_pollFD.fd = fd;
 	_pollFD.events = POLLIN;
@@ -34,6 +34,10 @@ bool ASocket::getWriteStatus(void) const {
 
 struct pollfd ASocket::getPollFD(void) const{
 	return (_pollFD);
+}
+
+std::string ASocket::getServerName() const{
+	return _serverName;	
 }
 
 void ASocket::setPollFD(struct pollfd toSet)

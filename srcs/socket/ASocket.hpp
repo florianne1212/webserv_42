@@ -13,9 +13,10 @@ class ASocket
 
 		int _fd;
 		struct pollfd _pollFD;
+		std::string _serverName;
 
 	public:
-		ASocket(int fd);
+		ASocket(int fd, std::string ServerName);
 		virtual ~ASocket();
 		ASocket(const ASocket & other);
 		ASocket & operator=(const ASocket & other);
@@ -26,6 +27,7 @@ class ASocket
 		bool getReadStatus(void) const;
 		bool getWriteStatus(void) const;
 		struct pollfd getPollFD(void) const;
+		std::string getServerName() const;
 		void setPollFD(struct pollfd toSet);
 };
 

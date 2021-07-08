@@ -16,7 +16,7 @@ class ClientSocket : public ASocket
 		std::string _clientPort;
 
 	public :
-		ClientSocket(int fd);
+		ClientSocket(int fd, std::string serverName);
 		// ClientSocket(int fd, std::string clientAddress, std::string clientPort);
 		virtual ~ClientSocket();
 		ClientSocket(const ClientSocket & other);

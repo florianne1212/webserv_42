@@ -4,7 +4,9 @@
 
 
 
-ClientSocket::ClientSocket(int fd) : ASocket(fd), _bareRequest(), _bareAnswer(){}
+ClientSocket::ClientSocket(int fd, std::string serverName) : ASocket(fd, serverName), _bareRequest(), _bareAnswer(),
+_clientAddress(), _clientPort()
+{}
 
 // ClientSocket::ClientSocket(int fd, std::string clientAddress, std::string clientPort):
 // 	ASocket(fd), _bareRequest(), _bareAnswer(), _clientAddress(clientAddress),

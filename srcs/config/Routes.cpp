@@ -25,10 +25,10 @@ void Routes::checker()
 {
 	struct stat useless;
 	if (_root.state)
-		if (stat(_root.value.c_str(), &useless) != 0)
+		if (stat((WORKPATH + _root.value).c_str(), &useless) != 0)
 			throw std::string(_root.value + " is a unknow file or directory");
 	if (_directoryPage.state)
-		if (stat(_directoryPage.value.c_str(), &useless) != 0)
+		if (stat((WORKPATH + _directoryPage.value).c_str(), &useless) != 0)
 			throw std::string(_directoryPage.value + " is a unknow file");
 }
 
