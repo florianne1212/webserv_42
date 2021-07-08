@@ -21,11 +21,14 @@ OBJ_DIR = obj
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 #SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
-SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp parseHeaderFields.cpp parseRequest.cpp parseBody.cpp Message.cpp parseChunkedBody.cpp request.cpp response.cpp deleteMethod.cpp mime.cpp listmime.cpp httpStatus.cpp getMethod.cpp File.cpp postMethod.cpp Client.cpp IMiddleware.cpp MiddlewareChain.cpp MethodMiddleware.cpp  checkRedir.cpp isConnected.cpp checkRequest.cpp ManageMiddleware.cpp
+SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp parseHeaderFields.cpp \
+parseRequest.cpp parseBody.cpp Message.cpp parseChunkedBody.cpp request.cpp response.cpp deleteMethod.cpp mime.cpp listmime.cpp \
+httpStatus.cpp getMethod.cpp File.cpp Client.cpp IMiddleware.cpp MiddlewareChain.cpp MethodMiddleware.cpp  checkRedir.cpp \
+isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o)) 
 
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -std=c++98 #-g3 -fsanitize=address
 
 IFLAGS = $(foreach dir, $(INC_DIR), -I$(dir))
 # Colors
@@ -68,6 +71,7 @@ clean:
 
 fclean:			clean
 				@echo "Deleting Binary File $(_YELLOW)$(NAME)$(_WHITE) ... \c"
+				@rm -f $(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 donuts :		
