@@ -39,10 +39,11 @@ void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request,
 			// response.setContent
 		} 
 		else if (fileGet.isDirectory()) {
-			if(config.getAutoIndex(client.getServerName(), request.getUrl()))
+			if(config.getAutoIndex(client.getServerName(), request.getUrl()) && *request.getUrl().rbegin() == '/')
 				setHeader_Dir(response, setDirectory(fileGet, request.getUrl(), config.getIp(client.getServerName())));
 			else
 				response.setStatus(404);
+			
 		}	
 	}
 	else
