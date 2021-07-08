@@ -6,8 +6,8 @@
 ** -------------------------------------------------------------------------------
 */
 
-cgiHandler::cgiHandler(Request* requestComingFromFlorianne ): //donnees de tanguy
-	_request(requestComingFromFlorianne), _varEnv(0), _instructionsCGI(0), _monVectorEnv(0)
+cgiHandler::cgiHandler(Request* requestComingFromFlorianne, ClientSocket* client): //donnees de tanguy
+	_request(requestComingFromFlorianne), _client(client), _varEnv(0), _instructionsCGI(0), _monVectorEnv(0)
 {
 	_headers = requestComingFromFlorianne->getHeaders();
 	_parsedUrl = parseTheUri(requestComingFromFlorianne->getUrl());
@@ -33,7 +33,7 @@ cgiHandler::~cgiHandler()
 
 cgiHandler::cgiHandler(cgiHandler const & other):
 	_monVectorEnv(other._monVectorEnv), _varEnv(other._varEnv), _instructionsCGI(other._instructionsCGI),
-	_request(other._request), _parsedUrl(other._parsedUrl), _headers(other._headers)
+	_request(other._request),_client(other._client), _parsedUrl(other._parsedUrl), _headers(other._headers)
 	{}
 
 cgiHandler & cgiHandler::operator= (const cgiHandler & other)
@@ -58,6 +58,7 @@ cgiHandler & cgiHandler::operator= (const cgiHandler & other)
 		_varEnv = other._varEnv;
 		_instructionsCGI = other._instructionsCGI;
 		_request = other._request;
+		_client = other._client;
 		_parsedUrl = other._parsedUrl;
 		_headers = other._headers;
 	}
@@ -78,13 +79,13 @@ void cgiHandler::creationVectorEnviron(void){
 	pathInfo("/scriptname+pathinfo");//////////////////
 	// pathTranslated("j'y comprend rien!");////////////SHOULD
 	queryString(_parsedUrl["query"]); //DONE
-	remoteAddr("je ne sais pas ou on cherche cette putain ");
-	remoteHost(); /////////////SHOULD
-	remoteUser("user id provided dans auth");
-	requestMethod("method definie dans le header");
-	scriptName("vient du parsing de l url");
-	serverName("le servername du script uri");
-	serverPort("rien-> default, sinon celui fourni dans URI");
+	remoteAddr(_client->getClientAddress());//DONE
+	remoteHost(); // DONE
+	remoteUser(_parsedUrl["user_name"]);//DONE
+	requestMethod(_request->getMethods()); // DONE
+	scriptName("vient du parsing de l url");////////////////
+	serverName(_parsedUrl["host"]);//DONE
+	serverPort(_parsedUrl["port"]);///////// petit detail a voir avec lucas
 	serverProtocol();
 	serverSoftware();
 	otherMetaVariables();
