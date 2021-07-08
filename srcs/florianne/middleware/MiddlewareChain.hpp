@@ -3,7 +3,8 @@
 
 #include <list>
 #include "IMiddleware.hpp"
-#include "../Client.hpp"
+#include "ClientSocket.hpp"
+#include "Config.hpp"
 
 class IMiddleware;
 
@@ -11,12 +12,13 @@ class MiddlewareChain {
 
 	private:
 		std::list<IMiddleware*> m_middlewares;
-		Client *m_client;
+		ClientSocket *m_client;
 		Request *m_request;
 		Response *m_response;
+		Config *m_config;
 
 	public:
-		MiddlewareChain(const std::list<IMiddleware*> &middlewares, Client &client, Request &request, Response &response);
+		MiddlewareChain(const std::list<IMiddleware*> &middlewares,Config &config, ClientSocket &client, Request &request, Response &response);
 		~MiddlewareChain(void);
 
 	public:

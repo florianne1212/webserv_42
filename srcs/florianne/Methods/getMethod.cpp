@@ -19,15 +19,16 @@ GetMethod& GetMethod::operator=(GetMethod const & ope)
 	return(*this);
 }
 
-void GetMethod::handleGet(Client &client, Request &request, Response &response)
+void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request, Response &response)
 {
-	
     (void)client;
 	// (void)response;
 	(void)request;
+	(void)config;
 	std::cout << "GET\n";
 
-	File fileGet(request.getUrl());
+	std::cout << "\nURL =" << request.getUrl();
+	File fileGet(WORKPATH + request.getUrl());
 
 	if (fileGet.isPresent()) {
 		if (fileGet.isFile()) {
@@ -38,7 +39,7 @@ void GetMethod::handleGet(Client &client, Request &request, Response &response)
 			// response.setContent
 		} 
 		else if (fileGet.isDirectory()) {
-			setDirectory(fileGet, request.getUrl());
+			setHeader_Dir(response, setDirectory(fileGet, request.getUrl(), config.getIp(client.getServerName())));
 		}	
 	}
 	else
@@ -48,26 +49,28 @@ void GetMethod::handleGet(Client &client, Request &request, Response &response)
 	}
 }
 
-std::string GetMethod::setDirectory(File &fileGet, std::string url)
+std::string GetMethod::setDirectory(File &fileGet, std::string url, std::string ip)
 {
+	(void)ip;
 	std::string response_body =
 		"<html>\n"
 		" <head>\n"
 		"  <title>file of" + url + "</title>\n"
 		" </head>\n"
-		" <body>\n";
+		" <body>\n"
+		"<h1>Index of </h1>\n";
 	std::list<std::string> files_list = fileGet.listDirFiles();
 
 	std::string file_list;
 	for (std::list<std::string>::iterator it=files_list.begin(); it != files_list.end(); ++it)
 	{
-		std::string newurl = "" + url + "/" + *it + "";
+		std::string newurl =  WORKPATH +  url + "/" + *it ;
 		File fileTest(newurl);
 		if (fileTest.isPresent()) {
 			if (fileTest.isFile())
-				file_list = "  <a href=\"/" + url + "/" + *it + "\">"  + *it + "</a> <br/>\n";
+				file_list = "  <a href=\"./" + url + "/" + *it + "\">"  + *it + "</a> <br/>\n";
 			else if (fileTest.isDirectory())
-				file_list = "  <a href=\"/" + url + "/" + *it + "\">"  + *it + "/ </a> <br/>\n";
+				file_list = "  <a href=\"./" + url + "/" + *it + "\">"  + *it + "/ </a> <br/>\n";
 		} 
 		response_body += file_list;
 	}
@@ -91,4 +94,18 @@ void GetMethod::setHeader(Response &response, File &fileGet)
 	response.setHeaders("Content-Length", my_stream.str());
 	
 	response.setHeaders("Last-Modified", fileGet.fileLastModified());
+}
+
+void GetMethod::setHeader_Dir(Response &response, std::string html_generated)
+{
+	std::string file_content(html_generated);
+	response.setBody(file_content);
+
+	response.setHeaders("Content-Type", "text/html");
+
+	std::stringstream my_stream;
+	my_stream << html_generated.size();
+	response.setHeaders("Content-Length", my_stream.str());
+	
+	//response.setHeaders("Last-Modified", fileGet.fileLastModified());
 }

@@ -5,7 +5,7 @@
 MethodMiddleware::~MethodMiddleware() {
 }
 
-void MethodMiddleware::handle(Client &client, Request &request, Response &response, MiddlewareChain &next) {
+void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &request, Response &response, MiddlewareChain &next) {
 	
 	// File fileGet(request.getUrl());
 	(void)client;
@@ -15,17 +15,17 @@ void MethodMiddleware::handle(Client &client, Request &request, Response &respon
 	if(request.getMethods() == "GET")
 	{
 		GetMethod myGet;
-		myGet.handleGet(client, request, response);
+		myGet.handleGet(client, config,request, response);
 	}
 	else if(request.getMethods() == "POST")
 	{
 		PostMethod myPost;
-		myPost.handlePost(client, request, response);
+		myPost.handlePost(client,config, request, response);
 	}
 	else if(request.getMethods() == "DELETE")
 	{
 		DeleteMethod myDelete;
-		myDelete.handleDelete(client, request, response);
+		myDelete.handleDelete(client,config, request, response);
 	}
 	else
 	{

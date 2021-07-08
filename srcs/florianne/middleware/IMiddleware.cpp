@@ -4,12 +4,13 @@ IMiddleware::~IMiddleware()
 {
 }
 
-void IMiddleware::handle(Client &client, Request &request, Response &response, MiddlewareChain &next)
+void IMiddleware::handle(ClientSocket &client,Config &config, Request &request, Response &response, MiddlewareChain &next)
 {
 	(void)client;
 	(void)response;
 	(void)request;
 	(void)next;
+	(void)config;
 
 	/*
 	ServerBlock *block = findBlock(request);

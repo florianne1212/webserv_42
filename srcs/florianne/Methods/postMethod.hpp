@@ -2,7 +2,7 @@
 # define POSTMETHOD_HPP
 #include "../request.hpp"
 #include "../response.hpp"
-#include "../Client.hpp"
+#include "ClientSocket.hpp"
 #include "../File.hpp"
 #include <iostream>
 
@@ -14,7 +14,7 @@ class PostMethod
 		~PostMethod();
 		PostMethod& operator=(PostMethod const & ope);
 
-		void handlePost(Client &client, Request &request, Response &response);
+		void handlePost(ClientSocket &client, Config &config,Request &request, Response &response);
 };
 
 #endif

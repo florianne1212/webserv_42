@@ -20,9 +20,10 @@ DeleteMethod& DeleteMethod::operator=(DeleteMethod const & ope)
 }
 
 
-void DeleteMethod::handleDelete(Client &client, Request &request, Response &response)
+void DeleteMethod::handleDelete(ClientSocket &client,Config &config, Request &request, Response &response)
 {
     (void)client;
+	(void)config;
 	std::cout << "DELETE\n";
 
 	File fileDelete(request.getUrl());

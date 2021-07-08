@@ -19,7 +19,7 @@ class IMiddleware {
 	public:
 		virtual ~IMiddleware();
 
-		virtual void handle(Client &client, Request &request, Response &response, MiddlewareChain &next) = 0;
+		virtual void handle(ClientSocket &client, Config &config, Request &request, Response &response, MiddlewareChain &next) = 0;
 
 };
 

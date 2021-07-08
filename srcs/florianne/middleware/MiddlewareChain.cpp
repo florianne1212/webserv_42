@@ -1,10 +1,11 @@
 #include "MiddlewareChain.hpp"
 
-MiddlewareChain::MiddlewareChain(const std::list<IMiddleware*> &middlewares, Client &client, Request &request, Response &response)
+MiddlewareChain::MiddlewareChain(const std::list<IMiddleware*> &middlewares, Config &config, ClientSocket &client, Request &request, Response &response)
 	: m_middlewares(middlewares),
 	  m_client(&client),
 	  m_request(&request),
-	  m_response(&response)
+	  m_response(&response),
+	  m_config(&config)
 {
 }
 
@@ -22,5 +23,5 @@ void MiddlewareChain::operator()()
 
 	m_middlewares.pop_front();
 
-	middleware.handle(*m_client, *m_request, *m_response, *this);
+	middleware.handle(*m_client, *m_config, *m_request, *m_response, *this);
 }

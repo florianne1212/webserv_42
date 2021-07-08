@@ -5,12 +5,13 @@
 IsConnected::~IsConnected() {
 }
 
-void IsConnected::handle(Client &client, Request &request, Response &response, MiddlewareChain &next) {
+void IsConnected::handle(ClientSocket &client, Config &config,Request &request, Response &response, MiddlewareChain &next) {
 	
 	// File fileGet(request.getUrl());
 	(void)client;
 	(void)response;
 	(void)request;
+	(void)config;
 
 
 

@@ -19,10 +19,11 @@ PostMethod& PostMethod::operator=(PostMethod const & ope)
 	return(*this);
 }
 
-void PostMethod::handlePost(Client &client, Request &request, Response &response)
+void PostMethod::handlePost(ClientSocket &client, Config &config,Request &request, Response &response)
 {
 	
     (void)client;
+	(void)config;
 	std::cout << "POST\n";
 
 	File filePost(request.getUrl());

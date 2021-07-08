@@ -60,7 +60,10 @@ void ParseRequest::parse(char c)
 			if(c != ' ')
 			{
 				if(c == '/')
+				{
+					_path += c;
 					_state = S_PATH;
+				}
 				else
 					printf("%s\n", "must have path");
 			}

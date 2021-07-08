@@ -17,7 +17,7 @@ ManageMiddleware::~ManageMiddleware()
 {
 }
 
-void ManageMiddleware::middlewareStart(Client &client, Request &request, Response &response)
+void ManageMiddleware::middlewareStart(ClientSocket &client, Config &config, Request &request, Response &response)
 {
 	std::list<IMiddleware *> middlewares;
 	// switch(_state)
@@ -48,7 +48,7 @@ void ManageMiddleware::middlewareStart(Client &client, Request &request, Respons
 	// }
 
 	
-	MiddlewareChain chain(middlewares, client, request, response);
+	MiddlewareChain chain(middlewares, config, client, request, response);
 	chain();
 }
 

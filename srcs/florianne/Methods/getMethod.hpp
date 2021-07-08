@@ -2,7 +2,7 @@
 # define GETMETHOD_HPP
 #include "../request.hpp"
 #include "../response.hpp"
-#include "../Client.hpp"
+#include "ClientSocket.hpp"
 #include "../File.hpp"
 #include <iostream>
 #include <sstream> 
@@ -16,9 +16,10 @@ class GetMethod
 		~GetMethod();
 		GetMethod& operator=(GetMethod const & ope);
 
-		void handleGet(Client &client, Request &request, Response &response);
+		void handleGet(ClientSocket &client, Config &config,Request &request, Response &response);
 		void setHeader(Response &response, File &fileGet);
-		std::string setDirectory(File &fileGet, std::string url);
+		std::string setDirectory(File &fileGet, std::string url, std::string ip);
+		void setHeader_Dir(Response &response, std::string html_generated);
 };
 
 #endif

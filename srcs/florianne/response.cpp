@@ -74,7 +74,7 @@ std::string Response::create_response()
 	// _response.append("\r\n");
 
 	
-	// std::cout << "\n" << _response << "\n";
+	std::cout << "\n" << _response << "\n";
 
 	return(_response);
 }

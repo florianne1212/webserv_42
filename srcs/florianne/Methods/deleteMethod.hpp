@@ -2,7 +2,7 @@
 # define DELETEMETHOD_HPP
 #include "../request.hpp"
 #include "../response.hpp"
-#include "../Client.hpp"
+#include "ClientSocket.hpp"
 #include "../File.hpp"
 #include <iostream>
 
@@ -14,7 +14,7 @@ class DeleteMethod
 		~DeleteMethod();
 		DeleteMethod& operator=(DeleteMethod const & ope);
 
-		void handleDelete(Client &client, Request &request, Response &response);
+		void handleDelete(ClientSocket &client,Config &config, Request &request, Response &response);
 };
 
 #endif

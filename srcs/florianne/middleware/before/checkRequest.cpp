@@ -5,12 +5,13 @@
 CheckRequest::~CheckRequest() {
 }
 
-void CheckRequest::handle(Client &client, Request &request, Response &response, MiddlewareChain &next) {
+void CheckRequest::handle(ClientSocket &client, Config &config,Request &request, Response &response, MiddlewareChain &next) {
 	
 	// File fileGet(request.getUrl());
 	(void)client;
 	(void)response;
 	(void)request;
+	(void)config;
 
 	if(response.getStatus() == 200)
 	{

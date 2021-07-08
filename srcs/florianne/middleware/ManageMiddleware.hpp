@@ -9,7 +9,6 @@
 #include "before/checkRequest.hpp"
 #include "../request.hpp"
 #include "../response.hpp"
-#include "../Client.hpp"
 
 
 
@@ -31,7 +30,7 @@ class ManageMiddleware {
 		ManageMiddleware();
 		~ManageMiddleware(void);
 
-		void middlewareStart(Client &client, Request &request, Response &response);
+		void middlewareStart(ClientSocket &client, Config &config, Request &request, Response &response);
 
 
 };

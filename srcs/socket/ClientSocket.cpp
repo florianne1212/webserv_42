@@ -81,7 +81,6 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
-	(void)datas;
 	// const char *req = ""
 	// 	"HTTP/1.1 200 OK\r\n"
 	// 	"Content-Length: 88\r\n"
@@ -94,13 +93,13 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 	// 	"</html>\r\n"
 	// 	;
 	// ::write(_fd, req, strlen(req));
-	Client client;
+	// Client client;
 	// Request &request = _request;
 	Response response;
 
 	ManageMiddleware manage;
 
-	manage.middlewareStart(client, _request, response);
+	manage.middlewareStart(*this, *datas, _request, response);
 
 
 	response.create_response();

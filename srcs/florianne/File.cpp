@@ -28,6 +28,7 @@ File::~File()
 
 bool File::isPresent()
 {
+	std::cout << "\nPATH ="<< _path;
 	if(::stat(_path.c_str(), &_stats) == -1)
 		return (false);
 	else 
@@ -87,7 +88,7 @@ std::string File::find_content_type()
 {
 
 	std::string ext;
-	std::size_t found = _path.find(".");
+	std::size_t found = _path.find_last_of(".");
 	std::string mime;
 	Mime my_mime;
 	
