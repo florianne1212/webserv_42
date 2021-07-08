@@ -12,7 +12,7 @@
 
 NAME		= webserv
 
-CC =		g++
+CC =		clang++
 
 SRC_DIR = 	$(shell find srcs -type d)
 INC_DIR = 	$(shell find srcs -type d)

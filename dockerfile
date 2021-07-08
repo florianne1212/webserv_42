@@ -11,8 +11,13 @@ RUN apt-get -y update \
 #using wordpress
 php-curl php-gd php-intl php-soap php-xml php-xmlrpc php-zip \
 #wget for downloading 
-wget vim
+wget vim \
+#to compile project
+clang make
 
-COPY webserv /root/
+COPY srcs/ /root/srcs/
+COPY Makefile /root/
+COPY configuration_file/ /root/configuration_file/
+
 WORKDIR /root/
-CMD ["/bin/bash", "./webserv"]
+EXPOSE 8080
