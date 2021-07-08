@@ -24,9 +24,11 @@ void ManageMiddleware::middlewareStart(ClientSocket &client, Config &config, Req
 	// {
 	// 	case(S_BEFORE):
 	// 	{
-			middlewares.push_back(new CheckRedir());
-			middlewares.push_back(new CheckRequest());
 			middlewares.push_back(new IsConnected());
+			middlewares.push_back(new CheckRequest());
+			middlewares.push_back(new CheckRedir());
+			
+			
 		// 	_state = S_METHOD;
 		// 	break;
 		// }
