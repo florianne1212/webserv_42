@@ -567,7 +567,7 @@ std::string Config::getIp(std::string serverName) const
 		if (server->second._ip.state == true)
 			return server->second._ip.value;
 		else
-			return "127.0.0.2";
+			return "127.0.0.1";
 	}
 	return std::string();
 }

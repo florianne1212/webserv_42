@@ -74,7 +74,7 @@ std::string GetMethod::setDirectory(File &fileGet, std::string url, std::string 
 			if (fileTest.isFile())
 				file_list = "  <a href=\"./" + *it + "\">"  + *it + "</a> <br/>\n";
 			else if (fileTest.isDirectory())
-				file_list = "  <a href=\"./"  + *it + "\">"  + *it + "/ </a> <br/>\n";
+				file_list = "  <a href=\"./"  + *it + "/\">"  + *it + "/ </a> <br/>\n";
 		} 
 		response_body += file_list;
 	}

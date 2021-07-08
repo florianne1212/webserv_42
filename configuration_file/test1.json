@@ -1,0 +1,28 @@
+{
+  "server": [
+    {
+      "server_name": "test",
+      "listen": "   8080   ",
+      "routes": [{
+        "location": "    /   ",
+        "autoIndex": "    on    ",
+        "httpRequest": "     GET  "
+      },
+      {
+      "location": "    /test   ",
+      "autoIndex": "    off    ",
+      "httpRequest": "     GET  "
+    }
+    ]
+    },
+    {
+      "server_name": "   test2    ",
+      "listen": "    127.0.0.1:2000   ",
+      "routes": {
+        "location": "    /   ",
+        "autoIndex": "    on    ",
+        "httpRequest": "     GET  "
+      }
+    }
+  ]
+}
