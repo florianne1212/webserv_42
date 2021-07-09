@@ -1,11 +1,12 @@
 {
 	"server":{
         "server_name": "test",
-		"listen": "127.0.0.1:8080",
-		"routes": {
-			"location": "    /   ",
-			"autoIndex": "    on    ",
-			"httpRequest": "     GET  "
-		}
+		"listen": "127.0.0.1:9080",
+		"routes": [
+			{
+			  "location": "    /    ",
+			  "httpRedirection": "    301     https://www.google.com/   "
+			}
+		]
 	}
 }

@@ -8,6 +8,7 @@ class CheckRedir : public IMiddleware {
 	public:
 		virtual ~CheckRedir();
 
+
 		virtual void handle(ClientSocket &client, Config &config,Request &request, Response &response, MiddlewareChain &next);
 
 };
