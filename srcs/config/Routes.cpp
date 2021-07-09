@@ -61,12 +61,17 @@ bool Routes::setHttpRequest(std::vector<std::string> httpRequest)
 
 bool Routes::setHttpRedirection(std::vector<std::string> httpRedirection)
 {
-	if (_httpRedirection.state == true || httpRedirection.size() != 2)
+	if (_httpRedirection.state == true || (httpRedirection.size() < 1 && httpRedirection.size() > 2))
 		return false;
 	int ret = atoi(httpRedirection[0].c_str());
 	if (ret < 100 || ret > 599)
 		return false;
-	_httpRedirection = usable<std::pair<int, std::string> >(std::pair<int, std::string >(ret, httpRedirection[1]));
+	if (ret >= 300 && ret < 400 && httpRedirection.size() != 2)
+		return false;
+	if (httpRedirection.size() == 1)
+		_httpRedirection = usable<std::pair<int, std::string> >(std::pair<int, std::string >(ret, ""));
+	else
+		_httpRedirection = usable<std::pair<int, std::string> >(std::pair<int, std::string >(ret, httpRedirection[1]));
 	return true;
 }
 
