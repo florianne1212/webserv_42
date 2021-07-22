@@ -27,16 +27,9 @@ void CheckRequest::handle(ClientSocket &client, Config &config,Request &request,
 		if (i == 0)
 			response.setStatus(405);	
 		
-			
 
-	
 		std::cout << '\n';
 
-
 	}
-
-
-	
-
 	next();
 }

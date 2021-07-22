@@ -1,4 +1,5 @@
 #include "response.hpp"
+#include <algorithm>
 
 Response::Response(/* args */):
 _status(200)
@@ -74,7 +75,7 @@ std::string Response::create_response()
 	// _response.append("\r\n");
 
 	
-	std::cout << "\n" << _response << "\n";
+	// std::cout << "\n" << _response.substr(0, std::min(_response.length() - 1, (size_t)300)) << "\n";
 
 	return(_response);
 }

@@ -4,8 +4,9 @@
 		"listen": "127.0.0.1:9080",
 		"routes": [
 			{
-			  "location": "    /    ",
-			  "httpRedirection": "    301     https://www.google.com/   "
+				"location": "    /   ",
+				"autoIndex": "    on    ",
+				"httpRequest": "     GET  "
 			}
 		]
 	}

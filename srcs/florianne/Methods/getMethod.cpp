@@ -79,7 +79,7 @@ std::string GetMethod::setDirectory(File &fileGet, std::string url, std::string 
 		response_body += file_list;
 	}
 	response_body += "</body></html>";
-	std::cout << response_body;
+	std::cout << response_body << std::endl;
 			// response.setBody(listFiles(file));
 	return(response_body);
 }

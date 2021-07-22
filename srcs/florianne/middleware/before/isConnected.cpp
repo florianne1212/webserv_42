@@ -32,12 +32,5 @@ void IsConnected::handle(ClientSocket &client, Config &config,Request &request, 
 	//comparer avec server name du client
 	//si diff erreur 403
 
-	
-
-
-
-
-	std::cout << "IS CONNECTED" << std::endl;
-
 	next();
 }

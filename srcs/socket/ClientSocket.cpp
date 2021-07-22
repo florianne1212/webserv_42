@@ -1,6 +1,7 @@
 #include "ClientSocket.hpp"
 #include "../Parser/parseRequest.hpp"
 #include "../middleware/ManageMiddleware.hpp"
+#include "../buffer.hpp"
 
 
 
@@ -40,7 +41,7 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 {
 	(void)datas;
 	(void)listFD;
-	char line_buf[1001];
+	char line_buf[1001] ={'\n'};
 	int i;
 	char c;
 	ParseRequest _parserequest;
@@ -81,34 +82,30 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
-	// const char *req = ""
-	// 	"HTTP/1.1 200 OK\r\n"
-	// 	"Content-Length: 88\r\n"
-	// 	"Content-Type: text/html\r\n"
-	// 	"\r\n"
-	// 	"<html>\r\n"
-	// 	"<body>\r\n"
-	// 	"<h1>Hello, World!</h1>\r\n"
-	// 	"</body>\r\n"
-	// 	"</html>\r\n"
-	// 	;
-	// ::write(_fd, req, strlen(req));
-	// Client client;
-	// Request &request = _request;
+	bool _responseSent = true;
 	Response response;
-
 	ManageMiddleware manage;
 
-	manage.middlewareStart(*this, *datas, _request, response);
+	if (_responseSent)
+	{
+		manage.middlewareStart(*this, *datas, _request, response);
 
 
-	response.create_response();
-	::write(_fd, response.getResponse().c_str(), strlen(response.getResponse().c_str()));
+		response.create_response();
+		// size_t len = response.getResponse().length();
+		// ssize_t sent = ::write(_fd, response.getResponse().c_str(), len);
+
+		_responseSent = false;
+	}
+	Buffer _buffer(response.getResponse(), 0);
+	//if (_sendableReponse && !_responseSent) {
+	if (!_responseSent) {
+		_responseSent = _buffer.flush(_fd);	
+	}
+
 
 	listFD->rmSocket(_fd);
 	close(_fd);
-
-	//a fair
 }
 
 std::string ClientSocket::getClientAddress(void) const {
@@ -118,3 +115,38 @@ std::string ClientSocket::getClientAddress(void) const {
 std::string ClientSocket::getClientPort(void) const {
 	return (_clientPort);
 }
+
+/*
+class ClientSocket {
+	Response _response;
+	bool _sendableReponse;
+	bool _responseSent;
+
+	void write() {
+		if (_sendableResponse && !_responseSent) {
+			_responseSent = _response.write()
+		}
+	}
+}
+
+
+*/
+
+/*
+class Buffer {
+	std::string _content;
+	size_t _sent;
+
+	bool flush(int fd) {
+		ssize_t wrote = ::wrote(fd, _content.c_str() + _sent, _content.length() - _sent);
+		if (wrote != -1) {
+			_sent += wrote;
+		}
+
+		return (_sent == _content.length());
+	}
+}
+
+
+
+*/
