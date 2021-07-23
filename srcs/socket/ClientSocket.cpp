@@ -41,7 +41,7 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 {
 	(void)datas;
 	(void)listFD;
-	char line_buf[1001] ={'\n'};
+	char line_buf[5001] ={'\n'};
 	int i;
 	char c;
 	ParseRequest _parserequest;
@@ -49,8 +49,8 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 
 
 	i = 0;
-	::read(_fd, line_buf, 1000);
-	line_buf[1000] = '\0';
+	::read(_fd, line_buf, 5000);
+	line_buf[5000] = '\0';
 	printf("%s", line_buf);
 
 	while (line_buf[i])

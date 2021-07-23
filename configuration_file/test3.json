@@ -6,7 +6,7 @@
 			{
 				"location": "    /   ",
 				"autoIndex": "    on    ",
-				"httpRequest": "     GET  "
+				"httpRequest": "     GET POST DELETE "
 			}
 		]
 	}
