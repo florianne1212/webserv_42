@@ -4,6 +4,7 @@
 #include <iostream>
 #include "../request.hpp"
 #include "../response.hpp"
+#include "../cgiHandler.hpp"
 #include "MiddlewareChain.hpp"
 #include "../Methods/getMethod.hpp"
 #include "../Methods/postMethod.hpp"

@@ -4,14 +4,9 @@
 
 
 
-ClientSocket::ClientSocket(int fd, std::string serverName) : ASocket(fd, serverName), _bareRequest(), _bareAnswer(),
-_clientAddress(), _clientPort()
+ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort) : ASocket(fd, serverName), _bareRequest(), _bareAnswer(),
+_clientAddress(clientAddress), _clientPort(clientPort)
 {}
-
-// ClientSocket::ClientSocket(int fd, std::string clientAddress, std::string clientPort):
-// 	ASocket(fd), _bareRequest(), _bareAnswer(), _clientAddress(clientAddress),
-// 	_clientPort(clientPort)
-// 	{}
 
 ClientSocket::~ClientSocket(){}
 //en fonction, probable delete[] a faire ou pas si vector
@@ -26,6 +21,8 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 		ASocket::operator=(other);
 		_bareAnswer = other._bareAnswer;
 		_bareRequest = other._bareRequest;
+		_clientAddress = other._clientAddress;
+		_clientPort = other._clientPort;
 	}
 	return (*this);
 }

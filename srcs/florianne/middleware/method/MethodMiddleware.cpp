@@ -6,7 +6,7 @@ MethodMiddleware::~MethodMiddleware() {
 }
 
 void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &request, Response &response, MiddlewareChain &next) {
-	
+
 	// File fileGet(request.getUrl());
 	(void)client;
 	(void)response;
@@ -14,8 +14,13 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 
 	if(response.getStatus() == 200)
 	{
-		
-		if(request.getMethods() == "GET")
+		if ((request.getUrl().find(".php") != std::string::npos) && (request.getMethods() == "GET" || request.getMethods() == "POST"))
+		{
+			CgiHandler myCgi(client, config, request, response); //a completer
+			myCgi.executeCgi();
+		}
+		else if(request.getMethods() == "GET")
+		// if(request.getMethods() == "GET")
 		{
 			GetMethod myGet;
 			myGet.handleGet(client, config,request, response);

@@ -166,7 +166,7 @@ void	Config::parser(std::string setupFile)
 	while (it != buffer.end())
 	{
 		if (*it == '"')
-		{
+		{ 
 			ret = getExpression(it , buffer.end(), "\"unknow\": Config scope");
 			if (ret.size() != 1)
 				throw std::string("No match parametre: Config scope");
@@ -342,7 +342,7 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 				throw std::string("No match parametre: Server scope");
 			it++;
 		}
-		
+
 		if (*it == ',' && (*(it + 1) == '"' || *(it + 1) == '{'))
 			it++;
 		else if (*(it) == '}')

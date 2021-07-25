@@ -6,14 +6,14 @@
 ** -------------------------------------------------------------------------------
 */
 
-cgiHandler::cgiHandler(Request* requestComingFromFlorianne, ClientSocket* client): //donnees de tanguy
-	_request(requestComingFromFlorianne), _client(client), _varEnv(0), _instructionsCGI(0), _monVectorEnv(0)
+CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request& request, Response & response):
+	_vectorEnv(0), _varEnv(0), _instructionsCGI(0), _client(client),_config(config), _request(request), _response(response)
 {
-	_headers = requestComingFromFlorianne->getHeaders();
-	_parsedUrl = parseTheUri(requestComingFromFlorianne->getUrl());
+	_headers = request.getHeaders();
+	_parsedUrl = parseTheUri(request.getUrl());
 }
 
-cgiHandler::~cgiHandler()
+CgiHandler::~CgiHandler()
 {
 	if (_varEnv)
 	{
@@ -31,12 +31,12 @@ cgiHandler::~cgiHandler()
 	}
 }
 
-cgiHandler::cgiHandler(cgiHandler const & other):
-	_monVectorEnv(other._monVectorEnv), _varEnv(other._varEnv), _instructionsCGI(other._instructionsCGI),
-	_request(other._request),_client(other._client), _parsedUrl(other._parsedUrl), _headers(other._headers)
+CgiHandler::CgiHandler(CgiHandler const & other):
+	_vectorEnv(other._vectorEnv), _varEnv(other._varEnv), _instructionsCGI(other._instructionsCGI),
+	_client(other._client),_config(other._config), _request(other._request),_response(other._response), _parsedUrl(other._parsedUrl), _headers(other._headers)
 	{}
 
-cgiHandler & cgiHandler::operator= (const cgiHandler & other)
+CgiHandler & CgiHandler::operator= (const CgiHandler & other)
 {
 	if (this != &other)
 	{
@@ -54,11 +54,13 @@ cgiHandler & cgiHandler::operator= (const cgiHandler & other)
 				delete(_instructionsCGI[j]);
 			delete [] _instructionsCGI;
 		}
-		_monVectorEnv = other._monVectorEnv;
+		_vectorEnv = other._vectorEnv;
 		_varEnv = other._varEnv;
 		_instructionsCGI = other._instructionsCGI;
 		_request = other._request;
 		_client = other._client;
+		_config = other._config;
+		_response = other._response;
 		_parsedUrl = other._parsedUrl;
 		_headers = other._headers;
 	}
@@ -71,7 +73,28 @@ cgiHandler & cgiHandler::operator= (const cgiHandler & other)
 ** ------------------- PUBLIC FUNCTIONS ------------------------------------------
 ** -------------------------------------------------------------------------------
 */
-void cgiHandler::creationVectorEnviron(void){
+
+void CgiHandler::executeCgi(void){
+	creationVectorEnviron();
+	setVarEnv();
+	executingCgi();
+}
+
+/*
+** -------------------------------------------------------------------------------
+** ------------------- PRIVATE FUNCTIONS -----------------------------------------
+** -------------------------------------------------------------------------------
+*/
+// void CgiHandler::recupererLeRoot(void)
+// {
+// 	std::string lecheminduroot;
+// 	if( _config.getRoot().state == true)
+// 		lecheminduroot = _config.getRoot();
+
+// }
+
+
+void CgiHandler::creationVectorEnviron(void){
 	auth("Authorization"); //DONE
 	contentLength("Content-Length"); //DONE
 	contentType("Content-Type"); //DONE
@@ -79,29 +102,29 @@ void cgiHandler::creationVectorEnviron(void){
 	pathInfo("/scriptname+pathinfo");//////////////////
 	// pathTranslated("j'y comprend rien!");////////////SHOULD
 	queryString(_parsedUrl["query"]); //DONE
-	remoteAddr(_client->getClientAddress());//DONE
+	remoteAddr(_client.getClientAddress());//DONE
 	remoteHost(); // DONE
 	remoteUser(_parsedUrl["user_name"]);//DONE
-	requestMethod(_request->getMethods()); // DONE
+	requestMethod(_request.getMethods()); // DONE
 	scriptName("vient du parsing de l url");////////////////
 	serverName(_parsedUrl["host"]);//DONE
 	serverPort(_parsedUrl["port"]);///////// petit detail a voir avec lucas
-	serverProtocol();
-	serverSoftware();
-	otherMetaVariables();
+	serverProtocol();//DONE
+	serverSoftware();//DONE
+	otherMetaVariables();//DONE
 }
 
-void cgiHandler::setVarEnv(void){
-	unsigned long len = _monVectorEnv.size();
+void CgiHandler::setVarEnv(void){
+	unsigned long len = _vectorEnv.size();
 
 	if ((_varEnv = new char*[len + 1]) == NULL)
 		throw std::runtime_error("error setting CGI environnement variables");
 	for (unsigned long i = 0; i < len; i++)
-		_varEnv[i] = strdup(_monVectorEnv[i].c_str());
+		_varEnv[i] = strdup(_vectorEnv[i].c_str());
 	_varEnv[len] = NULL;
 }
 
-void cgiHandler::executeCGI(void)
+void CgiHandler::executingCgi(void)
 {
 	int fdPipeIn[2];
 	int fdPipeOut[2];
@@ -113,7 +136,7 @@ void cgiHandler::executeCGI(void)
 
 	if (pipe(fdPipeOut) < 0)
 		throw std::runtime_error("error piping CGI");
-	// if (method == POST)
+	if (_request.getMethods() == "POST")
 		if (pipe(fdPipeIn) < 0)
 			throw std::runtime_error("error piping CGI");
 	pid = fork();
@@ -121,7 +144,7 @@ void cgiHandler::executeCGI(void)
 	{
 		close(fdPipeOut[0]);
 		close(fdPipeOut[1]);
-		// if (method==POST)
+		if (_request.getMethods() == "POST")
 		{
 			close (fdPipeIn[0]);
 			close (fdPipeOut[1]);
@@ -136,7 +159,7 @@ void cgiHandler::executeCGI(void)
 			std::cerr << "error with dup2 in CGIson\n";
 		close(fdPipeOut[1]);
 
-		// if (method==POST)
+		if (_request.getMethods() == "POST")
 		{
 			close(fdPipeIn[1]);
 			if(dup2(fdPipeIn[0], STDIN_FILENO) < 0)
@@ -151,12 +174,12 @@ void cgiHandler::executeCGI(void)
 	else if (pid > 0) //pere
 	{
 		close (fdPipeOut[1]);
-		// if (method == POST)
+		if (_request.getMethods() == "POST")
 		{
 			close (fdPipeIn[0]);
 			//la partie qui write le body pour le cgi
-			// if (write(fdPipeIn[1], requestbody.c_str(), requestbody.length()) < 0)
-			// 	throw std::runtime_error("error while writing to CGI");
+			if (write(fdPipeIn[1], _request.getBody().c_str(), _request.getBody().length()) < 0)
+				throw std::runtime_error("error while writing to CGI");
 			close (fdPipeIn[1]);
 		}
 		//la partie qui recupere l'info du cgi
@@ -175,17 +198,11 @@ void cgiHandler::executeCGI(void)
 		std::string header = cgiResponse.substr(0, pos);
 		std::string body = cgiResponse.substr(pos + 4);
 		size_t bodySize = body.length();
+		(void)bodySize;
 	}
 }
 
-
-/*
-** -------------------------------------------------------------------------------
-** ------------------- PRIVATE FUNCTIONS -----------------------------------------
-** -------------------------------------------------------------------------------
-*/
-
-void cgiHandler::auth(const std::string & str)
+void CgiHandler::auth(const std::string & str)
 {
 	std::map<std::string, std::string>::iterator it;
 	std::string value = "";
@@ -195,10 +212,10 @@ void cgiHandler::auth(const std::string & str)
 		value = it->second;
 		_headers.erase(it);
 	}
-	_monVectorEnv.push_back("AUTH_TYPE=" + value);
+	_vectorEnv.push_back("AUTH_TYPE=" + value);
 }
 
-void cgiHandler::contentLength(const std::string & str)
+void CgiHandler::contentLength(const std::string & str)
 {
 	std::map<std::string, std::string>::iterator it;
 	std::string value = "";
@@ -208,11 +225,11 @@ void cgiHandler::contentLength(const std::string & str)
 		value = it->second;
 		_headers.erase(it);
 	}
-	_monVectorEnv.push_back("CONTENT_LENGTH=" + value);
+	_vectorEnv.push_back("CONTENT_LENGTH=" + value);
 }
 
 
-void cgiHandler::contentType(const std::string & str)
+void CgiHandler::contentType(const std::string & str)
 {
 	std::map<std::string, std::string>::iterator it;
 	std::string value = "";
@@ -222,20 +239,20 @@ void cgiHandler::contentType(const std::string & str)
 		value = it->second;
 		_headers.erase(it);
 	}
-	_monVectorEnv.push_back("CONTENT_TYPE=" + value);
+	_vectorEnv.push_back("CONTENT_TYPE=" + value);
 }
 
 
-void cgiHandler::gatewayInterface(void)
+void CgiHandler::gatewayInterface(void)
 {
-	_monVectorEnv.push_back("GATEWAY_INTERFACE=CGI/1.1");
+	_vectorEnv.push_back("GATEWAY_INTERFACE=CGI/1.1");
 }
 
-void cgiHandler::pathInfo(const std::string & str) //str = script_name + PATH_info
+void CgiHandler::pathInfo(const std::string & str) //str = script_name + PATH_info
 {
 	if (str == "")
 	{
-		_monVectorEnv.push_back("PATH_INFO=");
+		_vectorEnv.push_back("PATH_INFO=");
 		return ;
 	}
 	//extraction de URI le scriptpath + extrapath
@@ -246,91 +263,91 @@ void cgiHandler::pathInfo(const std::string & str) //str = script_name + PATH_in
 	std::string s2 = "/" + static_cast<std::string>(buf);
 	s2 += str;
 	// std::cout << "path info : " << s2 << std::endl;
-	_monVectorEnv.push_back("PATH_INFO=" + s2);
+	_vectorEnv.push_back("PATH_INFO=" + s2);
 	if (buf)
 		free (buf);
 }
 
-void cgiHandler::queryString(const std::string & str) //<querystring> from cgi uri
+void CgiHandler::queryString(const std::string & str) //<querystring> from cgi uri
 {
-		_monVectorEnv.push_back("QUERY_STRING=" + str);
+		_vectorEnv.push_back("QUERY_STRING=" + str);
 }
 
-void cgiHandler::remoteAddr(const std::string & str)
+void CgiHandler::remoteAddr(const std::string & str)
 {
-		_monVectorEnv.push_back("REMOTE_ADDR=" + str);
+		_vectorEnv.push_back("REMOTE_ADDR=" + str);
 }
 
-void cgiHandler::remoteHost(void)
+void CgiHandler::remoteHost(void)
 {
 	std::string s = "";
-	_monVectorEnv.push_back("REMOTE_HOST=" + s);
+	_vectorEnv.push_back("REMOTE_HOST=" + s);
 }
 
-void cgiHandler::remoteUser(const std::string & str)
+void CgiHandler::remoteUser(const std::string & str)
 {
-	_monVectorEnv.push_back("REMOTE_USER=" + str);
+	_vectorEnv.push_back("REMOTE_USER=" + str);
 }
 
-void cgiHandler::requestMethod(const std::string & str)
+void CgiHandler::requestMethod(const std::string & str)
 {
 	if (str == "GET" || str == "POST")
-		_monVectorEnv.push_back("REQUEST_METHOD=" + str);
+		_vectorEnv.push_back("REQUEST_METHOD=" + str);
 	else
 		throw std::runtime_error("method not supported by webserv");
 }
 
-void cgiHandler::scriptName(const std::string & str)
+void CgiHandler::scriptName(const std::string & str)
 {
 	if (str == "")
-		_monVectorEnv.push_back("SCRIPT_NAME=" + str);
+		_vectorEnv.push_back("SCRIPT_NAME=" + str);
 	else
 	{
 		std::string s1 = "/" + str;
-		_monVectorEnv.push_back("SCRIPT_NAME=" + s1);
+		_vectorEnv.push_back("SCRIPT_NAME=" + s1);
 	}
 }
 
 
-void cgiHandler::serverName(const std::string & str)
+void CgiHandler::serverName(const std::string & str)
 {
-		_monVectorEnv.push_back("SERVER_NAME=" + str);
+		_vectorEnv.push_back("SERVER_NAME=" + str);
 }
 
-void cgiHandler::serverPort(const std::string & str)
+void CgiHandler::serverPort(const std::string & str)
 {
 	if (str == "")
 	{
 		std::string str2 = "default serveur port fourni par lucas";
-		_monVectorEnv.push_back("SERVER_PORT=" + str2);
+		_vectorEnv.push_back("SERVER_PORT=" + str2);
 	}
 	else
-		_monVectorEnv.push_back("SERVER_PORT=" + str);
+		_vectorEnv.push_back("SERVER_PORT=" + str);
 }
 
-void cgiHandler::serverProtocol(void)
+void CgiHandler::serverProtocol(void)
 {
-	_monVectorEnv.push_back("SERVER_PROTOCOL=HTTP/1.1");
+	_vectorEnv.push_back("SERVER_PROTOCOL=HTTP/1.1");
 }
 
-void cgiHandler::serverSoftware(void)
+void CgiHandler::serverSoftware(void)
 {
-	_monVectorEnv.push_back("SERVER_SOFTWARE=leServeurDeFlorianneLucasEtLaurent/1.0");
+	_vectorEnv.push_back("SERVER_SOFTWARE=leServeurDeFlorianneLucasEtLaurent/1.0");
 }
 
-void cgiHandler::otherMetaVariables(void)
+void CgiHandler::otherMetaVariables(void)
 {
 	std::map<std::string, std::string>::iterator it;
 	for (it = _headers.begin(); it != _headers.end(); ++it)
 	{
 		std::string str = "HTTP_" + upperCaseAndMinus(it->first);
 		str = str + "=" + it->second;
-		_monVectorEnv.push_back(str);
+		_vectorEnv.push_back(str);
 	}
 	_headers.clear();
 }
 
-std::string cgiHandler::upperCaseAndMinus(const std::string & str)
+std::string CgiHandler::upperCaseAndMinus(const std::string & str)
 {
 	std::string newstr(str);
 	for (unsigned long i = 0; i < newstr.length(); i++)
@@ -373,7 +390,7 @@ void UrlDecoder(std::string & str)
 //------------------------- map parseTheUri(string)---------------------------------
 //----------------------------------------------------------------------------------
 
-//scheme-- : -------------------------------------path-------------------------------
+//scheme-- : ----------------------------------------path---------------------------
 //				\									/	 \			/  \			/
 //					//------------host------------			? query		#fragment
 //					\			/		\		/
@@ -459,7 +476,28 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 		}
 	}
 	else
+	{
 		parsedUrl.insert(std::make_pair("path", url));
+	}
+	//on recherche si script.php
+	found = parsedUrl["path"].find(".php");
+	if (found != std::string::npos)
+	{
+		//on delimite le path du cgi et le additionnal path
+		std::string cgiPath = parsedUrl["path"].substr(0, found + 4);
+		UrlDecoder(cgiPath);
+		found = parsedUrl["path"].find_first_of("/", found + 4);
+		std::string additionnalPath = parsedUrl["path"].substr(found);
+		UrlDecoder(additionnalPath);
+		//on met le "real path" en fonction de "location  de - \.php"
+		std::string root =  "";//donnees a recuperer de config
+		cgiPath = root + "/" + cgiPath;
+		additionnalPath = root + "/" + additionnalPath;
+		parsedUrl.insert(std::make_pair("additionnal_path", additionnalPath));
+		parsedUrl.insert(std::make_pair("cgi_path", cgiPath));
+	}
+	//else determination de la location en fonction de l'adresse et creation du real path
+
 	return (parsedUrl);
 
 }

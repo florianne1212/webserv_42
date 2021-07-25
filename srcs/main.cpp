@@ -46,8 +46,8 @@ void openSocket(Config *datas, FDList *listFD)
 		}
 		else
 			throw std::string("error to create socket");
-		listFD->addSocket(new ListeningSocket(sock, it->first));
-		// listFD->addSocket(new ListeningSocket(sock, sin)); //pour avoir ip et port
+		// listFD->addSocket(new ListeningSocket(sock, it->first));
+		listFD->addSocket(new ListeningSocket(sock, it->first, sin)); //pour avoir ip et port
 	}
 }
 

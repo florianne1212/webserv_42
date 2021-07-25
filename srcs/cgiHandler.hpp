@@ -11,35 +11,44 @@
 #include <exception>
 #include "./florianne/request.hpp"
 #include "./socket/ClientSocket.hpp"
+#include "./config/Config.hpp"
+#include "./florianne/response.hpp"
 
-class cgiHandler
+class CgiHandler
 {
 protected:
-	//les donnees de tanguy du formulaire
-	std::vector<std::string> _monVectorEnv;
+	std::vector<std::string> _vectorEnv;
 	char** _varEnv;
 	char** _instructionsCGI;
-	Request* _request;
-	ClientSocket* _client;
+	ClientSocket _client;
+	Config _config;
+	Request _request;
+	Response _response;
 	std::map<std::string, std::string> _parsedUrl;
 	std::map<std::string, std::string> _headers;
 
 private:
-	cgiHandler();
+	CgiHandler();
 
 public:
-	cgiHandler(Request* requestComingFromFlorianne, ClientSocket* client); //et donnees de Tanguy a mettre
-	~cgiHandler();
-	cgiHandler(cgiHandler const & other);
-	cgiHandler & operator= (const cgiHandler & other);
+	CgiHandler(ClientSocket& client, Config & config, Request& request, Response & response);
+	~CgiHandler();
+	CgiHandler(CgiHandler const & other);
+	CgiHandler & operator= (const CgiHandler & other);
 
+	void executeCgi(void);
+
+
+private:
+////////////////////////
+void recupererLeRoot(void);
+////////////////////////
 
 	void creationVectorEnviron(void);
 	void setVarEnv(void);
 	// void setInstructionCGI(void) a faire soit un seul argument, soit on a une extension en plus pour l'executable
-	void executeCGI(void);
+	void executingCgi(void);
 
-private:
 	void auth(const std::string & str);
 	void contentLength(const std::string & str);
 	void contentType(const std::string & str);
@@ -58,10 +67,10 @@ private:
 	void serverSoftware(void);
 	void otherMetaVariables(void);
 	std::string upperCaseAndMinus(const std::string & str);
-	std::map<std::string, std::string> cgiHandler::parseTheUri(std::string);
+	// std::map<std::string, std::string> parseTheUri(std::string);
 };
 
 void UrlDecoder(std::string & str);
 std::map<std::string, std::string> parseTheUri(std::string url);
-
+		
 #endif
