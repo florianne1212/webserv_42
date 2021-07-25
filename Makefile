@@ -6,7 +6,7 @@
 #    By: lcoiffie <lcoiffie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/07/19 09:41:19 by lcoiffie         ###   ########.fr        #
+#    Updated: 2021/07/25 22:33:01 by lcoiffie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,11 +24,11 @@ vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp parseHeaderFields.cpp \
 parseRequest.cpp parseBody.cpp Message.cpp parseChunkedBody.cpp request.cpp response.cpp deleteMethod.cpp mime.cpp listmime.cpp \
 httpStatus.cpp getMethod.cpp File.cpp IMiddleware.cpp MiddlewareChain.cpp MethodMiddleware.cpp  checkRedir.cpp \
-isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp cgiHandler.cpp
+isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp cgiHandler.cpp buffer.cpp
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
-CFLAGS = -Wall -Wextra -Werror -std=c++98 #-g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 #-fsanitize=address
 
 IFLAGS = $(foreach dir, $(INC_DIR), -I$(dir))
 # Colors

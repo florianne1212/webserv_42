@@ -26,7 +26,7 @@ void DeleteMethod::handleDelete(ClientSocket &client,Config &config, Request &re
 	(void)config;
 	std::cout << "DELETE\n";
 
-	File fileDelete(request.getUrl());
+	File fileDelete(WORKPATH + request.getUrl());
 	
 
 	if (fileDelete.isPresent()) {

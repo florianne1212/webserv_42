@@ -9,7 +9,7 @@ void selector(Config *datas, FDList *listFD)
 		{
 			if ((*it)->getReadStatus())
 				(*it)->read(datas, listFD);
-			else if ((*it)->getWriteStatus())
+			if ((*it)->getWriteStatus())
 				(*it)->write(datas, listFD);
 		}
 	}
@@ -46,15 +46,28 @@ void openSocket(Config *datas, FDList *listFD)
 		}
 		else
 			throw std::string("error to create socket");
+
+		int true_value = 1;
+		if (::setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &true_value, sizeof(int)) == -1)
+			throw std::string("could not set reusable");
+
 		// listFD->addSocket(new ListeningSocket(sock, it->first));
 		listFD->addSocket(new ListeningSocket(sock, it->first, sin)); //pour avoir ip et port
 	}
 }
 
-int main(int argc, char* argv[])
+void	ignore(int i)
 {
-	Config	*datas;
-	FDList	*listFD = new FDList();
+	(void)i;
+	std::cout << "\n SIGPIPE \n";
+}
+
+int main(int argc, char *argv[])
+{
+	Config *datas;
+	FDList *listFD = new FDList();
+
+	signal(SIGPIPE, ignore);
 
 	try
 	{

@@ -20,7 +20,7 @@ class File{
 	private:
 		std::string _path;
 		struct stat _stats;
-
+		
 
 	public:
 	    File(/* args */);

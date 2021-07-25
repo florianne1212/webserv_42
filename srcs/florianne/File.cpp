@@ -2,13 +2,12 @@
 
 File::File()
 {
-
+	std::cout << "I GIVE UP COUCOU\n";
 }
 
 File::File(std::string path):
 _path(path)
 {
-
 }
 
 // File::File(File const & copy)
@@ -21,14 +20,9 @@ File::~File()
 
 }
 
-// File& File::operator=(File const & ope)
-// {
-
-// }
 
 bool File::isPresent()
 {
-	std::cout << "\nPATH ="<< _path;
 	if(::stat(_path.c_str(), &_stats) == -1)
 		return (false);
 	else 

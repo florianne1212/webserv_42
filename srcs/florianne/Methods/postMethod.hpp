@@ -14,7 +14,8 @@ class PostMethod
 		~PostMethod();
 		PostMethod& operator=(PostMethod const & ope);
 
-		void handlePost(ClientSocket &client, Config &config,Request &request, Response &response);
-};
+		
+		void handlePost(ClientSocket &client, Config &config,Request &request, Response &response);};
+		void setHeader(Response &response, File &fileGet);
 
 #endif

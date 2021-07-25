@@ -26,16 +26,20 @@ void PostMethod::handlePost(ClientSocket &client, Config &config,Request &reques
 	(void)config;
 	std::cout << "POST\n";
 
-	File filePost(request.getUrl());
+	File filePost(WORKPATH + request.getUrl());
 
 	if (filePost.isPresent()) {
-		
-		filePost.fileAppend(request.getUrl(), request.getBody());
-		response.setStatus(200);
+		std::cout << "ispresent\n";
+		if(filePost.isFile())
+		{
+			filePost.fileAppend(request.getUrl(), request.getBody());
+			response.setStatus(200);
+		}
 		//o create o append	
 	}
 	else {
-		filePost.fileCreate(request.getUrl());
+		std::cout << "create\n";
+		filePost.fileCreate(WORKPATH + request.getUrl());
 	}
 		
 }
