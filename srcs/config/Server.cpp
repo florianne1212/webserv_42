@@ -48,20 +48,18 @@ bool Server::setIp(std::vector<std::string> ip)
 		std::string tmp(ip[0]);
 		int val;
 		size_t j;
-		size_t k = 0;
 
 		for (int i = 0; i < 3; i++)
 		{
 			if ((j = tmp.find(".")) == std::string::npos)
 				return false;
-			val = atoi(tmp.substr(k, j - k).c_str());
+			val = atoi(tmp.substr(0, j).c_str());
 			if (val > 254 || val < 0)
 				return false;
-			tmp.erase(k, (j - 1) - k);
-			k = j + 1;
+			tmp.erase(0, j + 1);
 		}
 		j = tmp.size();
-		val = atoi(tmp.substr(k, j - k).c_str());
+		val = atoi(tmp.substr(0, j).c_str());
 		if (val > 254 && val < 0)
 			return false;
 	}
@@ -80,10 +78,13 @@ bool Server::setPort()
 	{
 		if ((i = _ip.value.find(':')) == std::string::npos)
 		{
-			if (_ip.value.find_first_not_of("0123456789") != std::string::npos)
-				return false;
-			_port = usable<int>(atoi(_ip.value.c_str()));
-			_ip = usable<std::string>();
+			if (_ip.value.find_first_not_of("0123456789") == std::string::npos)
+			{
+				_port = usable<unsigned short>(atoi(_ip.value.c_str()));
+				_ip = usable<std::string>();
+			}
+			else
+				_port = usable<unsigned short>(80);
 			return true;
 		}
 		else
