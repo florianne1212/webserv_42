@@ -6,8 +6,12 @@
 			{
 				"location": "    /   ",
 				"autoIndex": "    on    ",
-				"root": "        /test      ",
 				"httpRequest": "     GET POST DELETE "
+			},
+			{
+				"location": "/zozor",
+				"root": "/test",
+				"httpRequest": "GET"
 			}
 		]
 	}

@@ -7,10 +7,17 @@ void selector(Config *datas, FDList *listFD)
 		std::list<ASocket *> Socketlist = listFD->getSocketList();
 		for (std::list<ASocket *>::iterator it = Socketlist.begin(); it != Socketlist.end(); it++)
 		{
-			if ((*it)->getReadStatus())
-				(*it)->read(datas, listFD);
-			if ((*it)->getWriteStatus())
-				(*it)->write(datas, listFD);
+			try
+			{
+				if ((*it)->getReadStatus())
+					(*it)->read(datas, listFD);
+				if ((*it)->getWriteStatus())
+					(*it)->write(datas, listFD);
+			}
+			catch (std::string err)
+			{
+				std::cerr << err << std::endl;
+			}
 		}
 	}
 }
