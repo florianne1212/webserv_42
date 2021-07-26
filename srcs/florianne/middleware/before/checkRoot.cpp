@@ -28,6 +28,7 @@ void CheckRoot::handle(ClientSocket &client, Config &config,Request &request, Re
 			std::string new_second = root.value.second;
 			new_second.insert(new_second.size(), "/");
 			newe.replace(newe.find(root.value.first),root.value.first.length(),new_second);
+			request.setUrl(newe);
   			std::cout << "\nURL =" << parsedUri.find("path")->second;
 			std::cout << "\nSTRING 1 =" << root.value.first;
 			std::cout << "\nSTRING 2 =" << root.value.second;
