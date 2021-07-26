@@ -15,7 +15,7 @@ class Request
 		std::string _version;
 		std::string _body;
 		std::map<std::string, std::string> _headers;
-		
+		std::map<std::string, std::string> _parsedUri;
 
 	public:
 		Request();
@@ -28,6 +28,8 @@ class Request
 		std::string getUrl();
 		std::string getBody();
 		std::string getVersion();
+		std::map<std::string, std::string> getParsedUri();
+
 		std::map<std::string, std::string> getHeaders();
 
 		void setMethods(std::string str);
@@ -35,6 +37,7 @@ class Request
 		void setBody(std::string str);
 		void setVersion(std::string str);
 		void setHeaders(std::map<std::string, std::string> header);
+		void setParsedUri(std::map<std::string, std::string> uri);
 };
 
 //methods
