@@ -106,20 +106,20 @@ void CgiHandler::creationVectorEnviron(void){
 	remoteHost(); // DONE
 	remoteUser(_parsedUrl["user_name"]);//DONE
 	requestMethod(_request.getMethods()); // DONE
-	scriptName("vient du parsing de l url");////////////////
+	scriptNameAndScriptFilename(_parsedUrl["cgi_path"]);////////////////
 	serverName(_parsedUrl["host"]);//DONE
-	serverPort(_parsedUrl["port"]);///////// petit detail a voir avec lucas
+	serverPort(_parsedUrl["port"]);//DONE
 	serverProtocol();//DONE
 	serverSoftware();//DONE
 	otherMetaVariables();//DONE
 }
 
 void CgiHandler::setVarEnv(void){
-	unsigned long len = _vectorEnv.size();
+	size_t len = _vectorEnv.size();
 
 	if ((_varEnv = new char*[len + 1]) == NULL)
 		throw std::runtime_error("error setting CGI environnement variables");
-	for (unsigned long i = 0; i < len; i++)
+	for (size_t i = 0; i < len; i++)
 		_varEnv[i] = strdup(_vectorEnv[i].c_str());
 	_varEnv[len] = NULL;
 }
@@ -297,8 +297,9 @@ void CgiHandler::requestMethod(const std::string & str)
 		throw std::runtime_error("method not supported by webserv");
 }
 
-void CgiHandler::scriptName(const std::string & str)
+void CgiHandler::scriptNameAndScriptFilename(const std::string & str)
 {
+	// scriptname
 	if (str == "")
 		_vectorEnv.push_back("SCRIPT_NAME=" + str);
 	else
@@ -306,6 +307,11 @@ void CgiHandler::scriptName(const std::string & str)
 		std::string s1 = "/" + str;
 		_vectorEnv.push_back("SCRIPT_NAME=" + s1);
 	}
+	//scriptFilename
+	std::pair<std::string, std::string> locationResponse = _config.getRoot(_client.getServerName(), str).value;
+	std::string old = locationResponse.first;
+	std::string newloc = locationResponse.second;
+
 }
 
 
@@ -318,7 +324,11 @@ void CgiHandler::serverPort(const std::string & str)
 {
 	if (str == "")
 	{
-		std::string str2 = "default serveur port fourni par lucas";
+		unsigned short port = _config.getPort(_client.getServerName());
+		std::ostringstream s;
+
+		s << port;
+		std::string str2 = s.str();
 		_vectorEnv.push_back("SERVER_PORT=" + str2);
 	}
 	else
@@ -332,7 +342,7 @@ void CgiHandler::serverProtocol(void)
 
 void CgiHandler::serverSoftware(void)
 {
-	_vectorEnv.push_back("SERVER_SOFTWARE=leServeurDeFlorianneLucasEtLaurent/1.0");
+	_vectorEnv.push_back("SERVER_SOFTWARE=leServeurDeFlorianneEtTanguyEtLaurent/1.0");
 }
 
 void CgiHandler::otherMetaVariables(void)
@@ -413,12 +423,12 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 		url = url.substr(found + 1);
 	}
 	//checking scheme (doit etre http pour nous...)
-	if (parsedUrl["scheme"] != "http")
-	{
-		std::cout << "je ne supporte que le http !!" << std::endl;
-		parsedUrl.clear();
-		return (parsedUrl);
-	}
+	// if (parsedUrl["scheme"] != "http")
+	// {
+	// 	std::cout << "je ne supporte que le http !!" << std::endl;
+	// 	parsedUrl.clear();
+	// 	return (parsedUrl);
+	// }
 //on cherche le fragment
 	found = url.find_first_of("#");
 	if (found != url.npos)
@@ -471,7 +481,7 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 		}
 		else
 		{
-			parsedUrl.insert(std::make_pair("port", "80"));
+			parsedUrl.insert(std::make_pair("port", ""));
 			parsedUrl.insert(std::make_pair("host", url));
 		}
 	}
