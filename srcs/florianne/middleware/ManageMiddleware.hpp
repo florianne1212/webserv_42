@@ -7,6 +7,7 @@
 #include "before/checkRedir.hpp"
 #include "before/isConnected.hpp"
 #include "before/checkRequest.hpp"
+#include "before/checkRoot.hpp"
 #include "../request.hpp"
 #include "../response.hpp"
 

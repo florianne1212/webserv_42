@@ -422,7 +422,7 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 		parsedUrl.insert(std::make_pair("scheme", url.substr(0, found)));
 		url = url.substr(found + 1);
 	}
-	//checking scheme (doit etre http pour nous...)
+	// //checking scheme (doit etre http pour nous...)
 	// if (parsedUrl["scheme"] != "http")
 	// {
 	// 	std::cout << "je ne supporte que le http !!" << std::endl;

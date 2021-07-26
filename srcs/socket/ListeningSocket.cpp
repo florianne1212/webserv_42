@@ -39,6 +39,7 @@ void ListeningSocket::read(Config *datas, FDList *listFD)
 	std::string clientPort;
 
 	int newClientFd = accept(_fd, (struct sockaddr*)(&from), &addrlen);
+	fcntl(newClientFd, F_SETFL, O_NONBLOCK);
 	if (newClientFd != -1)
 	{
 		char buff[INET6_ADDRSTRLEN] = { 0 };

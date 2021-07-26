@@ -32,15 +32,14 @@ void openSocket(Config *datas, FDList *listFD)
 	for (it = datas->getServerBegin(); it != datas->getServerEnd(); it++)
 	{
 		sock = socket(AF_INET, SOCK_STREAM, 0);
+		fcntl(sock, F_SETFL, O_NONBLOCK);
 		if (sock)
 		{
 			sin.sin_addr.s_addr = inet_addr(datas->getIp(it->first).c_str());
 			sin.sin_family = AF_INET;
 			sin.sin_port = htons(datas->getPort(it->first));
 			if (bind(sock, (sockaddr *)&sin, sizeof(sin)) == -1)
-			{
 				throw std::string("Errror to binding socket");
-			}
 			if (listen(sock, 100) == -1)
 				throw std::string("Error to listening socket");
 		}
