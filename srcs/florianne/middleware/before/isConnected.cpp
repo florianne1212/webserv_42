@@ -14,7 +14,7 @@ void IsConnected::handle(ClientSocket &client, Config &config,Request &request, 
 	(void)config;
 	std::map<std::string, std::string> _headers = request.getHeaders();
 
-	if(response.getStatus() == 200)
+	if(response.getStatus()/100 == 2)
 	{
 		if(_headers.find("Host") != _headers.end())
 		{

@@ -13,7 +13,7 @@ void CheckRequest::handle(ClientSocket &client, Config &config,Request &request,
 	(void)request;
 	(void)config;
 
-	if(response.getStatus() == 200)
+	if(response.getStatus()/100 == 2)
 	{
 		int i = 0;
 		// std::cout << "CHECK REQUEST" << std::endl;

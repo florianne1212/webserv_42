@@ -14,7 +14,7 @@ void CheckRoot::handle(ClientSocket &client, Config &config,Request &request, Re
 	(void)request;
 	(void)config;
 
-	if(response.getStatus() == 200)
+	if(response.getStatus()/100 == 2)
 	{
 		// std::cout << "CHECK ROOT" << std::endl;
 		std::map <std::string, std::string> parsedUri = request.getParsedUri();

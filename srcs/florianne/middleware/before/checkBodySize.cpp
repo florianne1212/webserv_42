@@ -13,7 +13,7 @@ void CheckBodySize::handle(ClientSocket &client,Config &config, Request &request
 	(void)request;
 	(void)config;
 	
-	if(response.getStatus() == 200)
+	if(response.getStatus()/100 == 2)
 	{
 		if(request.getBody().size() > config.getBodyMaxSize(client.getServerName(), request.getUrl()))
 			response.setStatus(413);
