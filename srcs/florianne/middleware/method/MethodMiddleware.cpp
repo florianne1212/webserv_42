@@ -12,7 +12,7 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 	(void)response;
 	// (void)request;
 
-	if(response.getStatus() == 200)
+	if(response.getStatus()/100 == 2)
 	{
 		if ((request.getUrl().find(".php") != std::string::npos) && (request.getMethods() == "GET" || request.getMethods() == "POST"))
 		{

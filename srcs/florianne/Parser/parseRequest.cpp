@@ -42,15 +42,15 @@ void ParseRequest::parse(char c)
 			if(c == ' ')
 			{
 				if(_state == S_NOT_STARTED)
-					printf("%s\n", "there is no method");
+					throw std::string( "there is no method");
 				_state = S_SPACES_BEFORE_PATH;
 			}
 			else
 			{
 				if(islower(c))
-					printf("%s\n", "method is supposed to be uppercase");
+					throw std::string( "method is supposed to be uppercase");
 				if(_method.length() > 15)
-					printf("%s\n", "method can't be that long");
+					throw std::string( "method can't be that long");
 				_method += c;
 			}
 			break;
@@ -65,7 +65,7 @@ void ParseRequest::parse(char c)
 					_state = S_PATH;
 				}
 				else
-					printf("%s\n", "must have path");
+					throw std::string( "must have path");
 			}
 			break;
 		}
@@ -81,44 +81,44 @@ void ParseRequest::parse(char c)
 		case(S_HTTP_H):
 		{
 			if(c != 'H')
-				printf("%s\n", "wrong charachter must be : H");
+				throw std::string( "wrong charachter must be : H");
 			_state = S_HTTP_HT;
 			break;
 		}
 		case(S_HTTP_HT):
 		{
 			if(c != 'T')
-				printf("%s\n", "wrong charachter must be : T");
+				throw std::string( "wrong charachter must be : T");
 			_state = S_HTTP_HTT;
 			break;
 		}
 		case(S_HTTP_HTT):
 		{
 			if(c != 'T')
-				printf("%s\n", "wrong charachter must be : T");
+				throw std::string( "wrong charachter must be : T");
 			_state = S_HTTP_HTTP;
 			break;
 		}
 		case(S_HTTP_HTTP):
 		{
 			if(c != 'P')
-				printf("%s\n", "wrong charachter must be : P");
+				throw std::string( "wrong charachter must be : P");
 			_state = S_HTTP_SLASH;
 			break;
 		}
 		case(S_HTTP_SLASH):
 		{
 			if(c != '/')
-				printf("%s\n", "wrong charachter must be : /");
+				throw std::string( "wrong charachter must be : /");
 			_state = S_HTTP_MAJOR;
 			break;
 		}
 		case(S_HTTP_MAJOR):
 		{
 			if(!isdigit(c))
-				printf("%s\n", "http version major must be a number");
+				throw std::string( "http version major must be a number");
 			if(c != '1')
-				printf("%s\n", "wrong version only HTTP/1.1 is supported");
+				throw std::string( "wrong version only HTTP/1.1 is supported");
 			_major = c - '0';
 			_state = S_HTTP_DOT;
 			break;
@@ -126,16 +126,16 @@ void ParseRequest::parse(char c)
 		case(S_HTTP_DOT):
 		{
 			if(c != '.')
-				printf("%s\n", "wrong character must be : '.'");
+				throw std::string( "wrong character must be : '.'");
 			_state = S_HTTP_MINOR;
 			break;
 		}
 		case(S_HTTP_MINOR):
 		{
 			if(!isdigit(c))
-				printf("%s _c = %c _\n", "http version minor must be a number", c);
+				throw std::string( "http version minor must be a number", c);
 			else if(c != '1')
-				printf("%s\n", "wrong version only HTTP/1.1 is supported");
+				throw std::string( "wrong version only HTTP/1.1 is supported");
 			else
 			{
 				_minor = c - '0';
@@ -152,14 +152,14 @@ void ParseRequest::parse(char c)
 			else if(c == '\n')
 				_state = S_HTTP_END_N;
 			else
-				printf("%s\n", "there is suposed to be n or r");
+				throw std::string( "there is suposed to be n or r");
 			break;
 		}
 
 		case(S_HTTP_END_R):
 		{
 			if(c != '\n')
-				printf("%s\n", "expected return line (\\n)");
+				throw std::string( "expected return line (\\n)");
 			else
 				_state = S_HTTP_END_N;
 			

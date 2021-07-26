@@ -60,7 +60,7 @@ void recupererLeRoot(void);
 	void remoteHost(void);
 	void remoteUser(const std::string & str);
 	void requestMethod(const std::string & str);
-	void scriptName(const std::string & str);
+	void scriptNameAndScriptFilename(const std::string & str);
 	void serverName(const std::string & str);
 	void serverPort(const std::string & str);
 	void serverProtocol(void);

@@ -16,7 +16,7 @@ void CheckRequest::handle(ClientSocket &client, Config &config,Request &request,
 	if(response.getStatus() == 200)
 	{
 		int i = 0;
-		std::cout << "CHECK REQUEST" << std::endl;
+		// std::cout << "CHECK REQUEST" << std::endl;
 		std::vector<std::string> allowed_method;
 		allowed_method = config.getHttpRequest(client.getServerName(), request.getUrl());
 

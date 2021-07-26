@@ -26,6 +26,7 @@ void ManageMiddleware::middlewareStart(ClientSocket &client, Config &config, Req
 	// 	{
 			middlewares.push_back(new IsConnected());
 			middlewares.push_back(new CheckRequest());
+			middlewares.push_back(new CheckBodySize());
 			middlewares.push_back(new CheckRedir());
 			middlewares.push_back(new CheckRoot());
 			
