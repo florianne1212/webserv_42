@@ -1,19 +1,14 @@
 #ifndef IMIDDLEWARE_HPP
 # define IMIDDLEWARE_HPP
 
-#include <iostream>
-#include "../request.hpp"
-#include "../response.hpp"
-#include "../cgiHandler.hpp"
-#include "MiddlewareChain.hpp"
-#include "../Methods/getMethod.hpp"
-#include "../Methods/postMethod.hpp"
-#include "../Methods/deleteMethod.hpp"
+class IMiddleware;
 
-class Client;
-// class Request;
-// class Response;
-class MiddlewareChain;
+# include <iostream>
+# include "ClientSocket.hpp"
+# include "Config.hpp"
+# include "request.hpp"
+# include "response.hpp"
+# include "MiddlewareChain.hpp"
 
 class IMiddleware {
 
@@ -23,5 +18,10 @@ class IMiddleware {
 		virtual void handle(ClientSocket &client, Config &config, Request &request, Response &response, MiddlewareChain &next) = 0;
 
 };
+
+# include "deleteMethod.hpp"
+# include "postMethod.hpp"
+# include "getMethod.hpp"
+# include "cgiHandler.hpp"
 
 #endif

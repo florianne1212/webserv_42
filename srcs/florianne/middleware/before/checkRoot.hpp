@@ -1,7 +1,7 @@
 #ifndef CHECKROOT_HPP
 # define CHECKROOT_HPP
 
-#include "../IMiddleware.hpp"
+# include "IMiddleware.hpp"
 
 class CheckRoot : public IMiddleware {
 

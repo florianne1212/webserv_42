@@ -1,5 +1,5 @@
 #ifndef HttpMethods_HPP
-#define HttpMethods_HPP
+# define HttpMethods_HPP
 
 class HttpMethods
 {

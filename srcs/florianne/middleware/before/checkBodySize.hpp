@@ -1,7 +1,7 @@
 #ifndef CHECKBODYSIZE_HPP
 # define CHECKBODYSIZE_HPP
 
-#include "../IMiddleware.hpp"
+# include "IMiddleware.hpp"
 
 class CheckBodySize : public IMiddleware {
 

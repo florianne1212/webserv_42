@@ -1,12 +1,9 @@
 #include "ClientSocket.hpp"
-#include "../Parser/parseRequest.hpp"
-#include "../middleware/ManageMiddleware.hpp"
-#include "../buffer.hpp"
+#include "parseRequest.hpp"
+#include "ManageMiddleware.hpp"
 
-
-
-ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort) : ASocket(fd, serverName), _bareRequest(), _bareAnswer(),
-_clientAddress(clientAddress), _clientPort(clientPort)
+ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort) : ASocket(fd, serverName),
+_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true)
 {}
 
 ClientSocket::~ClientSocket(){}
@@ -20,8 +17,6 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 	if (this != &other)
 	{
 		ASocket::operator=(other);
-		_bareAnswer = other._bareAnswer;
-		_bareRequest = other._bareRequest;
 		_clientAddress = other._clientAddress;
 		_clientPort = other._clientPort;
 	}
@@ -31,8 +26,6 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 int	ClientSocket::getFd(void) const{
 	return (_fd);
 }
-
-Request _request;
 
 void ClientSocket::read(Config *datas, FDList *listFD)
 {
@@ -80,7 +73,6 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
-	bool _responseSent = true;
 	Response response;
 	ManageMiddleware manage;
 
@@ -88,22 +80,22 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 	{
 		manage.middlewareStart(*this, *datas, _request, response);
 
-
 		response.create_response();
 		// size_t len = response.getResponse().length();
 		// ssize_t sent = ::write(_fd, response.getResponse().c_str(), len);
 
+		_buffer = Buffer(response.getResponse(), 0);
 		_responseSent = false;
 	}
-	Buffer _buffer(response.getResponse(), 0);
-	//if (_sendableReponse && !_responseSent) {
-	if (!_responseSent) {
-		_responseSent = _buffer.flush(_fd);	
+	else
+	{
+		_responseSent = _buffer.flush(_fd);
+		if (_responseSent == true)
+		{
+			listFD->rmSocket(_fd);
+			close(_fd);
+		}
 	}
-
-
-	listFD->rmSocket(_fd);
-	close(_fd);
 }
 
 std::string ClientSocket::getClientAddress(void) const {

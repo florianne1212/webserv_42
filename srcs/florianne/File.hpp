@@ -1,19 +1,21 @@
 #ifndef FILE_HPP
 # define FILE_HPP
 
-#include <string>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <sys/types.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <list>
-#include <iterator>
-#include <iostream>
-#include <fstream> 
-#include "mime.hpp"
-#include <sstream> 
+class File;
+
+# include <string>
+# include <sys/stat.h>
+# include <dirent.h>
+# include <sys/types.h>
+# include <fcntl.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <list>
+# include <iterator>
+# include <iostream>
+# include <fstream> 
+# include "mime.hpp"
+# include <sstream> 
 
 class File{
 

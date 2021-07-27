@@ -1,10 +1,13 @@
 #ifndef LISTENINGSOCKET_HPP
-#define LISTENINGSOCKET_HPP
+# define LISTENINGSOCKET_HPP
 
-class Config;
-class FDList;
+class ListeningSocket;
 
-#include "ASocket.hpp"
+# include "ASocket.hpp"
+# include "Config.hpp"
+# include "FDList.hpp"
+# include <arpa/inet.h>
+
 
 class ListeningSocket : public ASocket
 {

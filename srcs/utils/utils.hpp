@@ -1,9 +1,9 @@
 #ifndef UTILS_HPP
-#define UTILS_HPP
+# define UTILS_HPP
 
 
-#include <string>
-#include <cstddef>
+# include <string>
+# include <cstddef>
 
 struct SocketA //les sockets autres que les socket listen
 {

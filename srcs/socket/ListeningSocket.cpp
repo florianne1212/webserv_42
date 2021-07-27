@@ -1,5 +1,5 @@
 #include "ListeningSocket.hpp"
-
+#include "fcntl.h"
 // ListeningSocket::ListeningSocket(int fd, sockaddr_in addr) : ASocket(fd), _addr(addr) {}
 
 ListeningSocket::ListeningSocket(int fd, std::string serverName, sockaddr_in addr) : ASocket(fd, serverName), _addr(addr){}
@@ -43,12 +43,9 @@ void ListeningSocket::read(Config *datas, FDList *listFD)
 	if (newClientFd != -1)
 	{
 		char buff[INET6_ADDRSTRLEN] = { 0 };
-		std::ostringstream s;
 
 		clientAddress = inet_ntop(_addr.sin_family, (void*)&(_addr.sin_addr), buff, INET6_ADDRSTRLEN);
-		s << _addr.sin_port;
-		clientPort = s.str();
-		std::cout << "Connexion de " << clientAddress << ":" << clientPort << std::endl;
+		std::cout << "Connexion de " << clientAddress << ":" << _addr.sin_port << std::endl;
 	}
 	ClientSocket *tmp = new ClientSocket(newClientFd, _serverName, clientAddress, clientPort);
 	listFD->addSocket(tmp);

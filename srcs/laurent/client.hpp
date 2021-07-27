@@ -1,16 +1,16 @@
 #ifndef CLIENT_HPP
-#define CLIENT_HPP
+# define CLIENT_HPP
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <map>
-#include <queue>
-#include <stack>
-#include <algorithm>
-#include <exception>
-#include <ctime>
-#include <cstring>
+# include <iostream>
+# include <vector>
+# include <string>
+# include <map>
+# include <queue>
+# include <stack>
+# include <algorithm>
+# include <exception>
+# include <ctime>
+# include <cstring>
 
 struct SocketA //les sockets autres que les socket listen
 {

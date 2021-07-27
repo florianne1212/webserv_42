@@ -1,8 +1,8 @@
 #ifndef GETFILEERROR_HPP
 # define GETFILEERROR_HPP
 
-#include "../IMiddleware.hpp"
-#include "../../File.hpp"
+# include "IMiddleware.hpp"
+# include "File.hpp"
 
 class GetFileError : public IMiddleware {
 

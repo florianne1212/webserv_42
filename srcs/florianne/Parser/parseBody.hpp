@@ -1,10 +1,10 @@
 #ifndef PARSEBODY_HPP
-#define PARSEBODY_HPP
+# define PARSEBODY_HPP
 
-#include <string>
-#include <map>
-#include <iostream>
-#include "parseChunkedBody.hpp"
+# include <string>
+# include <map>
+# include <iostream>
+# include "parseChunkedBody.hpp"
 
 class ParseBody
 {

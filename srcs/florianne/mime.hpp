@@ -1,8 +1,8 @@
 #ifndef MIME_HPP
-#define MIME_HPP
+# define MIME_HPP
 
-#include <string>
-#include <map>
+# include <string>
+# include <map>
 
 class Mime
 {

@@ -1,9 +1,9 @@
 #ifndef PARSECHUNKEDBODY_HPP
-#define PARSECHUNKEDBODY_HPP
+# define PARSECHUNKEDBODY_HPP
 
-#include <string>
-#include <map>
-#include <iostream>
+# include <string>
+# include <map>
+# include <iostream>
 
 class ParseChunkedBody
 {

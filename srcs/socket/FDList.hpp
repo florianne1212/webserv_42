@@ -1,9 +1,11 @@
 #ifndef FDLIST_HPP
-#define FDLIST_HPP
+# define FDLIST_HPP
 
-class ASocket;
+class FDList;
 
-#include "includes.hpp"
+# include <list>
+# include <poll.h>
+# include "ASocket.hpp"
 
 class FDList
 {

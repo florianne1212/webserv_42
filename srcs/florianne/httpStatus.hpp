@@ -1,8 +1,8 @@
 #ifndef HttpStatus_HPP
-#define HttpStatus_HPP
+# define HttpStatus_HPP
 
-#include <string>
-#include <map>
+# include <string>
+# include <map>
 
 class HttpStatus
 {

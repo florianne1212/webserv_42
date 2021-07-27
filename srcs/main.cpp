@@ -1,4 +1,7 @@
-#include "includes.hpp"
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include "Config.hpp"
+#include "FDList.hpp"
 
 void selector(Config *datas, FDList *listFD)
 {
@@ -39,7 +42,6 @@ void openSocket(Config *datas, FDList *listFD)
 	for (it = datas->getServerBegin(); it != datas->getServerEnd(); it++)
 	{
 		sock = socket(AF_INET, SOCK_STREAM, 0);
-		fcntl(sock, F_SETFL, O_NONBLOCK);
 		if (sock)
 		{
 			sin.sin_addr.s_addr = inet_addr(datas->getIp(it->first).c_str());

@@ -1,12 +1,13 @@
 #ifndef GETMETHOD_HPP
 # define GETMETHOD_HPP
-#include "../request.hpp"
-#include "../response.hpp"
-#include "ClientSocket.hpp"
-#include "../File.hpp"
-#include <iostream>
-#include <sstream> 
-#include <sys/stat.h>
+
+# include "../request.hpp"
+# include "../response.hpp"
+# include "ClientSocket.hpp"
+# include "../File.hpp"
+# include <iostream>
+# include <sstream> 
+# include <sys/stat.h>
 
 class GetMethod
 {
