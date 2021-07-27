@@ -9,6 +9,7 @@
 #include "before/checkRequest.hpp"
 #include "before/checkRoot.hpp"
 #include "before/checkBodySize.hpp"
+#include "after/getFileError.hpp"
 #include "../request.hpp"
 #include "../response.hpp"
 

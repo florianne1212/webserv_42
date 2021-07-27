@@ -31,12 +31,18 @@ bool File::isPresent()
 
 bool File::isFile()
 {
-	return(S_ISREG(_stats.st_mode));
+	if(::stat(_path.c_str(), &_stats) == -1)
+		return (false);
+	else 
+		return(S_ISREG(_stats.st_mode));
 }
 
 bool File::isDirectory()
 {
-	return(S_ISDIR(_stats.st_mode));
+	if(::stat(_path.c_str(), &_stats) == -1)
+		return (false);
+	else 
+		return(S_ISDIR(_stats.st_mode));
 }
 
 bool File::fileDelete()

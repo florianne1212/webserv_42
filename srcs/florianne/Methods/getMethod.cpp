@@ -47,10 +47,7 @@ void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request,
 		}	
 	}
 	else
-	{
-		std::cout << "404 not found\n";
 		response.setStatus(404);
-	}
 }
 
 std::string GetMethod::setDirectory(File &fileGet, std::string url, std::string ip)

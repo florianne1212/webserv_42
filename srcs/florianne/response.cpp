@@ -67,10 +67,7 @@ std::string Response::create_response()
 		_response.append("\r\n");
 	}
 	_response.append("\r\n");
-	if(_status == 404)
-		_response.append(Body404());
-	else
-		_response.append(_body);
+	_response.append(_body);
 	// 	std::cout << it->first << " => " << it->second << '\n';
 	// _response.append("\r\n");
 

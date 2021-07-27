@@ -24,6 +24,7 @@ void ManageMiddleware::middlewareStart(ClientSocket &client, Config &config, Req
 	// {
 	// 	case(S_BEFORE):
 	// 	{
+		//response.setStatus(404);
 			middlewares.push_back(new IsConnected());
 			middlewares.push_back(new CheckRequest());
 			middlewares.push_back(new CheckBodySize());
@@ -37,6 +38,10 @@ void ManageMiddleware::middlewareStart(ClientSocket &client, Config &config, Req
 		// case(S_METHOD):
 		// {
 			middlewares.push_back(new MethodMiddleware());
+			std::cout << "SHIT";
+			middlewares.push_back(new GetFileError());
+			
+			
 			_state = S_END;
 		// 	break;
 		// }

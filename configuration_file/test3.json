@@ -14,5 +14,6 @@
 				"httpRequest": "GET"
 			}
 		]
-	}
+	},
+	"error_path": "404 /error.html"
 }
