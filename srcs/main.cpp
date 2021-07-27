@@ -65,7 +65,6 @@ void openSocket(Config *datas, FDList *listFD)
 void	ignore(int i)
 {
 	(void)i;
-	std::cout << "\n SIGPIPE \n";
 }
 
 int main(int argc, char *argv[])

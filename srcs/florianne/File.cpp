@@ -2,7 +2,6 @@
 
 File::File()
 {
-	std::cout << "I GIVE UP COUCOU\n";
 }
 
 File::File(std::string path):
@@ -151,18 +150,8 @@ std::string File::fileLastModified()
 
 bool File::fileAppend(std::string filename, std::string to_append)
 {
-	// int fd;
 
-	// fd = open(filename.c_str(), O_CREAT|O_RDWR|O_APPEND);
-	// if (fd < 0)
-	// {
-	// 
-	// std::cout << to_append;
-	// write(fd, to_append.c_str(), strlen(to_append.c_str()));
-
-	// close(fd);
 	std::cout << to_append;
-	// }
 	std::ofstream outfile;
     outfile.open(filename, std::ios_base::app);
     outfile << to_append;

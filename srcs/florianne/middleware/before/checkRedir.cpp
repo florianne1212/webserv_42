@@ -22,16 +22,9 @@ void CheckRedir::handle(ClientSocket &client,Config &config, Request &request, R
 		{
 			response.setStatus(redir.value.first);
 			response.setHeaders("Location", redir.value.second);
-
-			// std::cout << "INT =" << redir.value.first;
-			// std::cout << "STRING =" << redir.value.second;
 		}
 	}
 
-
-
-
-	// std::cout << "CHECK REDIR" << std::endl;
 
 	next();
 }

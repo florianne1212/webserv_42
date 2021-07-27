@@ -17,11 +17,6 @@ void CheckBodySize::handle(ClientSocket &client,Config &config, Request &request
 	{
 		if(request.getBody().size() > config.getBodyMaxSize(client.getServerName(), request.getUrl()))
 			response.setStatus(413);
-
-
-
-		// std::cout << "\nSIZE BODY =" << request.getBody().size();
-		// std::cout << "\nMAX SIZE =" << config.getBodyMaxSize(client.getServerName(), request.getUrl());
 	}
 
 	next();

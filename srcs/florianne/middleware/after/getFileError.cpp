@@ -6,16 +6,10 @@ GetFileError::~GetFileError() {
 }
 
 void GetFileError::handle(ClientSocket &client,Config &config, Request &request, Response &response, MiddlewareChain &next) {
-	
-	// File fileGet(request.getUrl());
 	(void)client;
-	(void)response;
-	(void)request;
 	(void)config;
+	(void)request;
 
-	std::cout << "TUTUTUasdasd";
-
-	//response.setStatus(404);
 	if(response.getStatus()/100 != 2)
 	{
 		usable<std::string> errorFile;
@@ -44,7 +38,6 @@ void GetFileError::handle(ClientSocket &client,Config &config, Request &request,
 	}
 
 
-	
 
 	next();
 }

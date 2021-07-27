@@ -20,43 +20,20 @@ ManageMiddleware::~ManageMiddleware()
 void ManageMiddleware::middlewareStart(ClientSocket &client, Config &config, Request &request, Response &response)
 {
 	std::list<IMiddleware *> middlewares;
-	// switch(_state)
-	// {
-	// 	case(S_BEFORE):
-	// 	{
-		//response.setStatus(404);
-			middlewares.push_back(new IsConnected());
-			middlewares.push_back(new CheckRequest());
-			middlewares.push_back(new CheckBodySize());
-			middlewares.push_back(new CheckRedir());
-			middlewares.push_back(new CheckRoot());
-			
-			
-		// 	_state = S_METHOD;
-		// 	break;
-		// }
-		// case(S_METHOD):
-		// {
-			middlewares.push_back(new MethodMiddleware());
-			std::cout << "SHIT";
-			middlewares.push_back(new GetFileError());
-			
-			
-			_state = S_END;
-		// 	break;
-		// }
-		// case(S_AFTER):
-		// {
 
-		// 	break;
-		// }
-	// 	case(S_END):
-	// 	{
-	// 		break;
-	// 	}
-	// }
+	middlewares.push_back(new IsConnected());
+	middlewares.push_back(new CheckRequest());
+	middlewares.push_back(new CheckBodySize());
+	middlewares.push_back(new CheckRedir());
+	middlewares.push_back(new CheckRoot());
+			
+	middlewares.push_back(new MethodMiddleware());
 
-	
+	middlewares.push_back(new GetFileError());
+			
+			
+	_state = S_END;
+
 	MiddlewareChain chain(middlewares, config, client, request, response);
 	chain();
 }

@@ -46,7 +46,6 @@ void ParseBody::parse_chunked(char c)
 
 void ParseBody::parse_identity(char c, std::map<std::string, std::string> _headers)
 {
-	// std::cout << "nb :" << atoi(_headers.find("Content-Length")->second.c_str()) << " nb2 =" << _count;
 	if (_count < atoi(_headers.find("Content-Length")->second.c_str()))
 	{
 		_body.push_back(c);
@@ -69,6 +68,4 @@ void ParseBody::parse(char c, std::map<std::string, std::string> _headers)
 		parse_identity(c, _headers);
 	else
 		_state = S_END;
-	// std::cout << _headers.find("Content-Length")->first;
-}	// else if(_headers.find("Content-Length") != _headers.end()) 
-	// 	parse_identity(c);
+}
