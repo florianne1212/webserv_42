@@ -99,14 +99,14 @@ void CgiHandler::creationVectorEnviron(void){
 	contentLength("Content-Length"); //DONE
 	contentType("Content-Type"); //DONE
 	gatewayInterface(); //DONE
-	pathInfo("/scriptname+pathinfo");//////////////////
+	pathInfo(_parsedUrl["additionnal_path"]);//DONE JE CROIS, A VERIFIER SI C EST CE QUE SUJET DEMANDE
 	// pathTranslated("j'y comprend rien!");////////////SHOULD
 	queryString(_parsedUrl["query"]); //DONE
 	remoteAddr(_client.getClientAddress());//DONE
 	remoteHost(); // DONE
 	remoteUser(_parsedUrl["user_name"]);//DONE
 	requestMethod(_request.getMethods()); // DONE
-	scriptNameAndScriptFilename(_parsedUrl["cgi_path"]);////////////////
+	scriptNameAndScriptFilename(_parsedUrl["cgi_path"]);//DONE
 	serverName(_parsedUrl["host"]);//DONE
 	serverPort(_parsedUrl["port"]);//DONE
 	serverProtocol();//DONE
@@ -248,20 +248,19 @@ void CgiHandler::gatewayInterface(void)
 	_vectorEnv.push_back("GATEWAY_INTERFACE=CGI/1.1");
 }
 
-void CgiHandler::pathInfo(const std::string & str) //str = script_name + PATH_info
+void CgiHandler::pathInfo(const std::string & str)
 {
-	if (str == "")
+	if (str == "") ///JE NE SAIS PAS S IL FAUT METTRE CHEMIN ABSOLU ICI
 	{
 		_vectorEnv.push_back("PATH_INFO=");
 		return ;
 	}
-	//extraction de URI le scriptpath + extrapath
+	//mise en place chemin absolu
 	char* buf = NULL;
 	buf = getcwd(buf, 0);
 	if (!buf)
 		throw std::runtime_error("error during getcwd");
-	std::string s2 = "/" + static_cast<std::string>(buf);
-	s2 += str;
+	std::string s2 = static_cast<std::string>(buf) + "/" + str;
 	// std::cout << "path info : " << s2 << std::endl;
 	_vectorEnv.push_back("PATH_INFO=" + s2);
 	if (buf)
@@ -297,7 +296,7 @@ void CgiHandler::requestMethod(const std::string & str)
 		throw std::runtime_error("method not supported by webserv");
 }
 
-void CgiHandler::scriptNameAndScriptFilename(const std::string & str)
+void CgiHandler::scriptNameAndScriptFilename(std::string & str)
 {
 	// scriptname
 	if (str == "")
@@ -308,10 +307,20 @@ void CgiHandler::scriptNameAndScriptFilename(const std::string & str)
 		_vectorEnv.push_back("SCRIPT_NAME=" + s1);
 	}
 	//scriptFilename
-	std::pair<std::string, std::string> locationResponse = _config.getRoot(_client.getServerName(), str).value;
-	std::string old = locationResponse.first;
-	std::string newloc = locationResponse.second;
+	std::string newAddress;
+	usable<std::pair<std::string, std::string> > locationResponse = _config.getRoot(_client.getServerName(), str);
+	if (locationResponse.state == true)
+	{
+	std::string old = locationResponse.value.first;
+	std::string newLoc = locationResponse.value.second;
 
+	newAddress = str.replace(0, old.size(), newLoc);
+	}
+	else
+	{
+		newAddress = str;
+	}
+	_vectorEnv.push_back("SCRIPT_FILENAME=" + newAddress);
 }
 
 
@@ -500,9 +509,9 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 		std::string additionnalPath = parsedUrl["path"].substr(found);
 		UrlDecoder(additionnalPath);
 		//on met le "real path" en fonction de "location  de - \.php"
-		std::string root =  "";//donnees a recuperer de config
-		cgiPath = root + "/" + cgiPath;
-		additionnalPath = root + "/" + additionnalPath;
+		// std::string root =  "";//donnees a recuperer de config
+		// cgiPath = root + "/" + cgiPath;
+		// additionnalPath = root + "/" + additionnalPath;
 		parsedUrl.insert(std::make_pair("additionnal_path", additionnalPath));
 		parsedUrl.insert(std::make_pair("cgi_path", cgiPath));
 	}

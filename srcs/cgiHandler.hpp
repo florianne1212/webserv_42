@@ -60,17 +60,16 @@ void recupererLeRoot(void);
 	void remoteHost(void);
 	void remoteUser(const std::string & str);
 	void requestMethod(const std::string & str);
-	void scriptNameAndScriptFilename(const std::string & str);
+	void scriptNameAndScriptFilename(std::string & str);
 	void serverName(const std::string & str);
 	void serverPort(const std::string & str);
 	void serverProtocol(void);
 	void serverSoftware(void);
 	void otherMetaVariables(void);
 	std::string upperCaseAndMinus(const std::string & str);
-	// std::map<std::string, std::string> parseTheUri(std::string);
 };
 
 void UrlDecoder(std::string & str);
 std::map<std::string, std::string> parseTheUri(std::string url);
-		
+
 #endif
