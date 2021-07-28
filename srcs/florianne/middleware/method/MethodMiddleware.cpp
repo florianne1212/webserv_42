@@ -36,13 +36,8 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 			myDelete.handleDelete(client,config, request, response);
 		}
 		else
-		{
-			std::cout << "this method is not handled : " << request.getMethods() << std::endl;
-		}
+			throw std::string( "this method is not handled ");
 	}
-
-
-	std::cout << request.getUrl() << std::endl;
 
 	next();
 }

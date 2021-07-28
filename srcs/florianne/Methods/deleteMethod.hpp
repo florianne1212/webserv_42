@@ -1,10 +1,11 @@
 #ifndef DELETEMETHOD_HPP
 # define DELETEMETHOD_HPP
-#include "../request.hpp"
-#include "../response.hpp"
-#include "ClientSocket.hpp"
-#include "../File.hpp"
-#include <iostream>
+
+# include "../request.hpp"
+# include "../response.hpp"
+# include "ClientSocket.hpp"
+# include "../File.hpp"
+# include <iostream>
 
 class DeleteMethod
 {

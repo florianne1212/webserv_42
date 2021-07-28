@@ -1,7 +1,18 @@
 #ifndef WEBSERV_SETUP_HPP
 # define WEBSERV_SETUP_HPP
 
-# include "includes.hpp"
+class Config;
+
+# define WORKPATH "./workDir"
+
+# include <map>
+# include <vector>
+# include <cstring>
+# include <iostream>
+# include <fstream>
+# include <sys/stat.h>
+# include "usable.hpp"
+# include "Server.hpp"
 
 class Config
 {

@@ -1,8 +1,9 @@
 #ifndef BUFFER_HPP
-#define BUFFER_HPP
+# define BUFFER_HPP
 
-#include <string>
-#include <unistd.h>
+class Buffer;
+# include <string>
+# include <unistd.h>
 
 class Buffer
 {

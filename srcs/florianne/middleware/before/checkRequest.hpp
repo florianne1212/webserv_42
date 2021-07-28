@@ -1,7 +1,7 @@
 #ifndef CHECKREQUEST_HPP
 # define CHECKREQUEST_HPP
 
-#include "../IMiddleware.hpp"
+# include "IMiddleware.hpp"
 
 class CheckRequest : public IMiddleware {
 

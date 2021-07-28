@@ -1,7 +1,7 @@
 #ifndef METHODMIDDLEWARE_HPP
 # define METHODMIDDLEWARE_HPP
 
-#include "../IMiddleware.hpp"
+# include "IMiddleware.hpp"
 
 class MethodMiddleware : public IMiddleware {
 

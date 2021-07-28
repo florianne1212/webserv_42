@@ -1,8 +1,11 @@
 #ifndef ClientSOCKET_HPP
-#define ClientSOCKET_HPP
+# define ClientSOCKET_HPP
 
+class ClientSocket;
 
-#include "ASocket.hpp"
+# include "ASocket.hpp"
+# include "buffer.hpp"
+# include "request.hpp"
 
 class ClientSocket : public ASocket
 {
@@ -10,10 +13,11 @@ class ClientSocket : public ASocket
 		ClientSocket();
 
 	protected :
-		std::string _bareRequest; //ou un vector<char> ?
-		std::string _bareAnswer; //ou un vector<char> ?
 		std::string _clientAddress;
 		std::string _clientPort;
+		Request		_request;
+		Buffer		_buffer;
+		bool		_responseSent;
 
 	public :
 		ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort);

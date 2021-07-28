@@ -1,10 +1,10 @@
 #ifndef RESPONSE_HPP
-#define RESPONSE_HPP
+# define RESPONSE_HPP
 
-#include <string>
-#include <map>
-#include <iostream>
-#include "httpStatus.hpp"
+# include <string>
+# include <map>
+# include <iostream>
+# include "httpStatus.hpp"
 
 class Response
 {

@@ -1,7 +1,7 @@
 #ifndef MESSAGE_HPP
-#define MESSAGE_HPP
+# define MESSAGE_HPP
 
-#include <string>
+# include <string>
 
 class Message
 {

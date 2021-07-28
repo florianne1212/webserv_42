@@ -1,18 +1,20 @@
 #ifndef CGIHANDLER_HPP
-#define CGIHANDLER_HPP
+# define CGIHANDLER_HPP
 
-#include <map>
-#include <vector>
-#include <cstring>
-#include <string>
-#include <cctype>
-#include <unistd.h>
-#include <iostream>
-#include <exception>
-#include "./florianne/request.hpp"
-#include "./socket/ClientSocket.hpp"
-#include "./config/Config.hpp"
-#include "./florianne/response.hpp"
+class CgiHandler;
+
+# include <map>
+# include <vector>
+# include <cstring>
+# include <string>
+# include <cctype>
+# include <unistd.h>
+# include <iostream>
+# include <exception>
+# include "request.hpp"
+# include "ClientSocket.hpp"
+# include "Config.hpp"
+# include "response.hpp"
 
 class CgiHandler
 {

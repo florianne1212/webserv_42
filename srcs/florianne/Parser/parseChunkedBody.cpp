@@ -48,7 +48,7 @@ void ParseChunkedBody::parse(char c)
 			else if(c == '\r')
 				_state = S_END_R;
 			else
-				printf("%s\n","there is supposed to be a '\\r");
+				throw std::string("there is supposed to be a '\\r");
 			break;
 		}
 		case(S_PARSE_BODY):
@@ -66,7 +66,7 @@ void ParseChunkedBody::parse(char c)
 				_nb.clear();
 				_count = 1;
 				if(c != '\r')
-					printf("%s %c\n","there is supposed to be a '\\r", c);
+					throw std::string("there is supposed to be a '\\r", c);
 				else
 					_state = S_END_R;
 			}
@@ -77,7 +77,7 @@ void ParseChunkedBody::parse(char c)
 			if(c == '\n')
 				_state = S_END_N;
 			else
-				printf("%s\n","there is supposed to be a '\\n");
+				throw std::string("there is supposed to be a '\\n");
 			
 			break;
 		}
@@ -103,7 +103,7 @@ void ParseChunkedBody::parse(char c)
 				_state = S_PARSE_BODY;
 			}
 			else
-				printf("%s %c\n","there is supposed to be something else '\\n", c);
+				throw std::string("there is supposed to be something else '\\n", c);
 			
 			
 			break;
@@ -113,7 +113,7 @@ void ParseChunkedBody::parse(char c)
 			if(c == '\n')
 				_state = S_END;
 			else
-				printf("%s\n","there is supposed to be a '\\n");
+				throw std::string("there is supposed to be a '\\n");
 			
 			break;
 		}

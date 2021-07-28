@@ -1,10 +1,12 @@
 #ifndef ASOCKET_HPP
-#define ASOCKET_HPP
+# define ASOCKET_HPP
 
-class Config;
-class FDList;
+class ASocket;
 
-#include "includes.hpp"
+# include <poll.h>
+# include <string>
+# include "Config.hpp"
+# include "FDList.hpp"
 
 class ASocket
 {
@@ -31,7 +33,7 @@ class ASocket
 		void setPollFD(struct pollfd toSet);
 };
 
-#include "ClientSocket.hpp"
-#include "ListeningSocket.hpp"
+# include "ClientSocket.hpp"
+# include "ListeningSocket.hpp"
 
 #endif

@@ -3,7 +3,15 @@
 
 class Server;
 
-# include "includes.hpp"
+# define WORKPATH "./workDir"
+
+# include <map>
+# include <vector>
+# include <cstring>
+# include <iostream>
+# include <sys/stat.h>
+# include "usable.hpp"
+# include "Routes.hpp"
 
 class Server
 {

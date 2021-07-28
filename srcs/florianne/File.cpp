@@ -2,7 +2,6 @@
 
 File::File()
 {
-	std::cout << "I GIVE UP COUCOU\n";
 }
 
 File::File(std::string path):
@@ -31,12 +30,18 @@ bool File::isPresent()
 
 bool File::isFile()
 {
-	return(S_ISREG(_stats.st_mode));
+	if(::stat(_path.c_str(), &_stats) == -1)
+		return (false);
+	else 
+		return(S_ISREG(_stats.st_mode));
 }
 
 bool File::isDirectory()
 {
-	return(S_ISDIR(_stats.st_mode));
+	if(::stat(_path.c_str(), &_stats) == -1)
+		return (false);
+	else 
+		return(S_ISDIR(_stats.st_mode));
 }
 
 bool File::fileDelete()
@@ -51,7 +56,7 @@ bool File::fileCreate(std::string filename)
 {
 	int fd;
 
-	fd = open(filename.c_str(), O_CREAT);
+	fd = open(filename.c_str(), O_CREAT, 0644);
 
 	close(fd);
 
@@ -145,22 +150,12 @@ std::string File::fileLastModified()
 
 bool File::fileAppend(std::string filename, std::string to_append)
 {
-	// int fd;
-
-	// fd = open(filename.c_str(), O_CREAT|O_RDWR|O_APPEND);
-	// if (fd < 0)
-	// {
-	// 
-	// std::cout << to_append;
-	// write(fd, to_append.c_str(), strlen(to_append.c_str()));
-
-	// close(fd);
-	std::cout << to_append;
-	// }
+	std::cout << "\nto append = " << to_append << "\nfilename = " << filename << "\n";
 	std::ofstream outfile;
-    outfile.open(filename, std::ios_base::app);
+    outfile.open(filename, std::ofstream::out | std::ofstream::app);
     outfile << to_append;
 
+	outfile.close();
 	return(true);
 }
 

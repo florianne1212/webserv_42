@@ -1,7 +1,7 @@
 #ifndef ISCONNECTED_HPP
 # define ISCONNECTED_HPP
 
-#include "../IMiddleware.hpp"
+# include "IMiddleware.hpp"
 
 class IsConnected : public IMiddleware {
 

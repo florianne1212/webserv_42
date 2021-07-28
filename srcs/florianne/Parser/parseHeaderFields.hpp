@@ -1,8 +1,8 @@
 #ifndef PARSEHEADERFIELDS_HPP
-#define PARSEHEADERFIELDS_HPP
+# define PARSEHEADERFIELDS_HPP
 
-#include <string>
-#include <map>
+# include <string>
+# include <map>
 
 class ParseHeaderFields
 {

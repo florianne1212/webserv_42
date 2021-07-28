@@ -1,5 +1,5 @@
 #ifndef HttpHeaders_HPP
-#define HttpHeaders_HPP
+# define HttpHeaders_HPP
 
 class HttpHeaders
 {

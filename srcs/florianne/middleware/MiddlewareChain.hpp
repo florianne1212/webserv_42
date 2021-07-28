@@ -1,12 +1,15 @@
 #ifndef MIDDLEWARECHAIN_HPP
 # define MIDDLEWARECHAIN_HPP
 
-#include <list>
-#include "IMiddleware.hpp"
-#include "ClientSocket.hpp"
-#include "Config.hpp"
+class MiddlewareChain;
 
-class IMiddleware;
+# include <list>
+# include "IMiddleware.hpp"
+# include "ClientSocket.hpp"
+# include "Config.hpp"
+# include "request.hpp"
+# include "response.hpp"
+
 
 class MiddlewareChain {
 

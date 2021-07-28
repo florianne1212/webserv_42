@@ -1,7 +1,7 @@
 #ifndef CHECKREDIR_HPP
 # define CHECKREDIR_HPP
 
-#include "../IMiddleware.hpp"
+# include "IMiddleware.hpp"
 
 class CheckRedir : public IMiddleware {
 

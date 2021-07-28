@@ -1,17 +1,12 @@
 #ifndef MANAGEMIDDLEWARE_HPP
 # define MANAGEMIDDLEWARE_HPP
 
-#include "IMiddleware.hpp"
-#include "MiddlewareChain.hpp"
-#include "method/MethodMiddleware.hpp"
-#include "before/checkRedir.hpp"
-#include "before/isConnected.hpp"
-#include "before/checkRequest.hpp"
-#include "before/checkRoot.hpp"
-#include "../request.hpp"
-#include "../response.hpp"
+class ManageMiddleware;
 
-
+# include "ClientSocket.hpp"
+# include "Config.hpp"
+# include "request.hpp"
+# include "response.hpp"
 
 class ManageMiddleware {
 
@@ -35,5 +30,15 @@ class ManageMiddleware {
 
 
 };
+
+# include "IMiddleware.hpp"
+# include "MiddlewareChain.hpp"
+# include "MethodMiddleware.hpp"
+# include "checkRedir.hpp"
+# include "isConnected.hpp"
+# include "checkRequest.hpp"
+# include "checkRoot.hpp"
+# include "checkBodySize.hpp"
+# include "getFileError.hpp"
 
 #endif

@@ -13,7 +13,7 @@ void CheckRedir::handle(ClientSocket &client,Config &config, Request &request, R
 	(void)request;
 	(void)config;
 	
-	if(response.getStatus() == 200)
+	if(response.getStatus()/100 == 2)
 	{
 		usable<std::pair<size_t , std::string> > redir;
 		redir = config.getHttpRedirection(client.getServerName(), request.getUrl());
@@ -22,16 +22,9 @@ void CheckRedir::handle(ClientSocket &client,Config &config, Request &request, R
 		{
 			response.setStatus(redir.value.first);
 			response.setHeaders("Location", redir.value.second);
-
-			std::cout << "INT =" << redir.value.first;
-			std::cout << "STRING =" << redir.value.second;
 		}
 	}
 
-
-
-
-	std::cout << "CHECK REDIR" << std::endl;
 
 	next();
 }

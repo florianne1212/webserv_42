@@ -21,22 +21,10 @@ GetMethod& GetMethod::operator=(GetMethod const & ope)
 
 void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request, Response &response)
 {
-    (void)client;
-	// (void)response;
-	(void)request;
-	(void)config;
-	std::cout << "GET\n";
-
-	std::cout << "\nURL =" << request.getUrl();
 	File fileGet(WORKPATH + request.getUrl());
-
 	if (fileGet.isPresent()) {
 		if (fileGet.isFile()) {
-			std::cout << "it's a file\n";
 			setHeader(response, fileGet);
-
-
-			// response.setContent
 		} 
 		else if (fileGet.isDirectory()) {
 			if(config.getAutoIndex(client.getServerName(), request.getUrl()) && *request.getUrl().rbegin() == '/')
@@ -47,10 +35,7 @@ void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request,
 		}	
 	}
 	else
-	{
-		std::cout << "404 not found\n";
 		response.setStatus(404);
-	}
 }
 
 std::string GetMethod::setDirectory(File &fileGet, std::string url, std::string ip)
@@ -80,7 +65,6 @@ std::string GetMethod::setDirectory(File &fileGet, std::string url, std::string 
 	}
 	response_body += "</body></html>";
 	std::cout << response_body << std::endl;
-			// response.setBody(listFiles(file));
 	return(response_body);
 }
 

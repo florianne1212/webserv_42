@@ -1,4 +1,7 @@
-#include "includes.hpp"
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include "Config.hpp"
+#include "FDList.hpp"
 
 void selector(Config *datas, FDList *listFD)
 {
@@ -7,10 +10,17 @@ void selector(Config *datas, FDList *listFD)
 		std::list<ASocket *> Socketlist = listFD->getSocketList();
 		for (std::list<ASocket *>::iterator it = Socketlist.begin(); it != Socketlist.end(); it++)
 		{
-			if ((*it)->getReadStatus())
-				(*it)->read(datas, listFD);
-			if ((*it)->getWriteStatus())
-				(*it)->write(datas, listFD);
+			try
+			{
+				if ((*it)->getReadStatus())
+					(*it)->read(datas, listFD);
+				if ((*it)->getWriteStatus())
+					(*it)->write(datas, listFD);
+			}
+			catch (std::string err)
+			{
+				std::cerr << err << std::endl;
+			}
 		}
 	}
 }
@@ -32,7 +42,6 @@ void openSocket(Config *datas, FDList *listFD)
 	for (it = datas->getServerBegin(); it != datas->getServerEnd(); it++)
 	{
 		sock = socket(AF_INET, SOCK_STREAM, 0);
-		fcntl(sock, F_SETFL, O_NONBLOCK);
 		if (sock)
 		{
 			sin.sin_addr.s_addr = inet_addr(datas->getIp(it->first).c_str());
@@ -58,7 +67,6 @@ void openSocket(Config *datas, FDList *listFD)
 void	ignore(int i)
 {
 	(void)i;
-	std::cout << "\n SIGPIPE \n";
 }
 
 int main(int argc, char *argv[])

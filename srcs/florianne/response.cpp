@@ -67,15 +67,7 @@ std::string Response::create_response()
 		_response.append("\r\n");
 	}
 	_response.append("\r\n");
-	if(_status == 404)
-		_response.append(Body404());
-	else
-		_response.append(_body);
-	// 	std::cout << it->first << " => " << it->second << '\n';
-	// _response.append("\r\n");
-
-	
-	// std::cout << "\n" << _response.substr(0, std::min(_response.length() - 1, (size_t)300)) << "\n";
+	_response.append(_body);
 
 	return(_response);
 }
@@ -113,8 +105,4 @@ void Response::cleanResponse()
 void Response::setHeaders(std::string header_name, std::string header_value)
 {
 	_headers.insert(std::pair<std::string, std::string>(header_name, header_value));
-
-	// for (std::map<std::string, std::string>::iterator it=_headers.begin(); it!=_headers.end(); ++it)
-    // 	std::cout << it->first << " => " << it->second << '\n';
-	std::cout << '\n';
 }
