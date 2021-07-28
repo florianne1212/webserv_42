@@ -68,6 +68,8 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	// for (std::map<std::string, std::string>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
     // 	std::cout << it->first << " => " << it->second << '\n';
 
+	std::cout << "\nMY BODY IS = \n" <<  _parserequest.get_body() << "\n";
+
 	_pollFD.events = POLLOUT;
 }
 

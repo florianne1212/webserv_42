@@ -56,7 +56,7 @@ bool File::fileCreate(std::string filename)
 {
 	int fd;
 
-	fd = open(filename.c_str(), O_CREAT);
+	fd = open(filename.c_str(), O_CREAT, 0644);
 
 	close(fd);
 
@@ -151,7 +151,7 @@ std::string File::fileLastModified()
 bool File::fileAppend(std::string filename, std::string to_append)
 {
 
-	std::cout << to_append;
+	std::cout << "\n to append = \n" << to_append << "\n";
 	std::ofstream outfile;
     outfile.open(filename, std::ios_base::app);
     outfile << to_append;
