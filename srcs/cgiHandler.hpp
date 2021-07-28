@@ -42,9 +42,6 @@ public:
 
 
 private:
-////////////////////////
-void recupererLeRoot(void);
-////////////////////////
 
 	void creationVectorEnviron(void);
 	void setVarEnv(void);
@@ -62,12 +59,14 @@ void recupererLeRoot(void);
 	void remoteHost(void);
 	void remoteUser(const std::string & str);
 	void requestMethod(const std::string & str);
-	void scriptNameAndScriptFilename(std::string & str);
+	bool scriptNameAndScriptFilename(std::string & str);
 	void serverName(const std::string & str);
 	void serverPort(const std::string & str);
 	void serverProtocol(void);
 	void serverSoftware(void);
 	void otherMetaVariables(void);
+	void visualizeEnviron(void) const;
+	bool checkExecutableExistence(std::string const & str);
 	std::string upperCaseAndMinus(const std::string & str);
 };
 

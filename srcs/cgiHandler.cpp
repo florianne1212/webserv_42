@@ -106,19 +106,21 @@ void CgiHandler::creationVectorEnviron(void){
 	remoteHost(); // DONE
 	remoteUser(_parsedUrl["user_name"]);//DONE
 	requestMethod(_request.getMethods()); // DONE
-	scriptNameAndScriptFilename(_parsedUrl["cgi_path"]);//DONE
+	if (!scriptNameAndScriptFilename(_parsedUrl["cgi_path"]))//DONE, checke existence de lexecutable
+		return;
 	serverName(_parsedUrl["host"]);//DONE
 	serverPort(_parsedUrl["port"]);//DONE
 	serverProtocol();//DONE
 	serverSoftware();//DONE
 	otherMetaVariables();//DONE
+	visualizeEnviron();/////A RETIRER BIEN SUR
 }
 
 void CgiHandler::setVarEnv(void){
 	size_t len = _vectorEnv.size();
 
 	if ((_varEnv = new char*[len + 1]) == NULL)
-		throw std::runtime_error("error setting CGI environnement variables");
+		throw std::runtime_error("error allocation setting CGI environnement variables");
 	for (size_t i = 0; i < len; i++)
 		_varEnv[i] = strdup(_vectorEnv[i].c_str());
 	_varEnv[len] = NULL;
@@ -296,7 +298,7 @@ void CgiHandler::requestMethod(const std::string & str)
 		throw std::runtime_error("method not supported by webserv");
 }
 
-void CgiHandler::scriptNameAndScriptFilename(std::string & str)
+bool CgiHandler::scriptNameAndScriptFilename(std::string & str)
 {
 	// scriptname
 	if (str == "")
@@ -307,7 +309,7 @@ void CgiHandler::scriptNameAndScriptFilename(std::string & str)
 		_vectorEnv.push_back("SCRIPT_NAME=" + s1);
 	}
 	//scriptFilename
-	std::string newAddress;
+	std::string newAddress = str;
 	usable<std::pair<std::string, std::string> > locationResponse = _config.getRoot(_client.getServerName(), str);
 	if (locationResponse.state == true)
 	{
@@ -316,11 +318,10 @@ void CgiHandler::scriptNameAndScriptFilename(std::string & str)
 
 	newAddress = str.replace(0, old.size(), newLoc);
 	}
-	else
-	{
-		newAddress = str;
-	}
 	_vectorEnv.push_back("SCRIPT_FILENAME=" + newAddress);
+	if (!checkExecutableExistence(newAddress))
+		return false;
+	return true;
 }
 
 
@@ -377,6 +378,20 @@ std::string CgiHandler::upperCaseAndMinus(const std::string & str)
 			newstr[i] = 95;
 	}
 	return (newstr);
+}
+
+ bool CgiHandler::checkExecutableExistence(std::string const & str)
+{
+
+	struct stat st;
+	if (stat(str.c_str(), &st) == -1)
+	{
+		_response.setStatus(404);
+		std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
+		std::cout << "cet executable n existe pas : " << str << std::endl;
+		return (false);
+	}
+	return true;
 }
 
 
@@ -519,4 +534,10 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 
 	return (parsedUrl);
 
+}
+
+void CgiHandler::visualizeEnviron(void) const {
+	std::vector<std::string>::const_iterator it;
+	for (it = _vectorEnv.begin(); it != _vectorEnv.end(); it++)
+		std::cout << *it <<std::endl;
 }
