@@ -150,12 +150,12 @@ std::string File::fileLastModified()
 
 bool File::fileAppend(std::string filename, std::string to_append)
 {
-
-	std::cout << "\n to append = \n" << to_append << "\n";
+	std::cout << "\nto append = " << to_append << "\nfilename = " << filename << "\n";
 	std::ofstream outfile;
-    outfile.open(filename, std::ios_base::app);
+    outfile.open(filename, std::ofstream::out | std::ofstream::app);
     outfile << to_append;
 
+	outfile.close();
 	return(true);
 }
 

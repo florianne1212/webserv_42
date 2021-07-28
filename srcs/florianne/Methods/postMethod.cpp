@@ -33,7 +33,7 @@ void PostMethod::handlePost(ClientSocket &client, Config &config,Request &reques
 		if(filePost.isFile())
 		{
 			std::cout << "APPEND present\n";
-			filePost.fileAppend(request.getUrl(), request.getBody());
+			filePost.fileAppend(WORKPATH + request.getUrl(), request.getBody());
 		}
 		//o create o append	
 	}
@@ -42,9 +42,8 @@ void PostMethod::handlePost(ClientSocket &client, Config &config,Request &reques
 		filePost.fileCreate(WORKPATH + request.getUrl());
 		if(filePost.isFile())
 		{
-			std::cout << "Body is = ;" << request.getBody();
 			std::cout << "APPEND create\n";
-			filePost.fileAppend(request.getUrl(), request.getBody());
+			filePost.fileAppend(WORKPATH + request.getUrl(), request.getBody());
 		}
 	}
 		

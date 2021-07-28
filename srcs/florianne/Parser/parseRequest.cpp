@@ -194,12 +194,14 @@ void ParseRequest::parse(char c)
 		case(S_BODY):
 		{
 			_parseBody.parse(c, _parseHeaderFields.get_headers_map());
+			_body = _parseBody.get_Body();
+			/*
 			if(_parseBody.get_state() == ParseBody::S_END)
 			{
 				_body = _parseBody.get_Body();
-				std::cout << "\nMY PARSE REQUEST BODY IS = \n" <<  _parseBody.get_Body() << "\n";
 				_state = S_END;
 			}
+			*/
 			break;
 		}
 		
