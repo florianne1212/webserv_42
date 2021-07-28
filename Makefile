@@ -6,7 +6,7 @@
 #    By: fcoudert <fcoudert@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/07/26 18:44:57 by fcoudert         ###   ########.fr        #
+#    Updated: 2021/07/28 14:43:52 by fcoudert         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp cgiHandler.
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address
 
 IFLAGS = $(foreach dir, $(INC_DIR), -I$(dir))
 # Colors

@@ -1,9 +1,14 @@
 
 #include "parseRequest.hpp"
 
-ParseRequest::ParseRequest(/* args */):
-_state(S_NOT_STARTED)
+ParseRequest::ParseRequest(Config &config):
+_state(S_NOT_STARTED),
+_parseBody(config),
+_config(config),
+_error(false)
 {
+
+	
 }
 
 // ParseRequest::ParseRequest(ParseRequest const & copy)
@@ -193,7 +198,7 @@ void ParseRequest::parse(char c)
 
 		case(S_BODY):
 		{
-			_parseBody.parse(c, _parseHeaderFields.get_headers_map());
+			_parseBody.parse(c, _parseHeaderFields.get_headers_map(), _path);
 			_body = _parseBody.get_Body();
 			/*
 			if(_parseBody.get_state() == ParseBody::S_END)

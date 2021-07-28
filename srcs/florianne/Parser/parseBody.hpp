@@ -5,6 +5,8 @@
 # include <map>
 # include <iostream>
 # include "parseChunkedBody.hpp"
+# include "Config.hpp"
+
 
 class ParseBody
 {
@@ -20,17 +22,19 @@ private:
 	State _state;
 	int _count;
 	ParseChunkedBody _parseChunkedBody;
+	Config _config;
+	bool _error;
 public:
-    ParseBody();
-	ParseBody(std::string ParseBody);
+    ParseBody(Config &config);
+	ParseBody(std::string ParseBody, Config &config);
     ParseBody(ParseBody const & copy);
     ~ParseBody();
     ParseBody & operator=(ParseBody const & ope);
 
 public:
-	void parse(char c, std::map<std::string, std::string> _headers);
+	void parse(char c, std::map<std::string, std::string> _headers, std::string url);
 	void parse_chunked(char c);
-	void parse_identity(char c, std::map<std::string, std::string> _headers);
+	void parse_identity(char c, std::map<std::string, std::string> _headers, std::string url);
 	std::string get_Body()
 	{
 		return(_body);

@@ -6,6 +6,7 @@
 # include "parseBody.hpp"
 # include <stdio.h>
 # include "Message.hpp"
+# include "Config.hpp"
 
 class ParseRequest
 {
@@ -43,11 +44,13 @@ class ParseRequest
 		State _state;
 		ParseHeaderFields _parseHeaderFields;
 		ParseBody _parseBody;
+		Config _config;
+		bool _error;
 
 
 
 	public:
-		ParseRequest();
+		ParseRequest(Config &config);
 		ParseRequest(ParseRequest const & copy);
 		~ParseRequest();
 		ParseRequest& operator=(ParseRequest const & ope);

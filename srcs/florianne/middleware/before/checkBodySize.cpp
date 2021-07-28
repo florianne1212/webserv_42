@@ -15,8 +15,10 @@ void CheckBodySize::handle(ClientSocket &client,Config &config, Request &request
 	
 	if(response.getStatus()/100 == 2)
 	{
+		//std::cout << "\nTOO LONG\n";
 		if(request.getBody().size() > config.getBodyMaxSize(client.getServerName(), request.getUrl()))
 			response.setStatus(413);
+		
 	}
 
 	next();

@@ -34,7 +34,7 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	char line_buf[5001] ={'\n'};
 	int i;
 	char c;
-	ParseRequest _parserequest;
+	ParseRequest _parserequest(*datas);
 	ParseHeaderFields _parseheader;
 
 
