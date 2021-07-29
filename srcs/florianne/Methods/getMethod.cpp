@@ -31,8 +31,10 @@ void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request,
 			dirpage = config.getDirectoryPage(client.getServerName(), request.getUrl());
 			
 			std::cout << "\n I AM HERE \n";
+			
 			if(dirpage.state == true)
 			{
+				//tanguy  getDirectoryPage = false
 				std::cout << "\n and HERE \n";
 				File fileDir(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
 				if (fileDir.isPresent()) {

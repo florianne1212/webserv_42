@@ -1,11 +1,10 @@
 {
 	"server":{
         "server_name": "test",
-		"listen": "127.0.0.1:8000",
+		"listen": "127.0.0.1:9000",
 		"routes": [
 			{
 				"location": "    /   ",
-				"autoIndex": "    on    ",
 				"directory_page": "   /test/index.html   ",
 				"httpRequest": "     GET POST DELETE ",				
 				"client_body_max_size": "   10   "
