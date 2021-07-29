@@ -734,16 +734,16 @@ usable<std::string> Config::getDirectoryPage(std::string serverName, std::string
 			toCompare = path.substr(0,i);
 			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
 			{
-				if (routes->second._root.state == true)
-					ret = routes->second._root;
+				if (routes->second._directoryPage.state == true)
+					ret = routes->second._directoryPage;
 			}
 			i++;
 			i = path.find('/', i);
 		}
 		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
 		{
-			if (routes->second._root.state == true)
-				ret = routes->second._root;
+			if (routes->second._directoryPage.state == true)
+				ret = routes->second._directoryPage;
 		}
 	}
 	return ret;

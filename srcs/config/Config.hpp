@@ -25,7 +25,6 @@ class Config
 		std::vector<std::string> getExpression(std::string::iterator &it, std::string::iterator end, std::string err);
 		size_t getValue(std::string::iterator &it, std::string::iterator end, std::string err);
 		void	removeIsSpace(std::string &buffer);
-		void	putConfig();
 		void	checker();
 		void	parser(std::string setupFile);
 		void	parserServer(std::string::iterator &it, std::string &buffer);
@@ -37,6 +36,8 @@ class Config
 		bool addServer(std::string name, Server &server);
 		bool setPathErrorFile(std::vector<std::string> pathErrorFile);
 		bool setBodyMaxSize(size_t bodyMaxSize);
+
+		void	putConfig();
 
 		//geter Config
 		usable<std::string> getPathErrorFile(int errorVal) const;

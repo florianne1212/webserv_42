@@ -165,7 +165,7 @@ bool File::fileAppend(std::string filename, std::string to_append)
 	std::cout << "\nto append = " << to_append << "\nfilename = " << filename << "\n";
 	// char *my_filename = str_to_char(filename);
 	std::ofstream outfile;
-    outfile.open(filename , std::ofstream::out | std::ofstream::app);
+    outfile.open(filename.c_str() , std::ofstream::out | std::ofstream::app);
     outfile << to_append;
 	//free(my_filename);
 

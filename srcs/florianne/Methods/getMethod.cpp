@@ -23,10 +23,8 @@ void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request,
 {
 	File fileGet;
 	
-	//Tanguy getDirectory always false
 	if(config.getDirectoryPage(client.getServerName(), request.getUrl()).state == true) 
 	{
-		std::cout << "\nI AM HERE IN POST \n";
 		File myupload(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
 		fileGet = myupload;
 	}

@@ -15,11 +15,8 @@
 				"directory_page": "   /test/index.html   ",
 				"root": "/test",
 				"httpRequest": "GET"
-
 			}
 		]
 	},
 	"error_path": "404 /error/404.html"
-	
-	
 }
