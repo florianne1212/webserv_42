@@ -22,29 +22,20 @@ GetMethod& GetMethod::operator=(GetMethod const & ope)
 void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request, Response &response)
 {
 	File fileGet(WORKPATH + request.getUrl());
+	
+	//Tanguy getDirectory always false
+	if(config.getDirectoryPage(client.getServerName(), request.getUrl()).state == true) 
+	{
+		std::cout << "I AM HERE";
+		File fileGet(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
+	}
+
 	if (fileGet.isPresent()) {
 		if (fileGet.isFile()) {
 			setHeader(response, fileGet);
 		} 
 		else if (fileGet.isDirectory()) {
-			usable<std::string>  dirpage;
-			dirpage = config.getDirectoryPage(client.getServerName(), request.getUrl());
-			
-			std::cout << "\n I AM HERE \n";
-			
-			if(dirpage.state == true)
-			{
-				//tanguy  getDirectoryPage = false
-				std::cout << "\n and HERE \n";
-				File fileDir(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
-				if (fileDir.isPresent()) {
-					if (fileDir.isFile()) 
-						setHeader(response, fileDir);
-				}
-				else
-					response.setStatus(404);
-			} 
-			else if(config.getAutoIndex(client.getServerName(), request.getUrl()) && *request.getUrl().rbegin() == '/')
+			if(config.getAutoIndex(client.getServerName(), request.getUrl()) && *request.getUrl().rbegin() == '/')
 				setHeader_Dir(response, setDirectory(fileGet, request.getUrl(), config.getIp(client.getServerName())));
 			else
 				response.setStatus(404);
