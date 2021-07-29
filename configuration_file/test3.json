@@ -5,17 +5,20 @@
 		"routes": [
 			{
 				"location": "    /   ",
-				"autoIndex": "    on    ",
-				"httpRequest": "     GET POST DELETE ",
+				"directory_page": "   /test/index.html   ",
+				"httpRequest": "     GET POST DELETE ",				
 				"client_body_max_size": "   10   "
 			},
 			{
 				"location": "/zozor",
+				"directory_page": "   /test/index.html   ",
 				"root": "/test",
 				"httpRequest": "GET"
+
 			}
 		]
 	},
 	"error_path": "404 /error/404.html"
+	
 	
 }

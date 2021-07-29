@@ -27,7 +27,22 @@ void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request,
 			setHeader(response, fileGet);
 		} 
 		else if (fileGet.isDirectory()) {
-			if(config.getAutoIndex(client.getServerName(), request.getUrl()) && *request.getUrl().rbegin() == '/')
+			usable<std::string>  dirpage;
+			dirpage = config.getDirectoryPage(client.getServerName(), request.getUrl());
+			
+			std::cout << "\n I AM HERE \n";
+			if(dirpage.state == true)
+			{
+				std::cout << "\n and HERE \n";
+				File fileDir(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
+				if (fileDir.isPresent()) {
+					if (fileDir.isFile()) 
+						setHeader(response, fileDir);
+				}
+				else
+					response.setStatus(404);
+			} 
+			else if(config.getAutoIndex(client.getServerName(), request.getUrl()) && *request.getUrl().rbegin() == '/')
 				setHeader_Dir(response, setDirectory(fileGet, request.getUrl(), config.getIp(client.getServerName())));
 			else
 				response.setStatus(404);
