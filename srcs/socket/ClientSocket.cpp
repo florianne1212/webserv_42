@@ -54,6 +54,8 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	_request.setUrl(_parserequest.get_path());
 	_request.setBody(_parserequest.get_body());
 
+	_request.setError(_parserequest.get_error());
+
 	_parseheader = _parserequest.get_parserfields();
 	std::map<std::string, std::string>  mymap = _parseheader.get_headers_map();
 	_request.setHeaders(mymap);

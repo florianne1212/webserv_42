@@ -71,6 +71,11 @@ std::map<std::string, std::string> Request::getParsedUri()
 	return(_parsedUri);
 }
 
+bool Request::getError()
+{
+	return (_error);
+}
+
 void	Request::setMethods(std::string str)
 {
 	this->_methods = str;
@@ -99,4 +104,9 @@ void Request::setHeaders(std::map<std::string, std::string> header)
 void Request::setParsedUri(std::map<std::string, std::string> uri)
 {
 	this->_parsedUri = uri;
+}
+
+void Request::setError(bool error)
+{
+	_error = error;
 }

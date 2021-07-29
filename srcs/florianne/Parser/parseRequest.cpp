@@ -199,14 +199,12 @@ void ParseRequest::parse(char c)
 		case(S_BODY):
 		{
 			_parseBody.parse(c, _parseHeaderFields.get_headers_map(), _path);
-			_body = _parseBody.get_Body();
-			/*
 			if(_parseBody.get_state() == ParseBody::S_END)
 			{
 				_body = _parseBody.get_Body();
+				_error = _parseBody.get_error();
 				_state = S_END;
 			}
-			*/
 			break;
 		}
 		

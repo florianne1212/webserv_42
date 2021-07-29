@@ -547,7 +547,7 @@ usable<std::string> Config::getServerName(std::string ip) const
 	{
 		adr_ip = ip.substr(0, ip.find(":"));
 	}
-	port_ip = atoi(ip.substr(ip.find(":")).c_str());
+	port_ip = atoi(ip.substr(ip.find(":") + 1).c_str());
 
 	for (std::map<std::string, Server>::const_iterator it = _serverList.begin(); it != _serverList.end(); it++)
 	{

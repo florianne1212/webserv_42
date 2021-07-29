@@ -87,7 +87,12 @@ class ParseRequest
 		{
 			return(_parseHeaderFields);
 		}
-		 
+
+		bool get_error()
+		{
+			return (_error);
+		}
+				 
 };
 
 //

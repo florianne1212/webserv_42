@@ -8,6 +8,7 @@ class Config;
 # include <map>
 # include <vector>
 # include <cstring>
+# include <cstdlib>
 # include <iostream>
 # include <fstream>
 # include <sys/stat.h>

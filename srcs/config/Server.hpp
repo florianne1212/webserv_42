@@ -8,6 +8,7 @@ class Server;
 # include <map>
 # include <vector>
 # include <cstring>
+# include <cstdlib>
 # include <iostream>
 # include <sys/stat.h>
 # include "usable.hpp"

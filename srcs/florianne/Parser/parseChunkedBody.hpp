@@ -2,6 +2,7 @@
 # define PARSECHUNKEDBODY_HPP
 
 # include <string>
+# include <cstdlib>
 # include <map>
 # include <iostream>
 

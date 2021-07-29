@@ -1,5 +1,6 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
+#include <signal.h>
 #include "Config.hpp"
 #include "FDList.hpp"
 

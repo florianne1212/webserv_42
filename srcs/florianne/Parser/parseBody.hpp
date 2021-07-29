@@ -43,6 +43,10 @@ public:
 	{
 		return(_state);
 	}
+	bool get_error()
+	{
+		return(_error);
+	}
 
 };
 

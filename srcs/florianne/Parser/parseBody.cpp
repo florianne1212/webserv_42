@@ -52,15 +52,8 @@ void ParseBody::parse_identity(char c, std::map<std::string, std::string> _heade
 {
 	if(_headers.find("Content-Length") != _headers.end())
 	{
-		//Tanguy il faut résoudre mes problémes
-		std::cout << "\nCONTENT LENGTH\n content length = " << (size_t)atoi(_headers.find("Content-Length")->second.c_str()) <<"\n";
-		std::cout << "\n content length = " << _config.getBodyMaxSize(_headers.find("Host")->second.c_str(), url) <<"\n";
 		if((size_t)atoi(_headers.find("Content-Length")->second.c_str()) > _config.getBodyMaxSize(_config.getServerName(_headers.find("Host")->second.c_str()).value, url))
-		{
-			std::cout << "\nTOO TOO LONG\n " << _body;
 			_error = true;
-			
-		}
 	}
 	if (_count < (atoi(_headers.find("Content-Length")->second.c_str()) - 1))
 	{
