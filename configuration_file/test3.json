@@ -1,7 +1,7 @@
 {
 	"server":{
         "server_name": "test",
-		"listen": "127.0.0.1:9000",
+		"listen": "127.0.0.1:9080",
 		"routes": [
 			{
 				"location": "    /   ",
@@ -16,6 +16,6 @@
 			}
 		]
 	},
-	"error_path": "404 /error.html"
+	"error_path": "404 /error/404.html"
 	
 }
