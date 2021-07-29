@@ -21,10 +21,9 @@ GetMethod& GetMethod::operator=(GetMethod const & ope)
 
 void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request, Response &response)
 {
+	File fileGet;
 	
 	//Tanguy getDirectory always false
-	File fileGet;
-
 	if(config.getDirectoryPage(client.getServerName(), request.getUrl()).state == true) 
 	{
 		std::cout << "\nI AM HERE IN POST \n";
