@@ -21,14 +21,22 @@ GetMethod& GetMethod::operator=(GetMethod const & ope)
 
 void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request, Response &response)
 {
-	File fileGet(WORKPATH + request.getUrl());
 	
 	//Tanguy getDirectory always false
+	File fileGet;
+
 	if(config.getDirectoryPage(client.getServerName(), request.getUrl()).state == true) 
 	{
-		std::cout << "I AM HERE";
-		File fileGet(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
+		std::cout << "\nI AM HERE IN POST \n";
+		File myupload(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
+		fileGet = myupload;
 	}
+	else
+	{
+		File filenormal(WORKPATH + request.getUrl());
+		fileGet = filenormal;
+	}
+
 
 	if (fileGet.isPresent()) {
 		if (fileGet.isFile()) {

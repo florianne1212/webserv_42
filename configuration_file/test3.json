@@ -1,6 +1,7 @@
 {
 	"server":{
-        "server_name": "test",
+		"server_name": "test",
+		"upload_pass":"/test",
 		"listen": "127.0.0.1:9000",
 		"routes": [
 			{

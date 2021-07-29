@@ -163,11 +163,11 @@ char *File::str_to_char(std::string s)
 bool File::fileAppend(std::string filename, std::string to_append)
 {
 	std::cout << "\nto append = " << to_append << "\nfilename = " << filename << "\n";
-	char *my_filename = str_to_char(filename);
+	// char *my_filename = str_to_char(filename);
 	std::ofstream outfile;
-    outfile.open(my_filename , std::ofstream::out | std::ofstream::app);
+    outfile.open(filename , std::ofstream::out | std::ofstream::app);
     outfile << to_append;
-	free(my_filename);
+	//free(my_filename);
 
 	outfile.close();
 	return(true);

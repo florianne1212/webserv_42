@@ -27,7 +27,22 @@ void PostMethod::handlePost(ClientSocket &client, Config &config,Request &reques
 	(void)response;
 
 	std::cout << "\nPOST POST\n";
-	File filePost(WORKPATH + request.getUrl());
+	File filePost;
+
+	if(config.getUploadDir(client.getServerName()).state == true) 
+	{
+		std::cout << "\nI AM HERE IN POST \n";
+		File myupload(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
+		filePost = myupload;
+	}
+	else
+	{
+		File filenormal(WORKPATH + request.getUrl());
+		filePost = filenormal;
+	}
+	
+
+	
 
 	if (filePost.isPresent()) {
 		if(filePost.isFile())
