@@ -28,7 +28,7 @@ isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp cgiHandler.
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
-CFLAGS = -Wall -Wextra -Werror #-std=c++98 -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -std=c++98 #-g3 -fsanitize=address
 
 IFLAGS = $(foreach dir, $(INC_DIR), -I$(dir))
 # Colors

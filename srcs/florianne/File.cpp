@@ -116,8 +116,6 @@ size_t File::fileLength()
 	return(_stats.st_size);
 }
 
-#include <stdio.h>
-
 std::string File::convert_int_to_string(int nb)
 {
 	std::string str;
@@ -148,12 +146,28 @@ std::string File::fileLastModified()
 	return(str);
 }
 
+char *File::str_to_char(std::string s)
+{
+    int n = s.length();
+ 
+    // declaring character array
+    char *my_array;
+
+	if(!(my_array = (char *)malloc(sizeof(char) * (n+1))))
+    // copying the contents of the
+    // string to char array
+    strcpy(my_array, s.c_str());
+	return(my_array);
+}
+
 bool File::fileAppend(std::string filename, std::string to_append)
 {
 	std::cout << "\nto append = " << to_append << "\nfilename = " << filename << "\n";
+	char *my_filename = str_to_char(filename);
 	std::ofstream outfile;
-    outfile.open(filename, std::ofstream::out | std::ofstream::app);
+    outfile.open(my_filename , std::ofstream::out | std::ofstream::app);
     outfile << to_append;
+	free(my_filename);
 
 	outfile.close();
 	return(true);

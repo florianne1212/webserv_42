@@ -4,6 +4,8 @@
 
 # include <string>
 # include <cstddef>
+# include <algorithm>
+# include <stdio.h>
 
 struct SocketA //les sockets autres que les socket listen
 {
@@ -83,7 +85,6 @@ Container& split(
 
 //   return 0;
 // }
-
 
 
 #endif

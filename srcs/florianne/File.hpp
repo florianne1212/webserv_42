@@ -13,9 +13,11 @@ class File;
 # include <list>
 # include <iterator>
 # include <iostream>
+# include <stdlib.h>
 # include <fstream> 
 # include "mime.hpp"
 # include <sstream> 
+# include <cstring>
 
 class File{
 
@@ -42,6 +44,7 @@ class File{
 		std::list<std::string> listDirFiles();
 		std::string find_content();
 		std::string convert_int_to_string(int);
+		char *str_to_char(std::string s);
 		struct stat getStat();
 		bool fileAppend(std::string filename, std::string to_append);
 

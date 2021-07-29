@@ -5,6 +5,7 @@
 # include <map>
 # include <iostream>
 # include "httpStatus.hpp"
+# include <stdlib.h>
 
 class Response
 {
@@ -31,6 +32,7 @@ public:
 	void setBody(std::string str);
 	void setStatus(int status);
 	void setHeaders(std::string header_name, std::string header_value);
+	std::string int_to_str(int n);
 };
 
 

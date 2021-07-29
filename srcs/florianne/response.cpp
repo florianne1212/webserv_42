@@ -1,4 +1,5 @@
 #include "response.hpp"
+# include "utils.hpp"
 #include <algorithm>
 
 Response::Response(/* args */):
@@ -51,9 +52,36 @@ std::string Response::Body404()
 	return(response_body);
 }
 
+std::string Response::int_to_str(int n) 
+{ 
+	if (n == 0) 
+		return "0"; 
+	bool sign = true; //false represents "-" 
+	if (n < 0) 
+	{ 
+		sign = false; 
+		n = -n; 
+	} 
+	std::string ret; 
+	if (!sign) 
+		ret.push_back('-'); 
+	while (n != 0) 
+	{ 
+		ret.push_back('0' + n % 10); 
+		n /= 10; 
+	} 
+	if (sign) 
+	    std::reverse(ret.begin(), ret.end()); 
+	else 
+	    std::reverse(ret.begin() + 1, ret.end()); 
+	return ret; 
+} 
+
+
+
 std::string Response::create_response()
 {
-	std::string s = std::to_string(_status);
+	std::string s = int_to_str(_status);
 	_response.append("HTTP/1.1 ");
 	_response.append(s);
 	_response.append(" ");
