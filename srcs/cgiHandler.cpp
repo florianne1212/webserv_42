@@ -76,8 +76,11 @@ CgiHandler & CgiHandler::operator= (const CgiHandler & other)
 
 void CgiHandler::executeCgi(void){
 	creationVectorEnviron();
+	if(_response.getStatus()/100 == 2)
+	{
 	setVarEnv();
 	executingCgi();
+	}
 }
 
 /*
@@ -319,8 +322,8 @@ bool CgiHandler::scriptNameAndScriptFilename(std::string & str)
 	newAddress = str.replace(0, old.size(), newLoc);
 	}
 	_vectorEnv.push_back("SCRIPT_FILENAME=" + newAddress);
-	if (!checkExecutableExistence(newAddress))
-		return false;
+	// if (!checkExecutableExistence(newAddress))
+	// 	return false;
 	return true;
 }
 
@@ -439,13 +442,21 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	std::map<std::string, std::string> parsedUrl;
 	std::string userinfo;
 
-//on cherche le scheme
-	found = url.find_first_of(":");
+//on cherche si scheme et on l'extrait, http sinon
+
+	found = url.find("//");
 	if (found != url.npos)
 	{
-		parsedUrl.insert(std::make_pair("scheme", url.substr(0, found)));
-		url = url.substr(found + 1);
+		found = url.find_first_of(":");
+		if (found != url.npos)
+		{
+			parsedUrl.insert(std::make_pair("scheme", url.substr(0, found)));
+			url = url.substr(found + 1);
+		}
 	}
+	else
+		parsedUrl.insert(std::make_pair("scheme", "http"));
+
 	// //checking scheme (doit etre http pour nous...)
 	// if (parsedUrl["scheme"] != "http")
 	// {
@@ -454,6 +465,7 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	// 	return (parsedUrl);
 	// }
 //on cherche le fragment
+
 	found = url.find_first_of("#");
 	if (found != url.npos)
 	{
@@ -470,9 +482,11 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	}
 
 //on cherche si authority
-	if (url.substr(0, 2) == "//") //il existe authority, a parser,
+
+	if (url.substr(0, 2) == "//" || url.substr(0, 1) != "/") //il existe authority, a parser,
 	{
-		url = url.substr(2);
+		if (url.substr(0, 2) == "//")
+			url = url.substr(2);
 		found = url.find_first_of("/");//on separe le chemin
 		if (found == url.npos)
 		{
@@ -521,23 +535,35 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 		std::string cgiPath = parsedUrl["path"].substr(0, found + 4);
 		UrlDecoder(cgiPath);
 		found = parsedUrl["path"].find_first_of("/", found + 4);
-		std::string additionnalPath = parsedUrl["path"].substr(found);
-		UrlDecoder(additionnalPath);
+		if (found != std::string::npos)
+		{
+			std::string additionnalPath = parsedUrl["path"].substr(found);
+			UrlDecoder(additionnalPath);
+			parsedUrl.insert(std::make_pair("additionnal_path", additionnalPath));
+		}
+		else
+			parsedUrl.insert(std::make_pair("additionnal_path", ""));
 		//on met le "real path" en fonction de "location  de - \.php"
 		// std::string root =  "";//donnees a recuperer de config
 		// cgiPath = root + "/" + cgiPath;
 		// additionnalPath = root + "/" + additionnalPath;
-		parsedUrl.insert(std::make_pair("additionnal_path", additionnalPath));
 		parsedUrl.insert(std::make_pair("cgi_path", cgiPath));
 	}
 	//else determination de la location en fonction de l'adresse et creation du real path
+	//a enlever
+	std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n PARSED URL\n";
+	for (std::map<std::string, std::string>::iterator it = parsedUrl.begin(); it != parsedUrl.end(); ++it)
+		std::cout << it->first << " : " << it->second <<"\n";
+	std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 
+	//a enlever
 	return (parsedUrl);
-
 }
 
 void CgiHandler::visualizeEnviron(void) const {
+	std::cout << "<<<<<<<<<<<<< MES VARIABLES ENVIRONNEMENT CGI >>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 	std::vector<std::string>::const_iterator it;
 	for (it = _vectorEnv.begin(); it != _vectorEnv.end(); it++)
 		std::cout << *it <<std::endl;
+	std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 }
