@@ -59,7 +59,7 @@ private:
 	void remoteHost(void);
 	void remoteUser(const std::string & str);
 	void requestMethod(const std::string & str);
-	bool scriptNameAndScriptFilename(std::string & str);
+	bool scriptName(std::string & str);
 	void serverName(const std::string & str);
 	void serverPort(const std::string & str);
 	void serverProtocol(void);

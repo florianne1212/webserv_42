@@ -12,7 +12,8 @@ ASocket::~ASocket(){}
 
 ASocket::ASocket(const ASocket & other) :
 	_fd(other._fd),
-	_pollFD(other._pollFD)
+	_pollFD(other._pollFD),
+	_serverName(other._serverName)
 {}
 
 ASocket & ASocket::operator=(const ASocket & other){
@@ -20,6 +21,7 @@ ASocket & ASocket::operator=(const ASocket & other){
 	{
 		_fd = other._fd;
 		_pollFD = other._pollFD;
+		_serverName = other._serverName;
 	}
 	return (*this);
 }
@@ -37,7 +39,7 @@ struct pollfd ASocket::getPollFD(void) const{
 }
 
 std::string ASocket::getServerName() const{
-	return _serverName;	
+	return _serverName;
 }
 
 void ASocket::setPollFD(struct pollfd toSet)

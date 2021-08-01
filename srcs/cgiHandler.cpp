@@ -11,6 +11,8 @@ CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request& request,
 {
 	_headers = request.getHeaders();
 	_parsedUrl = parseTheUri(request.getUrl());
+	// std::cout << "server name = " << client.getServerName() << "\n";
+	std::cout << "URL transmise = " << request.getUrl()<< "\n";
 }
 
 CgiHandler::~CgiHandler()
@@ -109,7 +111,7 @@ void CgiHandler::creationVectorEnviron(void){
 	remoteHost(); // DONE
 	remoteUser(_parsedUrl["user_name"]);//DONE
 	requestMethod(_request.getMethods()); // DONE
-	if (!scriptNameAndScriptFilename(_parsedUrl["cgi_path"]))//DONE, checke existence de lexecutable
+	if (!scriptName(_parsedUrl["cgi_path"]))//DONE, checke existence de lexecutable
 		return;
 	serverName(_parsedUrl["host"]);//DONE
 	serverPort(_parsedUrl["port"]);//DONE
@@ -255,11 +257,11 @@ void CgiHandler::gatewayInterface(void)
 
 void CgiHandler::pathInfo(const std::string & str)
 {
-	if (str == "") ///JE NE SAIS PAS S IL FAUT METTRE CHEMIN ABSOLU ICI
-	{
-		_vectorEnv.push_back("PATH_INFO=");
-		return ;
-	}
+	// if (str == "") ///JE NE SAIS PAS S IL FAUT METTRE CHEMIN ABSOLU ICI
+	// {
+	// 	_vectorEnv.push_back("PATH_INFO=");
+	// 	return ;
+	// }
 	//mise en place chemin absolu
 	char* buf = NULL;
 	buf = getcwd(buf, 0);
@@ -284,7 +286,7 @@ void CgiHandler::remoteAddr(const std::string & str)
 
 void CgiHandler::remoteHost(void)
 {
-	std::string s = "";
+	std::string s = _client.getClientAddress();
 	_vectorEnv.push_back("REMOTE_HOST=" + s);
 }
 
@@ -301,27 +303,30 @@ void CgiHandler::requestMethod(const std::string & str)
 		throw std::runtime_error("method not supported by webserv");
 }
 
-bool CgiHandler::scriptNameAndScriptFilename(std::string & str)
+bool CgiHandler::scriptName(std::string & str)
 {
 	// scriptname
-	if (str == "")
+	// if (str == "")
 		_vectorEnv.push_back("SCRIPT_NAME=" + str);
-	else
-	{
-		std::string s1 = "/" + str;
-		_vectorEnv.push_back("SCRIPT_NAME=" + s1);
-	}
+	// else
+	// {
+	// 	std::string s1 = "/" + str;
+	// 	_vectorEnv.push_back("SCRIPT_NAME=" + s1);
+	// }
 	//scriptFilename
-	std::string newAddress = str;
-	usable<std::pair<std::string, std::string> > locationResponse = _config.getRoot(_client.getServerName(), str);
-	if (locationResponse.state == true)
-	{
-	std::string old = locationResponse.value.first;
-	std::string newLoc = locationResponse.value.second;
+	// std::string newAddress = str;
+	// usable<std::pair<std::string, std::string> > locationResponse = _config.getRoot(_client.getServerName(), str);
+	// if (locationResponse.state == true)
+	// {
+	// std::string old = locationResponse.value.first;
+	// std::string newLoc = locationResponse.value.second;
 
-	newAddress = str.replace(0, old.size(), newLoc);
-	}
-	_vectorEnv.push_back("SCRIPT_FILENAME=" + newAddress);
+	// newAddress = str.replace(0, old.size(), newLoc);
+	// }
+	// _vectorEnv.push_back("SCRIPT_FILENAME=" + newAddress);
+
+	checkExecutableExistence(str);
+
 	// if (!checkExecutableExistence(newAddress))
 	// 	return false;
 	return true;
@@ -330,7 +335,10 @@ bool CgiHandler::scriptNameAndScriptFilename(std::string & str)
 
 void CgiHandler::serverName(const std::string & str)
 {
+	if (str != "")
 		_vectorEnv.push_back("SERVER_NAME=" + str);
+	else
+		_vectorEnv.push_back("SERVER_NAME=" + _client.getServerName());
 }
 
 void CgiHandler::serverPort(const std::string & str)
@@ -338,6 +346,7 @@ void CgiHandler::serverPort(const std::string & str)
 	if (str == "")
 	{
 		unsigned short port = _config.getPort(_client.getServerName());
+		std::cout << "LE PORT EST : " << port <<"\n";
 		std::ostringstream s;
 
 		s << port;
@@ -385,15 +394,18 @@ std::string CgiHandler::upperCaseAndMinus(const std::string & str)
 
  bool CgiHandler::checkExecutableExistence(std::string const & str)
 {
-
+	std::string str1 = WORKPATH + str;
 	struct stat st;
-	if (stat(str.c_str(), &st) == -1)
+	if (stat(str1.c_str(), &st) == -1)
 	{
 		_response.setStatus(404);
 		std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
 		std::cout << "cet executable n existe pas : " << str << std::endl;
 		return (false);
 	}
+	std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
+		std::cout << "cet executable existe : " << str << std::endl;
+
 	return true;
 }
 
