@@ -6,7 +6,7 @@
 ** -------------------------------------------------------------------------------
 */
 
-CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request& request, Response & response):
+CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request& request, Response* response):
 	_vectorEnv(0), _varEnv(0), _instructionsCGI(0), _client(client),_config(config), _request(request), _response(response)
 {
 	_headers = request.getHeaders();
@@ -80,7 +80,7 @@ CgiHandler & CgiHandler::operator= (const CgiHandler & other)
 
 void CgiHandler::executeCgi(void){
 	creationVectorEnviron();
-	if(_response.getStatus()/100 == 2)
+	if(_response->getStatus()/100 == 2)
 	{
 	setVarEnv();
 	setInstructionCgi();
@@ -213,14 +213,15 @@ void CgiHandler::executingCgi(void)
 		cgiResponse += buf;
 		close (fdPipeOut[0]);
 		//decoupage en header et body eventuel, calcul eventuel du body size
-		size_t pos = cgiResponse.find("\r\n\r\n");
-		std::string header = cgiResponse.substr(0, pos);
-		if (pos != cgiResponse.npos)
-		{
-			std::string body = cgiResponse.substr(pos + 4);
-			size_t bodySize = body.length();
-			(void)bodySize;
-		}
+		// size_t pos = cgiResponse.find("\r\n\r\n");
+		// std::string header = cgiResponse.substr(0, pos);
+		// if (pos != cgiResponse.npos)
+		// {
+		// 	std::string body = cgiResponse.substr(pos + 4);
+		// 	size_t bodySize = body.length();
+		// 	(void)bodySize;
+		// }
+		_response->setCgiResponse(cgiResponse);
 	}
 }
 
@@ -421,7 +422,7 @@ std::string CgiHandler::upperCaseAndMinus(const std::string & str)
 	struct stat st;
 	if (stat(str1.c_str(), &st) == -1)
 	{
-		_response.setStatus(404);
+		_response->setStatus(404);
 		std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
 		std::cout << "cet executable n existe pas : " << str << std::endl;
 		return (false);

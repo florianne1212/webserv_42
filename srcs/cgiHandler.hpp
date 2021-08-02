@@ -25,7 +25,7 @@ protected:
 	ClientSocket _client;
 	Config _config;
 	Request _request;
-	Response _response;
+	Response* _response;
 	std::map<std::string, std::string> _parsedUrl;
 	std::map<std::string, std::string> _headers;
 	std::string _pathForExec;
@@ -34,7 +34,7 @@ private:
 	CgiHandler();
 
 public:
-	CgiHandler(ClientSocket& client, Config & config, Request& request, Response & response);
+	CgiHandler(ClientSocket& client, Config & config, Request& request, Response * response);
 	~CgiHandler();
 	CgiHandler(CgiHandler const & other);
 	CgiHandler & operator= (const CgiHandler & other);

@@ -134,3 +134,8 @@ void Response::setHeaders(std::string header_name, std::string header_value)
 {
 	_headers.insert(std::pair<std::string, std::string>(header_name, header_value));
 }
+
+void Response::setCgiResponse(std::string cgiResponse)
+{
+	_response = cgiResponse;
+}
