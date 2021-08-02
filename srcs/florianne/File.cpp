@@ -1,4 +1,5 @@
 #include "File.hpp"
+#include "buffer.hpp"
 
 File::File()
 {
@@ -162,14 +163,17 @@ char *File::str_to_char(std::string s)
 
 bool File::fileAppend(std::string filename, std::string to_append)
 {
-	std::cout << "\nto append = " << to_append << "\nfilename = " << filename << "\n";
-	// char *my_filename = str_to_char(filename);
+	//std::cout << "\nto append = " << to_append << "\nfilename = " << filename << "\n";
+	Buffer out(to_append, 0);
+	int fd_out = ::open(filename.c_str(), O_APPEND);
+	if (out.flush(fd_out) == true)
+		close(fd_out);
+	/*
 	std::ofstream outfile;
     outfile.open(filename.c_str() , std::ofstream::out | std::ofstream::app);
     outfile << to_append;
-	//free(my_filename);
-
 	outfile.close();
+	*/
 	return(true);
 }
 

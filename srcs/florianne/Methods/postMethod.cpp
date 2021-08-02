@@ -26,40 +26,44 @@ void PostMethod::handlePost(ClientSocket &client, Config &config,Request &reques
 	(void)config;
 	(void)response;
 
+	std::string url;
+
 	std::cout << "\nPOST POST\n";
-	File filePost;
 
-	if(config.getUploadDir(client.getServerName()).state == true) 
-	{
-		std::cout << "\nI AM HERE IN POST \n";
-		File myupload(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
-		filePost = myupload;
-	}
-	else
-	{
-		File filenormal(WORKPATH + request.getUrl());
-		filePost = filenormal;
-	}
-	
-
-	
+	if(config.getUploadDir(client.getServerName()).state == true)
+    {
+        std::cout << "\nI AM HERE IN POST \n";
+        url = WORKPATH + config.getUploadDir(client.getServerName()).value + request.getUrl();
+    }
+    else
+        url = WORKPATH + request.getUrl();
+    File filePost(url);
 
 	if (filePost.isPresent()) {
-		if(filePost.isFile())
-		{
-			std::cout << "APPEND present\n";
-			filePost.fileAppend(WORKPATH + request.getUrl(), request.getBody());
-		}
-		//o create o append	
-	}
-	else {
-		std::cout << "CREATION\n";
-		filePost.fileCreate(WORKPATH + request.getUrl());
-		if(filePost.isFile())
-		{
-			std::cout << "APPEND create\n";
-			filePost.fileAppend(WORKPATH + request.getUrl(), request.getBody());
-		}
-	}
-		
+        if(filePost.isFile())
+        {
+            std::cout << "APPEND present\n";
+            filePost.fileAppend(url, request.getBody());
+        }
+        else
+        {
+            std::cout << "CREATION IS Present\n";
+			filePost.fileCreate(url);
+            if(filePost.isFile())
+            {
+                std::cout << "APPEND create is present\n";
+                filePost.fileAppend(url + "/" , request.getBody());
+            }
+        }
+        //o create o append
+    }
+    else {
+        std::cout << "CREATION\n";
+        filePost.fileCreate(url);
+        if(filePost.isFile())
+        {
+            std::cout << "APPEND create\n";
+            filePost.fileAppend(url, request.getBody());
+        }
+    }
 }

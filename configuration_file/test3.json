@@ -2,11 +2,11 @@
 	"server":{
 		"server_name": "test",
 		"upload_pass":"/test",
-		"listen": "127.0.0.1:9002",
+		"listen": "127.0.0.1:9080",
 		"routes": [
 			{
 				"location": "    /   ",
-				"directory_page": "   /test/index.html   ",
+				"autoIndex": "on",
 				"httpRequest": "     GET POST DELETE ",
 				"client_body_max_size": "   10   "
 			},
