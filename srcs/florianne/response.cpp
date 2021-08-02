@@ -140,3 +140,13 @@ void Response::setCgiResponse(std::string const & cgiResponse)
 {
 	_response = cgiResponse;
 }
+
+void Response::setAppend(std::string filename, std::string to_append)
+{
+	_append = usable<std::pair<std::string, std::string> >(std::pair<std::string, std::string>(filename, to_append));
+}
+
+usable<std::pair<std::string, std::string> > Response::getAppend()
+{
+	return(_append);
+}

@@ -18,6 +18,9 @@ class ClientSocket : public ASocket
 		Request		_request;
 		Buffer		_buffer;
 		bool		_responseSent;
+		bool _test;
+		bool _apend;
+		int _fd_out;
 
 	public :
 		ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort);
