@@ -3,7 +3,9 @@
 
 class Config;
 
-# define WORKPATH "./workDir"
+// # define WORKPATH "./workDir"
+
+// # define WORKPATH "./testingDirectory"
 
 # include <map>
 # include <vector>
@@ -44,7 +46,7 @@ class Config
 		size_t getBodyMaxSize(std::string serverName, std::string path) const;
 		std::map<std::string, Server>::const_iterator getServerBegin(void) const;
 		std::map<std::string, Server>::const_iterator getServerEnd(void) const;
-		//geter Server		
+		//geter Server
 		usable<std::string> getServerName(std::string ip) const;
 		std::string getIp(std::string serverName) const;
 		unsigned short getPort(std::string serverName) const;

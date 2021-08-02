@@ -6,7 +6,7 @@
 ** -------------------------------------------------------------------------------
 */
 
-CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request& request, Response* response):
+CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request, Response* response):
 	_vectorEnv(0), _varEnv(0), _instructionsCGI(0), _client(client),_config(config), _request(request), _response(response)
 {
 	_headers = request.getHeaders();
@@ -222,6 +222,7 @@ void CgiHandler::executingCgi(void)
 		// 	(void)bodySize;
 		// }
 		_response->setCgiResponse(cgiResponse);
+		_response->_cgiResponse = true;
 	}
 }
 

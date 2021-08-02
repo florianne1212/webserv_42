@@ -34,7 +34,7 @@ private:
 	CgiHandler();
 
 public:
-	CgiHandler(ClientSocket& client, Config & config, Request& request, Response * response);
+	CgiHandler(ClientSocket & client, Config & config, Request & request, Response * response);
 	~CgiHandler();
 	CgiHandler(CgiHandler const & other);
 	CgiHandler & operator= (const CgiHandler & other);

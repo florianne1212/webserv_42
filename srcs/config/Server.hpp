@@ -3,7 +3,7 @@
 
 class Server;
 
-# define WORKPATH "./workDir"
+// # define WORKPATH "./workDir"
 
 # include <map>
 # include <vector>
@@ -17,7 +17,7 @@ class Server;
 class Server
 {
 	private :
-		std::map<std::string, Routes>	_routes; 
+		std::map<std::string, Routes>	_routes;
 		usable<std::string>				_ip;
 		usable<unsigned short>			_port;
 		usable<std::string>				_uploadDir;

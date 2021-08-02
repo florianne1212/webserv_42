@@ -6,7 +6,7 @@
 # include <iostream>
 # include "httpStatus.hpp"
 # include <stdlib.h>
-# include "../../utils/usable.hpp"
+# include "..//utils/usable.hpp"
 
 class Response
 {
@@ -17,6 +17,7 @@ public:
 	std::string _body;
 	// usable<std::string> _response;
 	std::string _response;
+	bool _cgiResponse;
 
 public:
 	Response(/* args */);
@@ -35,7 +36,7 @@ public:
 	void setStatus(int status);
 	void setHeaders(std::string header_name, std::string header_value);
 	std::string int_to_str(int n);
-	void setCgiResponse(std::string cgiResponse);
+	void setCgiResponse(std::string const & cgiResponse);
 };
 
 

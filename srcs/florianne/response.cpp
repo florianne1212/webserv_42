@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Response::Response(/* args */):
-_status(200)
+_status(200), _cgiResponse(false)
 {
 }
 
@@ -23,6 +23,7 @@ Response& Response::operator=(Response const & ope)
         this->_status = ope._status;
 		this->_body = ope._body;
         this->_headers = ope._headers;
+		this->_cgiResponse = ope._cgiResponse;
     }
     return (*this);
 }
@@ -48,34 +49,34 @@ std::string Response::Body404()
 		"<p>Page not found</p>\n"
 		"</body>\n"
 		"</html>";
-	
+
 	return(response_body);
 }
 
-std::string Response::int_to_str(int n) 
-{ 
-	if (n == 0) 
-		return "0"; 
-	bool sign = true; //false represents "-" 
-	if (n < 0) 
-	{ 
-		sign = false; 
-		n = -n; 
-	} 
-	std::string ret; 
-	if (!sign) 
-		ret.push_back('-'); 
-	while (n != 0) 
-	{ 
-		ret.push_back('0' + n % 10); 
-		n /= 10; 
-	} 
-	if (sign) 
-	    std::reverse(ret.begin(), ret.end()); 
-	else 
-	    std::reverse(ret.begin() + 1, ret.end()); 
-	return ret; 
-} 
+std::string Response::int_to_str(int n)
+{
+	if (n == 0)
+		return "0";
+	bool sign = true; //false represents "-"
+	if (n < 0)
+	{
+		sign = false;
+		n = -n;
+	}
+	std::string ret;
+	if (!sign)
+		ret.push_back('-');
+	while (n != 0)
+	{
+		ret.push_back('0' + n % 10);
+		n /= 10;
+	}
+	if (sign)
+	    std::reverse(ret.begin(), ret.end());
+	else
+	    std::reverse(ret.begin() + 1, ret.end());
+	return ret;
+}
 
 
 
@@ -135,7 +136,7 @@ void Response::setHeaders(std::string header_name, std::string header_value)
 	_headers.insert(std::pair<std::string, std::string>(header_name, header_value));
 }
 
-void Response::setCgiResponse(std::string cgiResponse)
+void Response::setCgiResponse(std::string const & cgiResponse)
 {
 	_response = cgiResponse;
 }
