@@ -35,7 +35,8 @@ CgiHandler::~CgiHandler()
 
 CgiHandler::CgiHandler(CgiHandler const & other):
 	_vectorEnv(other._vectorEnv), _varEnv(other._varEnv), _instructionsCGI(other._instructionsCGI),
-	_client(other._client),_config(other._config), _request(other._request),_response(other._response), _parsedUrl(other._parsedUrl), _headers(other._headers)
+	_client(other._client),_config(other._config), _request(other._request),_response(other._response), _parsedUrl(other._parsedUrl), _headers(other._headers),
+	_pathForExec(other._pathForExec)
 	{}
 
 CgiHandler & CgiHandler::operator= (const CgiHandler & other)
@@ -65,6 +66,7 @@ CgiHandler & CgiHandler::operator= (const CgiHandler & other)
 		_response = other._response;
 		_parsedUrl = other._parsedUrl;
 		_headers = other._headers;
+		_pathForExec = other._pathForExec;
 	}
 	return (*this);
 
@@ -81,6 +83,7 @@ void CgiHandler::executeCgi(void){
 	if(_response.getStatus()/100 == 2)
 	{
 	setVarEnv();
+	setInstructionCgi();
 	executingCgi();
 	}
 }
@@ -90,13 +93,14 @@ void CgiHandler::executeCgi(void){
 ** ------------------- PRIVATE FUNCTIONS -----------------------------------------
 ** -------------------------------------------------------------------------------
 */
-// void CgiHandler::recupererLeRoot(void)
-// {
-// 	std::string lecheminduroot;
-// 	if( _config.getRoot().state == true)
-// 		lecheminduroot = _config.getRoot();
-
-// }
+void CgiHandler::setInstructionCgi(void)
+{
+	if (!(_instructionsCGI = new char*[2]))
+		throw std::runtime_error("error allocation setting CGI instructions");
+	_instructionsCGI[0] = strdup(_pathForExec.substr(_pathForExec.find_last_of("/") + 1).c_str());
+	std::cout << _instructionsCGI[0] << "<---------instructionCGI\n";
+	_instructionsCGI[1] = NULL;
+}
 
 
 void CgiHandler::creationVectorEnviron(void){
@@ -118,6 +122,7 @@ void CgiHandler::creationVectorEnviron(void){
 	serverProtocol();//DONE
 	serverSoftware();//DONE
 	otherMetaVariables();//DONE
+	redirectStatus();
 	visualizeEnviron();/////A RETIRER BIEN SUR
 }
 
@@ -163,18 +168,22 @@ void CgiHandler::executingCgi(void)
 	{
 		close(fdPipeOut[0]);
 		if (dup2(fdPipeOut[1], STDOUT_FILENO) < 0)
-			std::cerr << "error with dup2 in CGIson\n";
+			std::cerr << "error with dup2 in CGI son\n";
 		close(fdPipeOut[1]);
 
 		if (_request.getMethods() == "POST")
 		{
 			close(fdPipeIn[1]);
 			if(dup2(fdPipeIn[0], STDIN_FILENO) < 0)
-				std::cerr << "error with dup2 in CGIson\n";
+				std::cerr << "error with dup2 in CGI son\n";
 			close(fdPipeIn[0]);
 		}
-		// chdir("le string du chemin".c_str()) on se met dans le bon repertoire pour execve
-		if (execve(_instructionsCGI[0], _instructionsCGI, _varEnv)< 0)
+		// std::cerr << "le chemin pour l'executable est : " << _pathForExec.substr(0, _pathForExec.find_last_of("/") + 1) << "\n";
+		chdir((_pathForExec.substr(0, _pathForExec.find_last_of("/")).c_str())); //on se met dans le bon repertoire pour execve
+	// 	char* buf = NULL;
+	// buf = getcwd(buf, 0);
+	// 	std::cerr << " nous sommes dans : " << buf << "\n";
+ 		if (execve(_instructionsCGI[0], _instructionsCGI, _varEnv)< 0)
 			std::cerr << "error with CGI execution\n";
 		exit(1);
 	}
@@ -192,20 +201,26 @@ void CgiHandler::executingCgi(void)
 		//la partie qui recupere l'info du cgi
 		//voir si modif boucle pour les chunked unchunked
 		std::string cgiResponse;
-		char buf[1024];
-		ssize_t x;
-		while ((x = read(fdPipeOut[0], buf, 1024)) == 1024)
+		char buf[2049] = {0};
+		ssize_t readResult;
+		while ((readResult = read(fdPipeOut[0], buf, 2048)) > 0)
+		{
 			cgiResponse += buf;
-		if (x < 0)
+			memset(buf, 0, 2049);
+		}
+		if (readResult < 0)
 			throw std::runtime_error("error while receiving cgi response");
 		cgiResponse += buf;
 		close (fdPipeOut[0]);
 		//decoupage en header et body eventuel, calcul eventuel du body size
 		size_t pos = cgiResponse.find("\r\n\r\n");
 		std::string header = cgiResponse.substr(0, pos);
-		std::string body = cgiResponse.substr(pos + 4);
-		size_t bodySize = body.length();
-		(void)bodySize;
+		if (pos != cgiResponse.npos)
+		{
+			std::string body = cgiResponse.substr(pos + 4);
+			size_t bodySize = body.length();
+			(void)bodySize;
+		}
 	}
 }
 
@@ -270,6 +285,7 @@ void CgiHandler::pathInfo(const std::string & str)
 	std::string s2 = static_cast<std::string>(buf) + "/" + str;
 	// std::cout << "path info : " << s2 << std::endl;
 	_vectorEnv.push_back("PATH_INFO=" + s2);
+	_pathForExec = s2;
 	if (buf)
 		free (buf);
 }
@@ -308,6 +324,7 @@ bool CgiHandler::scriptName(std::string & str)
 	// scriptname
 	// if (str == "")
 		_vectorEnv.push_back("SCRIPT_NAME=" + str);
+		_pathForExec += (WORKPATH + str);
 	// else
 	// {
 	// 	std::string s1 = "/" + str;
@@ -364,7 +381,7 @@ void CgiHandler::serverProtocol(void)
 
 void CgiHandler::serverSoftware(void)
 {
-	_vectorEnv.push_back("SERVER_SOFTWARE=leServeurDeFlorianneEtTanguyEtLaurent/1.0");
+	_vectorEnv.push_back("SERVER_SOFTWARE=le_Serveur_De_Florianne_Tanguy_Et_Laurent/1.0");
 }
 
 void CgiHandler::otherMetaVariables(void)
@@ -377,6 +394,12 @@ void CgiHandler::otherMetaVariables(void)
 		_vectorEnv.push_back(str);
 	}
 	_headers.clear();
+}
+
+//apparemment necessaire pour php-cgi
+void CgiHandler::redirectStatus(void)
+{
+	_vectorEnv.push_back("REDIRECT_STATUS=200");
 }
 
 std::string CgiHandler::upperCaseAndMinus(const std::string & str)

@@ -28,6 +28,7 @@ protected:
 	Response _response;
 	std::map<std::string, std::string> _parsedUrl;
 	std::map<std::string, std::string> _headers;
+	std::string _pathForExec;
 
 private:
 	CgiHandler();
@@ -45,7 +46,7 @@ private:
 
 	void creationVectorEnviron(void);
 	void setVarEnv(void);
-	// void setInstructionCGI(void) a faire soit un seul argument, soit on a une extension en plus pour l'executable
+	void setInstructionCgi(void);
 	void executingCgi(void);
 
 	void auth(const std::string & str);
@@ -68,6 +69,7 @@ private:
 	void visualizeEnviron(void) const;
 	bool checkExecutableExistence(std::string const & str);
 	std::string upperCaseAndMinus(const std::string & str);
+	void redirectStatus(void);
 };
 
 void UrlDecoder(std::string & str);

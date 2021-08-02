@@ -16,7 +16,10 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 	{
 		if ((request.getUrl().find(".php") != std::string::npos) && (request.getMethods() == "GET" || request.getMethods() == "POST"))
 		{
+			std::cout << "coucou1\n";
 			CgiHandler myCgi(client, config, request, response); //a completer
+			std::cout << "coucou2\n";
+
 			myCgi.executeCgi();
 		}
 		else if(request.getMethods() == "GET")
