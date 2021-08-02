@@ -20,7 +20,6 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 			myCgi.executeCgi();
 		}
 		else if(request.getMethods() == "GET")
-		// if(request.getMethods() == "GET")
 		{
 			GetMethod myGet;
 			myGet.handleGet(client, config,request, response);

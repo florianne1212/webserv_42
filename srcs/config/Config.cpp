@@ -726,20 +726,7 @@ usable<std::string> Config::getDirectoryPage(std::string serverName, std::string
 	std::map<std::string, Server>::const_iterator server;
 	if ((server = _serverList.find(serverName)) != _serverList.end())
 	{
-		size_t i = 1;
-		std::string toCompare;
 		std::map<std::string, Routes>::const_iterator routes;
-		while (i != std::string::npos)
-		{
-			toCompare = path.substr(0,i);
-			if ((routes = server->second._routes.find(toCompare)) != server->second._routes.end())
-			{
-				if (routes->second._directoryPage.state == true)
-					ret = routes->second._directoryPage;
-			}
-			i++;
-			i = path.find('/', i);
-		}
 		if ((routes = server->second._routes.find(path)) != server->second._routes.end())
 		{
 			if (routes->second._directoryPage.state == true)

@@ -1,27 +1,34 @@
 {
-  "error_path": "404 /www/error.html",
+  "error_path": "400 /error/400.html",
+  "error_path": "403 /error/403.html",
+	"error_path": "404 /error/404.html",
+	"error_path": "405 /error/405.html",
+	"error_path": "418 /error/418.html",
   "client_body_max_size": "100     ",
   "server": [
     {
       "server_name": "test",
-      "listen": "   80   ",
-      "upload_pass":"/Download",
-      "client_body_max_size": "   50    ",
-      "routes": {
+      "listen": "  127.0.0.1:8080   ",
+      "upload_pass":"/download",
+      "routes": [{
+        "location": "    /    ",
+        "root": "/images/"
+      },
+      {
         "location": "    /images    ",
         "autoIndex": "    on    ",
         "httpRequest": "     GET     DELETE     "
-      }
+      }]
     },
     {
       "server_name": "   test2    ",
-      "listen": "    127.0.0.2:443   ",
+      "listen": "    127.0.0.1:9000   ",
       "routes": [
         {
           "location": "  /   ",
-          "directory_page": "   /www/index.html   ",
-          "root": "        /www      ",
-          "client_body_max_size": "   10   "
+          "directory_page": "   /index.html   ",
+          "autoIndex": "on",
+          "client_body_max_size": "1000000"
         },
         {
           "location": "    /youtube    ",

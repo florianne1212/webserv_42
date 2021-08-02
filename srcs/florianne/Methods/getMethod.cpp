@@ -21,30 +21,28 @@ GetMethod& GetMethod::operator=(GetMethod const & ope)
 
 void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request, Response &response)
 {
-	File fileGet;
+	std::string url;
 	
 	if(config.getDirectoryPage(client.getServerName(), request.getUrl()).state == true) 
 	{
-		File myupload(WORKPATH + config.getDirectoryPage(client.getServerName(), request.getUrl()).value);
-		fileGet = myupload;
+		url = config.getDirectoryPage(client.getServerName(), request.getUrl()).value;
 	}
 	else
 	{
-		File filenormal(WORKPATH + request.getUrl());
-		fileGet = filenormal;
+		url = request.getUrl();
 	}
 
+	File fileGet(WORKPATH + url);
 
 	if (fileGet.isPresent()) {
 		if (fileGet.isFile()) {
 			setHeader(response, fileGet);
 		} 
 		else if (fileGet.isDirectory()) {
-			if(config.getAutoIndex(client.getServerName(), request.getUrl()) && *request.getUrl().rbegin() == '/')
-				setHeader_Dir(response, setDirectory(fileGet, request.getUrl(), config.getIp(client.getServerName())));
+			if(config.getAutoIndex(client.getServerName(), url) && *(url.rbegin()) == '/')
+				setHeader_Dir(response, setDirectory(fileGet, url, config.getIp(client.getServerName())));
 			else
 				response.setStatus(404);
-			
 		}	
 	}
 	else
