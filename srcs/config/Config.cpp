@@ -112,7 +112,7 @@ Config::Config(std::string configFile)
 {
 	parser(configFile);
 	checker();
-	putConfig();
+	//putConfig();
 }
 
 bool Config::addServer(std::string name, Server &server)
