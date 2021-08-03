@@ -43,7 +43,6 @@ class File{
 		std::string find_content_type();
 		std::list<std::string> listDirFiles();
 		std::string find_content();
-		std::string convert_int_to_string(int);
 		char *str_to_char(std::string s);
 		struct stat getStat();
 		bool fileAppend(std::string filename, std::string to_append);
