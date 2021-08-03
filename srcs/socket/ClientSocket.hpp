@@ -6,6 +6,7 @@ class ClientSocket;
 # include "ASocket.hpp"
 # include "buffer.hpp"
 # include "request.hpp"
+# include "response.hpp"
 
 class ClientSocket : public ASocket
 {
@@ -19,7 +20,7 @@ class ClientSocket : public ASocket
 		Buffer		_buffer;
 		bool		_responseSent;
 		bool _test;
-		bool _apend;
+		bool _append;
 		int _fd_out;
 
 	public :
@@ -34,6 +35,7 @@ class ClientSocket : public ASocket
 		virtual void write(Config *datas, FDList *listFD);
 		std::string getClientAddress(void) const;
 		std::string getClientPort(void) const;
+		void my_append(Response *response);
 };
 
 #endif

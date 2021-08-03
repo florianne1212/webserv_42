@@ -112,9 +112,39 @@ std::string File::find_content()
 	
 }
 
+std::string File::int_to_str(int n)
+{
+	if (n == 0)
+		return "0";
+	bool sign = true; //false represents "-"
+	if (n < 0)
+	{
+		sign = false;
+		n = -n;
+	}
+	std::string ret;
+	if (!sign)
+		ret.push_back('-');
+	while (n != 0)
+	{
+		ret.push_back('0' + n % 10);
+		n /= 10;
+	}
+	if (sign)
+	    std::reverse(ret.begin(), ret.end());
+	else
+	    std::reverse(ret.begin() + 1, ret.end());
+	return ret;
+}
+
 size_t File::fileLength()
 {
 	return(_stats.st_size);
+}
+
+std::string File::fileLengthStr()
+{
+	return(int_to_str(_stats.st_size));
 }
 
 std::string File::convert_int_to_string(int nb)

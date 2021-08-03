@@ -27,9 +27,8 @@ void GetFileError::handle(ClientSocket &client,Config &config, Request &request,
 				if(!content_type.empty())
 					response.setHeaders("Content-Type", fileError.find_content_type());
 
-				std::stringstream my_stream;
-				my_stream << fileError.fileLength();
-				response.setHeaders("Content-Length", my_stream.str());
+	
+				response.setHeaders("Content-Length", fileError.fileLengthStr());
 				
 				response.setHeaders("Last-Modified", fileError.fileLastModified());
 

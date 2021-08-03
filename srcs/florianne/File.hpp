@@ -47,7 +47,8 @@ class File{
 		char *str_to_char(std::string s);
 		struct stat getStat();
 		bool fileAppend(std::string filename, std::string to_append);
-
+		std::string int_to_str(int n);
+		std::string fileLengthStr();
 
 };
 

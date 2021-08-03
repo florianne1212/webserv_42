@@ -3,7 +3,7 @@
 #include "ManageMiddleware.hpp"
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort) : ASocket(fd, serverName),
-_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _apend(true)
+_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true)
 {}
 
 ClientSocket::~ClientSocket(){}
@@ -75,73 +75,58 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	_pollFD.events = POLLOUT;
 }
 
+void ClientSocket::my_append(Response *response)
+{
+	std::cout << "\n FINGER CROSSED \n";
+	Buffer out(response->getAppend().value.second, 0);
+	if(_test == true )
+	{
+		_fd_out = ::open(response->getAppend().value.first.c_str() , O_WRONLY|O_APPEND);
+		_test = false;
+	}
+	std::cout << "\n First FD_OUT" << _fd_out << " PATH= " << response->getAppend().value.first.c_str() <<" \n";
+	_append = out.flush(_fd_out);
+	if (_append == true)
+	{
+		close(_fd_out);
+		_append =false;
+	}
+		
+}
+
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
 	Response response;
-   ManageMiddleware manage;
-   // bool apend = true;
-   // bool test = true;
-   // int fd_out = 0 ;
- 
-  
-   if (_responseSent)
-   {
-       manage.middlewareStart(*this, *datas, _request, response);
-      
-       if(response.getAppend().state == true && _apend)
-       {
-		   std::cout << "\n IN GET APPEND \n";
-           Buffer out(response.getAppend().value.second, 0);
-    
-           if(_test == true )
-           {
-               _fd_out = ::open(response.getAppend().value.first.c_str() , O_WRONLY|O_APPEND);
-				_test = false;
-				std::cout << "\nFD OUt = " << _fd_out << "\n";
-		   }
-		   std::cout << "\nlet's write" << _fd_out << "\n";
-		   
-			std::cout << "\nfinish write" << _fd_out << "\n";
-			
-			//_fd_out = 1;
-			_apend = out.flush(_fd_out);
-			if (_apend == true)
-			{
-				close(_fd_out);
-				_apend =false;
-			}
-       }
-       else
-       {
-           _apend = false;
-       }
-      
-       if (_apend == false)
-       {
-		   std::cout << "\n IN G \n";
-           response.create_response();
-           _buffer = Buffer(response.getResponse(), 0);
-           _responseSent = false;
-		   _apend = true;
-		   _test = true;
-       }
-      
-      
-       // size_t len = response.getResponse().length();
-       // ssize_t sent = ::write(_fd, response.getResponse().c_str(), len);
- 
-      
-      
-   }
-   else
-   {
-       _responseSent = _buffer.flush(_fd);
-       if (_responseSent == true)
-       {
-           listFD->rmSocket(_fd);
-           close(_fd);
-       }
-   }
+	ManageMiddleware manage;
+
+	if (_responseSent)
+	{
+		manage.middlewareStart(*this, *datas, _request, response);
+		if(response.getAppend().state == true && _append)
+		{
+			std::cout << "\n FINGER CROSSED \n";
+			my_append(&response);
+		}
+		else
+			_append = false;
+		if (_append == false)
+		{
+		   response.create_response();
+			_buffer = Buffer(response.getResponse(), 0);
+			_responseSent = false;
+			_append = true;
+			_test = true;
+		}
+	}
+	else
+	{
+		_responseSent = _buffer.flush(_fd);
+		if (_responseSent == true)
+		{
+			listFD->rmSocket(_fd);
+			close(_fd);
+		}
+	}
 
 }
 
