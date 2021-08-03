@@ -47,6 +47,7 @@ class Config
 
 		//geter Config
 		usable<std::string> getPathErrorFile(int errorVal) const;
+		usable<std::pair<std::string, std::string> > getCGI();
 		size_t getBodyMaxSize(std::string serverName, std::string path) const;
 		std::map<std::string, Server>::const_iterator getServerBegin(void) const;
 		std::map<std::string, Server>::const_iterator getServerEnd(void) const;

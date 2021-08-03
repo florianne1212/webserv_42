@@ -508,6 +508,11 @@ usable<std::string> Config::getPathErrorFile(int errorVal) const
 	return usable<std::string>();
 }
 
+usable<std::pair<std::string, std::string> > Config::getCGI()
+{
+	return (_cgi);
+}
+
 size_t Config::getBodyMaxSize(std::string serverName, std::string path) const
 {
 	size_t ret;
