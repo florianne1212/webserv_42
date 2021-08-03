@@ -13,11 +13,10 @@
 			{
 				"location": "/zozor",
 				"directory_page": "   /test/index.html   ",
-				"root": "/test",
 				"httpRequest": "GET"
 			}
 		]
 	},
-
+	"cgi": ".php /cgi-bin/php-cgi",
 	"error_path": "404 /error/404.html"
 }
