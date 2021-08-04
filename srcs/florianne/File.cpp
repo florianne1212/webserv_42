@@ -112,21 +112,41 @@ std::string File::find_content()
 	
 }
 
+std::string File::int_to_str(int n)
+{
+	if (n == 0)
+		return "0";
+	bool sign = true; //false represents "-"
+	if (n < 0)
+	{
+		sign = false;
+		n = -n;
+	}
+	std::string ret;
+	if (!sign)
+		ret.push_back('-');
+	while (n != 0)
+	{
+		ret.push_back('0' + n % 10);
+		n /= 10;
+	}
+	if (sign)
+	    std::reverse(ret.begin(), ret.end());
+	else
+	    std::reverse(ret.begin() + 1, ret.end());
+	return ret;
+}
+
 size_t File::fileLength()
 {
 	return(_stats.st_size);
 }
 
-std::string File::convert_int_to_string(int nb)
+std::string File::fileLengthStr()
 {
-	std::string str;
-
-	std::stringstream my_stream; 
-	my_stream << nb;  
-	my_stream >> str;
-
-	return(str); 
+	return(int_to_str(_stats.st_size));
 }
+
 
 std::string File::fileLastModified()
 {
@@ -150,30 +170,19 @@ std::string File::fileLastModified()
 char *File::str_to_char(std::string s)
 {
     int n = s.length();
- 
-    // declaring character array
     char *my_array;
 
 	if(!(my_array = (char *)malloc(sizeof(char) * (n+1))))
-    // copying the contents of the
-    // string to char array
     strcpy(my_array, s.c_str());
 	return(my_array);
 }
 
 bool File::fileAppend(std::string filename, std::string to_append)
 {
-	//std::cout << "\nto append = " << to_append << "\nfilename = " << filename << "\n";
 	Buffer out(to_append, 0);
 	int fd_out = ::open(filename.c_str(), O_APPEND);
 	if (out.flush(fd_out) == true)
 		close(fd_out);
-	/*
-	std::ofstream outfile;
-    outfile.open(filename.c_str() , std::ofstream::out | std::ofstream::app);
-    outfile << to_append;
-	outfile.close();
-	*/
 	return(true);
 }
 

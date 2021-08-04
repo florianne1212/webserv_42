@@ -90,13 +90,15 @@ void GetMethod::setHeader(Response &response, File &fileGet)
 
 	std::stringstream my_stream;
 	my_stream << fileGet.fileLength();
-	response.setHeaders("Content-Length", my_stream.str());
+	response.setHeaders("Content-Length", fileGet.fileLengthStr());
 	
 	response.setHeaders("Last-Modified", fileGet.fileLastModified());
 }
 
 void GetMethod::setHeader_Dir(Response &response, std::string html_generated)
 {
+	File convert;
+
 	std::string file_content(html_generated);
 	response.setBody(file_content);
 
@@ -104,7 +106,7 @@ void GetMethod::setHeader_Dir(Response &response, std::string html_generated)
 
 	std::stringstream my_stream;
 	my_stream << html_generated.size();
-	response.setHeaders("Content-Length", my_stream.str());
+	response.setHeaders("Content-Length", convert.int_to_str(html_generated.size()));
 	
 	//response.setHeaders("Last-Modified", fileGet.fileLastModified());
 }

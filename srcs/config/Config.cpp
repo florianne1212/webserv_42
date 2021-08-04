@@ -60,6 +60,8 @@ void	Config::putConfig()
 {
 	if (_bodyMaxSize.state == true)
 		std::cout <<  "bodyMaxSize: " << _bodyMaxSize.value << std::endl;
+	if (_cgi.state == true)
+		std::cout <<  "cgi: " << _cgi.value.first << " " << _cgi.value.second << std::endl;
 	for (std::map<int, std::string>::iterator it = _pathErrorFile.begin(); it != _pathErrorFile.end(); it++)
 		std::cout << "errorPath: " << it->first << " " << it->second << std::endl;
 	for (std::map<std::string, Server>::iterator it = _serverList.begin(); it != _serverList.end(); it++)
@@ -77,6 +79,9 @@ void	Config::checker()
 			throw std::string(it->second + " is a unknow error file");
 	for (std::map<std::string, Server>::iterator it = _serverList.begin(); it != _serverList.end(); it++)
 		it->second.checker();
+	if (_cgi.state == true)
+		if (stat((WORKPATH + _cgi.value.second).c_str() , &useless) != 0)
+			throw std::string(_cgi.value.second + " is a unknow cgi file");
 }
 
 void	Config::removeIsSpace(std::string &buffer)
@@ -99,11 +104,11 @@ void	Config::removeIsSpace(std::string &buffer)
 }
 
 Config::Config()
-: _serverList(), _pathErrorFile(), _bodyMaxSize()
+: _serverList(), _pathErrorFile(), _bodyMaxSize(), _cgi()
 {}
 
 Config::Config(std::string configFile)
-: _serverList(), _pathErrorFile(), _bodyMaxSize()
+: _serverList(), _pathErrorFile(), _bodyMaxSize(), _cgi()
 {
 	parser(configFile);
 	checker();
@@ -142,6 +147,16 @@ bool Config::setBodyMaxSize(size_t bodyMaxSize)
 	if (_bodyMaxSize.state == true)
 		return false;
 	_bodyMaxSize = usable<size_t>(bodyMaxSize);
+	return true;
+}
+
+bool Config::setCGI(std::vector<std::string> cgi)
+{
+	if (_cgi.state == true || cgi.size() != 2)
+		return false;
+	if (cgi[0][0] != '.')
+		return false;
+	_cgi = usable<std::pair<std::string, std::string> >(std::pair<std::string , std::string>(cgi[0], cgi[1]));
 	return true;
 }
 
@@ -190,6 +205,19 @@ void	Config::parser(std::string setupFile)
 					it++;
 					if (setBodyMaxSize(getValue(it , buffer.end(), "\"client_body_max_size\": Config scope")) == false)
 						throw std::string("Error in difining parametre \"client_body_max_size\": Config scope");
+				}
+				else
+				{
+					throw std::string("Error in difining parametre \"client_body_max_size\": Config scope");
+				}
+			}
+			else if (strcmp(toCompare.c_str(), "cgi") == 0)
+			{
+				if (*(it) == ':' && *(it + 1) == '"')
+				{
+					it++;
+					if (setCGI(getExpression(it , buffer.end(), "\"cgi\": Config scope")) == false)
+						throw std::string("Error in difining parametre \"cgi\": Config scope");
 				}
 				else
 				{
@@ -478,6 +506,11 @@ usable<std::string> Config::getPathErrorFile(int errorVal) const
 	if (it != _pathErrorFile.end())
 		return usable<std::string>(it->second);
 	return usable<std::string>();
+}
+
+usable<std::pair<std::string, std::string> > Config::getCGI()
+{
+	return (_cgi);
 }
 
 size_t Config::getBodyMaxSize(std::string serverName, std::string path) const
