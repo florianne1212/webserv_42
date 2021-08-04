@@ -1,0 +1,56 @@
+{
+"server": [
+    {
+      "server_name": "test42",
+	  "listen": "  127.0.0.1:8080   ",
+	  "cgi": ".bla cgi_tester",
+	  "httpRequest": "     GET     ",
+      "routes": [{
+        "location": "    /    ",
+		"root": "/www",
+		"httpRequest": "     GET     "
+	  },
+	  {
+        "location": "    /put_test/    ",
+        "root": "/www",
+        "httpRequest": "     PUT     "
+	  },
+	  { "location": "    /post_body    ",
+		"root": "    /www    ",
+		"httpRequest": "     POST     ",
+		"client_body_max_size": "   100   ",
+		"cgi": ".bla cgi_tester"
+	  },
+	  {"location":"    /directory    ",
+			"root": "    www/YoupiBanane....",
+			"index": "    youpi.bad_extension...."
+	  }]
+	},
+	{
+		"server_name": "test42ubuntu",
+		"listen": "  127.0.0.1:8081   ",
+		"cgi": ".bla cgi_tester",
+		"httpRequest": "     GET     ",
+		"routes": [{
+		  "location": "    /    ",
+		  "root": "/www",
+		  "httpRequest": "     GET     "
+		},
+		{
+		  "location": "    /put_test/    ",
+		  "root": "/www",
+		  "httpRequest": "     PUT     "
+		},
+		{ "location": "    /post_body    ",
+		  "root": "    /www    ",
+		  "httpRequest": "     POST     ",
+		  "client_body_max_size": "   100   ",
+		  "cgi": ".bla ubuntu_cgi_tester"
+		},
+		{"location":"    /directory    ",
+			  "root": "    www/YoupiBanane....",
+			  "index": "    youpi.bad_extension...."
+		}]
+	  }
+	]
+}
