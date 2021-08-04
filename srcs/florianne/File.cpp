@@ -190,3 +190,8 @@ struct stat File::getStat()
 {
 	return(_stats);
 }
+
+std::string File::getPath()
+{
+	return (_path);
+}

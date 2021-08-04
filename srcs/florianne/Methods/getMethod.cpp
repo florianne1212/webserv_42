@@ -82,7 +82,8 @@ std::string GetMethod::setDirectory(File &fileGet, std::string url, std::string 
 void GetMethod::setHeader(Response &response, File &fileGet)
 {
 	std::string file_content(fileGet.find_content());
-	response.setBody(file_content);
+	response.setDir(false);
+	response.setBodyPath(fileGet.getPath());
 
 	std::string content_type = fileGet.find_content_type();
 	if(!content_type.empty())
@@ -100,6 +101,7 @@ void GetMethod::setHeader_Dir(Response &response, std::string html_generated)
 	File convert;
 
 	std::string file_content(html_generated);
+	response.setDir(true);
 	response.setBody(file_content);
 
 	response.setHeaders("Content-Type", "text/html");

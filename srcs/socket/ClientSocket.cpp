@@ -3,7 +3,7 @@
 #include "ManageMiddleware.hpp"
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort) : ASocket(fd, serverName),
-_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true)
+_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true), _read(true)
 {}
 
 ClientSocket::~ClientSocket(){}
@@ -89,8 +89,41 @@ void ClientSocket::my_append(Response *response)
 	if (_append == true)
 	{
 		close(_fd_out);
+		_test = true;
 		_append =false;
 	}
+		
+}
+
+void ClientSocket::my_read(Response *response)
+{
+	//std::cout << "\n FINGER CROSSED READ\n";
+	Buffer out(response->getAppend().value.second, 0);
+	if(_test == true )
+	{
+		_fd_read = ::open(response->getBodyPath().value.c_str() , O_RDONLY);
+		_test = false;
+	}
+	//std::cout << "\n First FD_READ" << _fd_read << " PATH= " << response->getBodyPath().value.c_str() <<" \n";
+	ssize_t rod= ::read(_fd_read, _BodyBuffer, 500);
+	_BodyBuffer[rod] = '\0';
+	if (rod > 0)
+	{
+		std::string str(_BodyBuffer);
+		//std::cout << "\n BODY = "<< str <<" \n";
+		_body.append(str);		
+	}
+	else if (rod == 0)
+	{
+		close(_fd_out);
+		_test = true;
+		_read = false;
+	}
+	else
+	{
+		_read = false;
+	}
+	
 		
 }
 
@@ -101,16 +134,27 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 
 	if (_responseSent)
 	{
+		std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
+		std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
 		manage.middlewareStart(*this, *datas, _request, response);
 		if(response.getAppend().state == true && _append)
 		{
-			std::cout << "\n FINGER CROSSED \n";
+			std::cout << "\n APPEND \n";
 			my_append(&response);
 		}
 		else
 			_append = false;
-		if (_append == false)
+		if(response.getBodyPath().state == true && response.getDir() == false &&_read && _append == false)
 		{
+			std::cout << "\n READ \n";
+			my_read(&response);
+		}
+		else
+			_read = false;
+		if (_append == false && _read == false)
+		{
+			if (response.getBodyPath().state == true && response.getDir() == false )
+				response.setBody(_body);
 		   response.create_response();
 			_buffer = Buffer(response.getResponse(), 0);
 			_responseSent = false;

@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Response::Response(/* args */):
-_status(200), _cgiResponse(false)
+_status(200), _cgiResponse(false), _dir(false)
 {
 }
 
@@ -96,12 +96,19 @@ std::string Response::create_response()
 		_response.append("\r\n");
 	}
 	_response.append("\r\n");
-	_response.append(_body);
+	if(_body.state == true)
+		_response.append(_body.value);
+
 
 	return(_response);
 }
 
-std::string Response::getBody()
+usable< std::string > Response::getBody()
+{
+    return(this->_body);
+}
+
+usable< std::string > Response::getBodyPath()
 {
     return(this->_body);
 }
@@ -118,7 +125,20 @@ std::string Response::getResponse()
 
 void Response::setBody(std::string str)
 {
-    this->_body=str;
+	std::cout << "\n STATUS = "<< getBodyPath().state <<"\n";
+		std::cout << "\n STATUS = "<< getBody().state <<"\n";
+	_body = usable<std::string>(str);
+	std::cout << "\n STATUS = "<< getBodyPath().state <<"\n";
+		std::cout << "\n STATUS = "<< getBody().state <<"\n";
+}
+
+void Response::setBodyPath(std::string str)
+{
+	std::cout << "\n STATUS = "<< getBodyPath().state <<"\n";
+		std::cout << "\n STATUS = "<< getBody().state <<"\n";
+	_body = usable<std::string>(str);
+	std::cout << "\n STATUS = "<< getBodyPath().state <<"\n";
+		std::cout << "\n STATUS = "<< getBody().state <<"\n";
 }
 
 void Response::setStatus(int status)
@@ -149,4 +169,14 @@ void Response::setAppend(std::string filename, std::string to_append)
 usable<std::pair<std::string, std::string> > Response::getAppend()
 {
 	return(_append);
+}
+
+bool Response::getDir()
+{
+	return(this->_dir);
+}
+
+void Response::setDir(bool dir)
+{
+	_dir = dir;
 }

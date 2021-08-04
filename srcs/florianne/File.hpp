@@ -48,6 +48,7 @@ class File{
 		bool fileAppend(std::string filename, std::string to_append);
 		std::string int_to_str(int n);
 		std::string fileLengthStr();
+		std::string getPath();
 
 };
 

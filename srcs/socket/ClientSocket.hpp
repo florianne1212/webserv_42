@@ -22,6 +22,11 @@ class ClientSocket : public ASocket
 		bool _test;
 		bool _append;
 		int _fd_out;
+		int _fd_read;
+		bool _read;
+		char _BodyBuffer[501];
+		std::string _body;
+
 
 	public :
 		ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort);
@@ -36,6 +41,7 @@ class ClientSocket : public ASocket
 		std::string getClientAddress(void) const;
 		std::string getClientPort(void) const;
 		void my_append(Response *response);
+		void my_read(Response *response);
 };
 
 #endif
