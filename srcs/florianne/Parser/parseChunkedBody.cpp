@@ -37,29 +37,40 @@ ParseChunkedBody& ParseChunkedBody::operator=(ParseChunkedBody const & ope)
 }
 
 
+int ParseChunkedBody::convertHex(std::string hex_number)
+{
+
+	const char *hexstring = hex_number.c_str();
+	int _nbConvert = (int)strtol(hexstring, NULL, 16);
+    std::cout << "\n Number = " << _nbConvert ;
+	return (_nbConvert);
+}
+
 void ParseChunkedBody::parse(char c)
 {
 	switch(_state)
 	{
 		case (S_LENGTH):
 		{
-			if(isdigit(c))
+			if(c != '\r')
 				_nb.push_back(c);
-			else if(c == '\r')
+			else 
+			{
 				_state = S_END_R;
-			else
-				throw std::string("there is supposed to be a '\\r");
+			}
+			//elseif(c == '\r')
+				//throw std::string("there is supposed to be a '\\r");
 			break;
 		}
 		case(S_PARSE_BODY):
 		{ 
-			if(_count < (atoi(_nb.c_str())))
+			if(_count < (convertHex(_nb)))
 			{
 				_body.push_back(c);
 				_count++;
 				
 			}
-			else if(_count == (atoi(_nb.c_str())))
+			else if(_count == (convertHex(_nb)))
 				_count++;
 			if(_count == (atoi(_nb.c_str()) + 1))
 			{

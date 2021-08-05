@@ -159,6 +159,7 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 			_responseSent = false;
 			_append = true;
 			_test = true;
+			_read = true;
 		}
 	}
 	else

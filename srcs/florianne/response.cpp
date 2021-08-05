@@ -1,5 +1,5 @@
 #include "response.hpp"
-# include "utils.hpp"
+#include "utils.hpp"
 #include <algorithm>
 
 Response::Response(/* args */):
@@ -125,20 +125,12 @@ std::string Response::getResponse()
 
 void Response::setBody(std::string str)
 {
-	//std::cout << "\n STATUS = "<< getBodyPath().state <<"\n";
-	//std::cout << "\n STATUS = "<< getBody().state <<"\n";
 	_body = usable<std::string>(str);
-	//std::cout << "\n STATUS = "<< getBodyPath().state <<"\n";
-	//std::cout << "\n STATUS = "<< getBody().state <<"\n";
 }
 
 void Response::setBodyPath(std::string str)
 {
-	//std::cout << "\n STATUS = "<< getBodyPath().state <<"\n";
-	//std::cout << "\n STATUS = "<< getBody().state <<"\n";
 	_body = usable<std::string>(str);
-	//std::cout << "\n STATUS = "<< getBodyPath().state <<"\n";
-	//std::cout << "\n STATUS = "<< getBody().state <<"\n";
 }
 
 void Response::setStatus(int status)
