@@ -97,6 +97,7 @@ void ClientSocket::my_append(Response *response)
 
 void ClientSocket::my_read(Response *response)
 {
+	char _BodyBuffer[1001];
 	//std::cout << "\n FINGER CROSSED READ\n";
 	Buffer out(response->getAppend().value.second, 0);
 	if(_test == true )
@@ -105,8 +106,8 @@ void ClientSocket::my_read(Response *response)
 		_test = false;
 	}
 	//std::cout << "\n First FD_READ" << _fd_read << " PATH= " << response->getBodyPath().value.c_str() <<" \n";
-	ssize_t rod= ::read(_fd_read, _BodyBuffer, 500);
-	_BodyBuffer[rod] = '\0';
+	ssize_t rod= ::read(_fd_read, _BodyBuffer, 1000);
+	_BodyBuffer[1000] = '\0';
 	if (rod > 0)
 	{
 		std::string str(_BodyBuffer);
@@ -134,8 +135,8 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 
 	if (_responseSent)
 	{
-		std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
-		std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
+		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
+		//std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
 		manage.middlewareStart(*this, *datas, _request, response);
 		if(response.getAppend().state == true && _append)
 		{
@@ -146,7 +147,7 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 			_append = false;
 		if(response.getBodyPath().state == true && response.getDir() == false &&_read && _append == false)
 		{
-			std::cout << "\n READ \n";
+			//std::cout << "\n READ \n";
 			my_read(&response);
 		}
 		else
@@ -160,6 +161,7 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 			_responseSent = false;
 			_append = true;
 			_test = true;
+			_read = true;
 		}
 	}
 	else

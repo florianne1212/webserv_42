@@ -24,7 +24,6 @@ class ClientSocket : public ASocket
 		int _fd_out;
 		int _fd_read;
 		bool _read;
-		char _BodyBuffer[501];
 		std::string _body;
 
 
