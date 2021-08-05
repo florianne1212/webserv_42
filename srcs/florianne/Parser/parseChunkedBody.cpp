@@ -42,7 +42,7 @@ int ParseChunkedBody::convertHex(std::string hex_number)
 
 	const char *hexstring = hex_number.c_str();
 	int _nbConvert = (int)strtol(hexstring, NULL, 16);
-    std::cout << "\n Number = " << _nbConvert ;
+    //std::cout << "\n Number = " << _nbConvert ;
 	return (_nbConvert);
 }
 
@@ -58,8 +58,6 @@ void ParseChunkedBody::parse(char c)
 			{
 				_state = S_END_R;
 			}
-			//elseif(c == '\r')
-				//throw std::string("there is supposed to be a '\\r");
 			break;
 		}
 		case(S_PARSE_BODY):
@@ -67,12 +65,16 @@ void ParseChunkedBody::parse(char c)
 			if(_count < (convertHex(_nb)))
 			{
 				_body.push_back(c);
+				
 				_count++;
 				
 			}
-			else if(_count == (convertHex(_nb)))
+			if(_count == (convertHex(_nb)))
+			{
 				_count++;
-			if(_count == (atoi(_nb.c_str()) + 1))
+				break;
+			}
+			if(_count == (convertHex(_nb)) + 1)
 			{
 				_nb.clear();
 				_count = 1;
@@ -95,32 +97,30 @@ void ParseChunkedBody::parse(char c)
 		case(S_END_N):
 		{
 			if(c == '\r')
+				_state = S_END_R;
+			else if(!_nb.empty() && convertHex(_nb) == 0)
+			{
 				_state = S_END_R2;
-			else if(isdigit(c) && _nb.empty())
+			}
+			else if(_nb.empty())
 			{
 				_nb.push_back(c);
-				if (atoi(_nb.c_str()) == 0)
+				if (convertHex(_nb) == 0)
 					_state = S_END;
 				_state = S_LENGTH;
 			}
-			else if(isdigit(c))
+			else 
 			{
 				_body.push_back(c);
 				_state = S_PARSE_BODY;
 			}
-			else if (!_nb.empty())
-			{
-				_body.push_back(c);
-				_state = S_PARSE_BODY;
-			}
-			else
-				throw std::string("there is supposed to be something else '\\n", c);
 			
 			
 			break;
 		}
 		case(S_END_R2):
 		{
+			std::cout << "\nEND OF END \n";
 			if(c == '\n')
 				_state = S_END;
 			else

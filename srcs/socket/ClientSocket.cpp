@@ -108,9 +108,9 @@ void ClientSocket::my_read(Response *response)
 		_fd_read = ::open(response->getBodyPath().value.c_str() , O_RDONLY);
 		_test = false;
 	}
-	char BodyBuffer[10001];
-	size_t rod = ::read(_fd_read, BodyBuffer, 10000);
-	BodyBuffer[rod] = '\0';
+	char BodyBuffer[16385];
+	size_t rod = ::read(_fd_read, BodyBuffer, 16384);
+	//BodyBuffer[rod] = '\0';
 	if (rod > 0)
 	{
 		std::string str(BodyBuffer, rod);
