@@ -3,7 +3,7 @@
 #include "ManageMiddleware.hpp"
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort) : ASocket(fd, serverName),
-_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true), _read(true)
+_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true),  _fd_read(), _read(true)
 {}
 
 ClientSocket::~ClientSocket(){}
@@ -75,27 +75,29 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	_pollFD.events = POLLOUT;
 }
 
-void ClientSocket::my_append(Response *response)
+void ClientSocket::my_append(Response *response, FDList *listFD)
 {
 	std::cout << "\n FINGER CROSSED \n";
 	Buffer out(response->getAppend().value.second, 0);
 	if(_test == true )
 	{
-		_fd_out = ::open(response->getAppend().value.first.c_str() , O_WRONLY|O_APPEND);
+		_fd_out.fd = ::open(response->getAppend().value.first.c_str() , O_WRONLY|O_APPEND);
+		_fd_out.events = POLLOUT;
+		listFD->addFile(&_fd_out);
 		_test = false;
 	}
-	std::cout << "\n First FD_OUT" << _fd_out << " PATH= " << response->getAppend().value.first.c_str() <<" \n";
-	_append = out.flush(_fd_out);
-	if (_append == true)
+	if (_fd_out.revents == POLLOUT)
+		_append = !out.flush(_fd_out.fd);
+	if (_append == false)
 	{
-		close(_fd_out);
+		close(_fd_out.fd);
+		listFD->rmFile(_fd_out.fd);
 		_test = true;
-		_append =false;
 	}
 		
 }
 
-void ClientSocket::my_read(Response *response)
+void ClientSocket::my_read(Response *response, FDList *listFD)
 {
 	struct stat buf;
 	if (stat(response->getBodyPath().value.c_str(), &buf) == -1)
@@ -105,26 +107,35 @@ void ClientSocket::my_read(Response *response)
 	}
 	if(_test == true )
 	{
-		_fd_read = ::open(response->getBodyPath().value.c_str() , O_RDONLY);
+		_fd_read.fd = ::open(response->getBodyPath().value.c_str() , O_RDONLY);
+		_fd_read.events = POLLIN;
+		listFD->addFile(&_fd_read);
 		_test = false;
+		return ;
 	}
-	char BodyBuffer[10001];
-	size_t rod = ::read(_fd_read, BodyBuffer, 10000);
-	BodyBuffer[rod] = '\0';
-	if (rod > 0)
+	if (_fd_read.revents == POLLIN)
 	{
-		std::string str(BodyBuffer, rod);
-		//std::cout << "\n BODY = "<< str <<" \n";
-		_body.append(str);
-	}
-	else if (rod == 0)
-	{
-		//close(_fd_out);
-		_test = true;
-		_read = false;
+		char BodyBuffer[10001];
+		size_t rod = ::read(_fd_read.fd, BodyBuffer, 10000);
+		BodyBuffer[rod] = '\0';
+		if (rod > 0)
+		{
+			std::string str(BodyBuffer, rod);
+			_body.append(str);
+		}
+		else
+		{
+			close(_fd_read.fd);
+			listFD->rmFile(_fd_read.fd);
+			_test = true;
+			_read = false;
+		}
 	}
 	else
 	{
+		close(_fd_read.fd);
+		listFD->rmFile(_fd_read.fd);
+		_test = true;
 		_read = false;
 	}
 }
@@ -142,12 +153,12 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 		if(response.getAppend().state == true && _append)
 		{
 			std::cout << "\n APPEND \n";
-			my_append(&response);
+			my_append(&response, listFD);
 		}
 		else
 			_append = false;
 		if(response.getBodyPath().state == true && response.getDir() == false && _read == true && _append == false)
-			my_read(&response);
+			my_read(&response, listFD);
 		else
 			_read = false;
 		if (_append == false && _read == false)
