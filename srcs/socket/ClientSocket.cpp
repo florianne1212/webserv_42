@@ -39,8 +39,8 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 
 
 	i = 0;
-	::read(_fd, line_buf, 5000);
-	line_buf[5000] = '\0';
+	size_t ret = ::read(_fd, line_buf, 5000);
+	line_buf[ret] = '\0';
 	printf("%s", line_buf);
 
 	while (line_buf[i])
@@ -97,25 +97,29 @@ void ClientSocket::my_append(Response *response)
 
 void ClientSocket::my_read(Response *response)
 {
-	//std::cout << "\n FINGER CROSSED READ\n";
-	Buffer out(response->getAppend().value.second, 0);
+	struct stat buf;
+	if (stat(response->getBodyPath().value.c_str(), &buf) == -1)
+	{
+		_read = false;
+		return ;
+	}
 	if(_test == true )
 	{
 		_fd_read = ::open(response->getBodyPath().value.c_str() , O_RDONLY);
 		_test = false;
 	}
-	//std::cout << "\n First FD_READ" << _fd_read << " PATH= " << response->getBodyPath().value.c_str() <<" \n";
-	ssize_t rod= ::read(_fd_read, _BodyBuffer, 500);
-	_BodyBuffer[rod] = '\0';
+	char BodyBuffer[10001];
+	size_t rod = ::read(_fd_read, BodyBuffer, 10000);
+	BodyBuffer[rod] = '\0';
 	if (rod > 0)
 	{
-		std::string str(_BodyBuffer);
+		std::string str(BodyBuffer, rod);
 		//std::cout << "\n BODY = "<< str <<" \n";
-		_body.append(str);		
+		_body.append(str);
 	}
 	else if (rod == 0)
 	{
-		close(_fd_out);
+		//close(_fd_out);
 		_test = true;
 		_read = false;
 	}
@@ -123,8 +127,6 @@ void ClientSocket::my_read(Response *response)
 	{
 		_read = false;
 	}
-	
-		
 }
 
 void ClientSocket::write(Config *datas, FDList *listFD)
@@ -134,8 +136,8 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 
 	if (_responseSent)
 	{
-		std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
-		std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
+		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
+		//std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
 		manage.middlewareStart(*this, *datas, _request, response);
 		if(response.getAppend().state == true && _append)
 		{
@@ -144,11 +146,8 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 		}
 		else
 			_append = false;
-		if(response.getBodyPath().state == true && response.getDir() == false &&_read && _append == false)
-		{
-			std::cout << "\n READ \n";
+		if(response.getBodyPath().state == true && response.getDir() == false && _read == true && _append == false)
 			my_read(&response);
-		}
 		else
 			_read = false;
 		if (_append == false && _read == false)
