@@ -29,6 +29,7 @@ protected:
 	std::map<std::string, std::string> _parsedUrl;
 	std::map<std::string, std::string> _headers;
 	std::string _pathForExec;
+	std::fstream _cgiExecutable;
 
 private:
 	CgiHandler();

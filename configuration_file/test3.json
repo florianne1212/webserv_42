@@ -17,6 +17,6 @@
 			}
 		]
 	},
-	"cgi": ".php /cgi-bin/php-cgi",
+	"cgi": ".bla /cgi-bin/php-cgi",
 	"error_path": "404 /error/404.html"
 }
