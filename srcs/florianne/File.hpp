@@ -42,7 +42,6 @@ class File{
 		std::string fileLastModified();
 		std::string find_content_type();
 		std::list<std::string> listDirFiles();
-		std::string find_content();
 		char *str_to_char(std::string s);
 		struct stat getStat();
 		bool fileAppend(std::string filename, std::string to_append);

@@ -21,10 +21,9 @@ class ClientSocket : public ASocket
 		bool		_responseSent;
 		bool _test;
 		bool _append;
-		int _fd_out;
-		int _fd_read;
+		struct pollfd _fd_out;
+		struct pollfd _fd_read;
 		bool _read;
-		char _BodyBuffer[501];
 		std::string _body;
 
 
@@ -40,8 +39,8 @@ class ClientSocket : public ASocket
 		virtual void write(Config *datas, FDList *listFD);
 		std::string getClientAddress(void) const;
 		std::string getClientPort(void) const;
-		void my_append(Response *response);
-		void my_read(Response *response);
+		void my_append(Response *response, FDList *listFD);
+		void my_read(Response *response, FDList *listFD);
 };
 
 #endif

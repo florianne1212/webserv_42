@@ -20,14 +20,13 @@ void GetFileError::handle(ClientSocket &client,Config &config, Request &request,
 			File fileError(WORKPATH + errorFile.value);
 			if (fileError.isFile())
 			{
-				std::string file_content(fileError.find_content());
-				response.setBody(file_content);
+				response.setDir(false);
+				response.setBodyPath(fileError.getPath());
 
 				std::string content_type = fileError.find_content_type();
 				if(!content_type.empty())
 					response.setHeaders("Content-Type", fileError.find_content_type());
 
-	
 				response.setHeaders("Content-Length", fileError.fileLengthStr());
 				
 				response.setHeaders("Last-Modified", fileError.fileLastModified());

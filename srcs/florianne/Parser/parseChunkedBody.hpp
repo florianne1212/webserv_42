@@ -24,12 +24,14 @@ private:
 	State _state;
 	int _count;
 	std::string _nb;
+	//int _nbConvert;
 public:
     ParseChunkedBody();
 	ParseChunkedBody(std::string ParseChunkedBody);
     ParseChunkedBody(ParseChunkedBody const & copy);
     ~ParseChunkedBody();
     ParseChunkedBody & operator=(ParseChunkedBody const & ope);
+	int convertHex(std::string hex_number);
 
 public:
 	void parse(char c);

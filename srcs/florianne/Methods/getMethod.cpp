@@ -37,7 +37,7 @@ void GetMethod::handleGet(ClientSocket &client,Config &config, Request &request,
 	if (fileGet.isPresent()) {
 		if (fileGet.isFile()) {
 			setHeader(response, fileGet);
-		} 
+		}
 		else if (fileGet.isDirectory()) {
 			if(config.getAutoIndex(client.getServerName(), url) && *(url.rbegin()) == '/')
 				setHeader_Dir(response, setDirectory(fileGet, url, config.getIp(client.getServerName())));
@@ -81,7 +81,6 @@ std::string GetMethod::setDirectory(File &fileGet, std::string url, std::string 
 
 void GetMethod::setHeader(Response &response, File &fileGet)
 {
-	std::string file_content(fileGet.find_content());
 	response.setDir(false);
 	response.setBodyPath(fileGet.getPath());
 
