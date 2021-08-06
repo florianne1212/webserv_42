@@ -1,5 +1,6 @@
 #include "File.hpp"
 #include "buffer.hpp"
+#include <algorithm> 
 
 File::File()
 {
