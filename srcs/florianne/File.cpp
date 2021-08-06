@@ -99,19 +99,6 @@ std::string File::find_content_type()
 	return(mime);
 }
 
-std::string File::find_content()
-{
-	// int fd;
-	// std::string content;
-
-	std::ifstream ifs(_path.c_str());
-	std::string content( (std::istreambuf_iterator<char>(ifs) ),
-						(std::istreambuf_iterator<char>()) );
-
-	return(content);
-	
-}
-
 std::string File::int_to_str(int n)
 {
 	if (n == 0)
