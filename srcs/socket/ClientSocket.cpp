@@ -77,7 +77,6 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 
 void ClientSocket::my_append(Response *response, FDList *listFD)
 {
-	std::cout << "\n FINGER CROSSED \n";
 	Buffer out(response->getAppend().value.second, 0);
 	if(_test == true )
 	{
@@ -151,10 +150,7 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 		//std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
 		manage.middlewareStart(*this, *datas, _request, response);
 		if(response.getAppend().state == true && _append)
-		{
-			std::cout << "\n APPEND \n";
 			my_append(&response, listFD);
-		}
 		else
 			_append = false;
 		if(response.getBodyPath().state == true && response.getDir() == false && _read == true && _append == false)

@@ -42,7 +42,6 @@ int ParseChunkedBody::convertHex(std::string hex_number)
 
 	const char *hexstring = hex_number.c_str();
 	int _nbConvert = (int)strtol(hexstring, NULL, 16);
-    //std::cout << "\n Number = " << _nbConvert ;
 	return (_nbConvert);
 }
 
@@ -107,7 +106,8 @@ void ParseChunkedBody::parse(char c)
 				_nb.push_back(c);
 				if (convertHex(_nb) == 0)
 					_state = S_END;
-				_state = S_LENGTH;
+				else
+					_state = S_LENGTH;
 			}
 			else 
 			{
@@ -130,7 +130,6 @@ void ParseChunkedBody::parse(char c)
 		}
 		case(S_END):
 		{
-			
 			break;
 		}
 	}
