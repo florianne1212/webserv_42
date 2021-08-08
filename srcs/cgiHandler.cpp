@@ -11,8 +11,13 @@ CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request
 {
 	_headers = request.getHeaders();
 	_parsedUrl = parseTheUri(request.getUrl());
-	// std::cout << "server name = " << client.getServerName() << "\n";
-	std::cout << "URL transmise = " << request.getUrl()<< "\n";
+	parsePathforCgi();//pour scriptname et additionnal path
+	// std::cout << "]]]]]]]]]]]]]]]]]]]]]]]]]]]\non est dans le constructeur de cgi\n";
+	// for (std::map<std::string, std::string>::iterator it = _parsedUrl.begin(); it != _parsedUrl.end(); ++it)
+	// 	std::cout <<it->first << " et " << it->second << "\n";
+	// std::cout << "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n";
+	// // std::cout << "server name = " << client.getServerName() << "\n";
+	// std::cout << "URL transmise = " << request.getUrl()<< "\n";
 }
 
 CgiHandler::~CgiHandler()
@@ -80,12 +85,22 @@ CgiHandler & CgiHandler::operator= (const CgiHandler & other)
 
 void CgiHandler::executeCgi(void){
 	creationVectorEnviron();
-	if(_response->getStatus()/100 == 2)
-	{
+	// if(_response->getStatus()/100 == 2)
+	// {
 	setVarEnv();
 	setInstructionCgi();
+	std::cout << "..................................\nVar env\n";
+	for (int i = 0; _varEnv[i] != 0 ; i++)
+		std::cout << _varEnv[i] << "\n";
+	std::cout << "..................................\nargiments\n";
+	for (int i = 0; _instructionsCGI[i] != 0 ; i++)
+		std::cout << _instructionsCGI[i] << "\n";
+	std::cout << "..................................\npathforexec\n";
+	std::cout << _pathForExec << "\n.............................\n\n";
+
+
 	executingCgi();
-	}
+	// }
 }
 
 /*
@@ -95,11 +110,15 @@ void CgiHandler::executeCgi(void){
 */
 void CgiHandler::setInstructionCgi(void)
 {
-	if (!(_instructionsCGI = new char*[2]))
+	if (!(_instructionsCGI = new char*[3]))
 		throw std::runtime_error("error allocation setting CGI instructions");
-	_instructionsCGI[0] = strdup(_pathForExec.substr(_pathForExec.find_last_of("/") + 1).c_str());
-	std::cout << _instructionsCGI[0] << "<---------instructionCGI\n";
-	_instructionsCGI[1] = NULL;
+	std::string toExec = ".";
+	toExec = toExec + _config.getCGI().value.second;
+	std::cout << "\nooooooooooooooooooooooooo\n" << toExec << "\nooooooooooooooooooooooooo\n";
+	_instructionsCGI[0] = strdup(toExec.c_str());
+	// _instructionsCGI[1] = strdup(_pathForExec.c_str());
+	_instructionsCGI[1] = strdup("/Users/laurentcoiffier/Desktop/webserv/./workDir/cgi-bin/phpinfo.php");
+	_instructionsCGI[2] = NULL;
 }
 
 
@@ -123,7 +142,7 @@ void CgiHandler::creationVectorEnviron(void){
 	serverSoftware();//DONE
 	otherMetaVariables();//DONE
 	redirectStatus();
-	visualizeEnviron();/////A RETIRER BIEN SUR
+	// visualizeEnviron();/////A RETIRER BIEN SUR
 }
 
 void CgiHandler::setVarEnv(void){
@@ -180,9 +199,9 @@ void CgiHandler::executingCgi(void)
 		}
 		// std::cerr << "le chemin pour l'executable est : " << _pathForExec.substr(0, _pathForExec.find_last_of("/") + 1) << "\n";
 		chdir((_pathForExec.substr(0, _pathForExec.find_last_of("/")).c_str())); //on se met dans le bon repertoire pour execve
-	// 	char* buf = NULL;
-	// buf = getcwd(buf, 0);
-	// 	std::cerr << " nous sommes dans : " << buf << "\n";
+		char* buf = NULL;
+	buf = getcwd(buf, 0);
+		std::cerr << " nous sommes dans : " << buf << "\n";
  		if (execve(_instructionsCGI[0], _instructionsCGI, _varEnv)< 0)
 			std::cerr << "error with CGI execution\n";
 		exit(1);
@@ -212,15 +231,10 @@ void CgiHandler::executingCgi(void)
 			throw std::runtime_error("error while receiving cgi response");
 		cgiResponse += buf;
 		close (fdPipeOut[0]);
-		//decoupage en header et body eventuel, calcul eventuel du body size
-		// size_t pos = cgiResponse.find("\r\n\r\n");
-		// std::string header = cgiResponse.substr(0, pos);
-		// if (pos != cgiResponse.npos)
-		// {
-		// 	std::string body = cgiResponse.substr(pos + 4);
-		// 	size_t bodySize = body.length();
-		// 	(void)bodySize;
-		// }
+		cgiResponse = checkCgiResponse(cgiResponse);
+		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nla reponse du cgi est : \n" << cgiResponse
+		<< "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+
 		_response->setCgiResponse(cgiResponse);
 		_response->_cgiResponse = true;
 	}
@@ -284,7 +298,7 @@ void CgiHandler::pathInfo(const std::string & str)
 	buf = getcwd(buf, 0);
 	if (!buf)
 		throw std::runtime_error("error during getcwd");
-	std::string s2 = static_cast<std::string>(buf) + "/" + str;
+	std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str;
 	// std::cout << "path info : " << s2 << std::endl;
 	_vectorEnv.push_back("PATH_INFO=" + s2);
 	_pathForExec = s2;
@@ -326,7 +340,7 @@ bool CgiHandler::scriptName(std::string & str)
 	// scriptname
 	// if (str == "")
 		_vectorEnv.push_back("SCRIPT_NAME=" + str);
-		_pathForExec += (WORKPATH + str);
+		_pathForExec += str;
 	// else
 	// {
 	// 	std::string s1 = "/" + str;
@@ -365,7 +379,6 @@ void CgiHandler::serverPort(const std::string & str)
 	if (str == "")
 	{
 		unsigned short port = _config.getPort(_client.getServerName());
-		std::cout << "LE PORT EST : " << port <<"\n";
 		std::ostringstream s;
 
 		s << port;
@@ -425,15 +438,40 @@ std::string CgiHandler::upperCaseAndMinus(const std::string & str)
 	{
 		_response->setStatus(404);
 		std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
-		std::cout << "cet executable n existe pas : " << str << std::endl;
+		std::cout << "cet executable n existe pas : " << str1 << std::endl;
 		return (false);
 	}
 	std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
-		std::cout << "cet executable existe : " << str << std::endl;
+		std::cout << "cet executable existe : " << str1 << std::endl;
 
 	return true;
 }
 
+void CgiHandler::parsePathforCgi(void)
+{
+//on recherche si script.php
+	size_t found = _parsedUrl["path"].find(_config.getCGI().value.first);
+	if (found != std::string::npos)
+	{
+		//on delimite le path du cgi et le additionnal path
+		std::string cgiPath = _parsedUrl["path"].substr(0, found + 4);
+		UrlDecoder(cgiPath);
+		found = _parsedUrl["path"].find_first_of("/", found + 4);
+		if (found != std::string::npos)
+		{
+			std::string additionnalPath = _parsedUrl["path"].substr(found);
+			UrlDecoder(additionnalPath);
+			_parsedUrl.insert(std::make_pair("additionnal_path", additionnalPath));
+		}
+		else
+			_parsedUrl.insert(std::make_pair("additionnal_path", ""));
+		//on met le "real path" en fonction de "location  de - \.php"
+		// std::string root =  "";//donnees a recuperer de config
+		// cgiPath = root + "/" + cgiPath;
+		// additionnalPath = root + "/" + additionnalPath;
+		_parsedUrl.insert(std::make_pair("cgi_path", cgiPath));
+	}
+}
 
 /*
 ** ------------------ UrlDecoder --------------------------------------
@@ -564,35 +602,35 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	{
 		parsedUrl.insert(std::make_pair("path", url));
 	}
-	//on recherche si script.php
-	found = parsedUrl["path"].find(".php");
-	if (found != std::string::npos)
-	{
-		//on delimite le path du cgi et le additionnal path
-		std::string cgiPath = parsedUrl["path"].substr(0, found + 4);
-		UrlDecoder(cgiPath);
-		found = parsedUrl["path"].find_first_of("/", found + 4);
-		if (found != std::string::npos)
-		{
-			std::string additionnalPath = parsedUrl["path"].substr(found);
-			UrlDecoder(additionnalPath);
-			parsedUrl.insert(std::make_pair("additionnal_path", additionnalPath));
-		}
-		else
-			parsedUrl.insert(std::make_pair("additionnal_path", ""));
-		//on met le "real path" en fonction de "location  de - \.php"
-		// std::string root =  "";//donnees a recuperer de config
-		// cgiPath = root + "/" + cgiPath;
-		// additionnalPath = root + "/" + additionnalPath;
-		parsedUrl.insert(std::make_pair("cgi_path", cgiPath));
-	}
+	// //on recherche si script.php
+	// found = parsedUrl["path"].find(".bla");
+	// if (found != std::string::npos)
+	// {
+	// 	//on delimite le path du cgi et le additionnal path
+	// 	std::string cgiPath = parsedUrl["path"].substr(0, found + 4);
+	// 	UrlDecoder(cgiPath);
+	// 	found = parsedUrl["path"].find_first_of("/", found + 4);
+	// 	if (found != std::string::npos)
+	// 	{
+	// 		std::string additionnalPath = parsedUrl["path"].substr(found);
+	// 		UrlDecoder(additionnalPath);
+	// 		parsedUrl.insert(std::make_pair("additionnal_path", additionnalPath));
+	// 	}
+	// 	else
+	// 		parsedUrl.insert(std::make_pair("additionnal_path", ""));
+	// 	//on met le "real path" en fonction de "location  de - \.php"
+	// 	// std::string root =  "";//donnees a recuperer de config
+	// 	// cgiPath = root + "/" + cgiPath;
+	// 	// additionnalPath = root + "/" + additionnalPath;
+	// 	parsedUrl.insert(std::make_pair("cgi_path", cgiPath));
+	// }
 	//else determination de la location en fonction de l'adresse et creation du real path
 	//a enlever
 	std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n PARSED URL\n";
 	for (std::map<std::string, std::string>::iterator it = parsedUrl.begin(); it != parsedUrl.end(); ++it)
 		std::cout << it->first << " : " << it->second <<"\n";
 	std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-
+	///////////////////////////////////
 	//a enlever
 	return (parsedUrl);
 }
@@ -603,4 +641,32 @@ void CgiHandler::visualizeEnviron(void) const {
 	for (it = _vectorEnv.begin(); it != _vectorEnv.end(); it++)
 		std::cout << *it <<std::endl;
 	std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+}
+
+std::string & CgiHandler::checkCgiResponse(std::string & response)
+{
+	if (response == "")
+		return (response);
+	std::string body;
+	size_t pos = response.find("\r\n\r\n");
+	if (pos == response.npos)
+	{
+		pos = response.find("\n\n");
+		if (pos != response.npos)
+			body = response.substr(pos + 2);
+	}
+	else
+		body = response.substr(pos + 4);
+	std::string header = response.substr(0, pos);
+	// if (header.substr(0, 4) != "HTTP")
+	// 	header = "HTTP/1.1 404 Not Found\r\n" + header;
+	size_t bodySize = body.length();
+	if (header.find("Content-Length:") == header.npos && bodySize)
+	{
+		std::ostringstream s;
+		s << bodySize;
+		std::string str2 = s.str();
+		header = header + "\r\nContent-Length: " + s.str();
+	}
+	return (response = header + "\r\n\r\n" + body);
 }

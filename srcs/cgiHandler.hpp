@@ -29,7 +29,7 @@ protected:
 	std::map<std::string, std::string> _parsedUrl;
 	std::map<std::string, std::string> _headers;
 	std::string _pathForExec;
-	std::fstream _cgiExecutable;
+	// std::fstream _cgiExecutable;
 
 private:
 	CgiHandler();
@@ -71,6 +71,9 @@ private:
 	bool checkExecutableExistence(std::string const & str);
 	std::string upperCaseAndMinus(const std::string & str);
 	void redirectStatus(void);
+	void parsePathforCgi(void);
+	std::string & checkCgiResponse(std::string & response);
+
 };
 
 void UrlDecoder(std::string & str);

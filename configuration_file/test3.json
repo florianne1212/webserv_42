@@ -2,7 +2,7 @@
 	"server":{
 		"server_name": "test",
 		"upload_pass":"/test",
-		"listen": "127.0.0.1:9091",
+		"listen": "127.0.0.1:9016",
 		"routes": [
 			{
 				"location": "    /   ",
@@ -14,9 +14,14 @@
 				"location": "/zozor",
 				"directory_page": "   /test/index.html   ",
 				"httpRequest": "GET"
+			},
+			{
+				"location": "/cgi-big",
+				"root": "/."
 			}
+
 		]
 	},
-	"cgi": ".bla /cgi-bin/php-cgi",
+	"cgi": ".php /cgi-bin/php-cgi",
 	"error_path": "404 /error/404.html"
 }
