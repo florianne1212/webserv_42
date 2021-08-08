@@ -2,7 +2,7 @@
 	"server":{
 		"server_name": "test",
 		"upload_pass":"/test",
-		"listen": "127.0.0.1:9016",
+		"listen": "127.0.0.1:8000",
 		"routes": [
 			{
 				"location": "    /   ",

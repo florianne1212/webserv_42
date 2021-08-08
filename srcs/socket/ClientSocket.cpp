@@ -61,15 +61,6 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	_request.setHeaders(mymap);
 	_request.setParsedUri(parseTheUri(_request.getUrl()));
 
-	// std::cout << "\nmethod = -" << _request.getMethods() << "-\npath = ";
-	// std::cout << _request.getUrl() << "-\nmajor = ";
-	// std::cout << _parserequest.get_major() << "-\nminor = ";
-	// std::cout << _parserequest.get_minor() << "\n";
-	// std::cout << _parseheader.get_field();
-
-	// for (std::map<std::string, std::string>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-    // 	std::cout << it->first << " => " << it->second << '\n';
-
 	std::cout << "\nMY BODY IS = \n" <<  _parserequest.get_body() << "\n";
 
 	_pollFD.events = POLLOUT;
