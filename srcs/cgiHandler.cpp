@@ -116,8 +116,8 @@ void CgiHandler::setInstructionCgi(void)
 	toExec = toExec + _config.getCGI().value.second;
 	std::cout << "\nooooooooooooooooooooooooo\n" << toExec << "\nooooooooooooooooooooooooo\n";
 	_instructionsCGI[0] = strdup(toExec.c_str());
-	// _instructionsCGI[1] = strdup(_pathForExec.c_str());
-	_instructionsCGI[1] = strdup("/Users/laurentcoiffier/Desktop/webserv/./workDir/cgi-bin/phpinfo.php");
+	_instructionsCGI[1] = strdup(_pathForExec.c_str());
+	// _instructionsCGI[1] = strdup("/Users/laurentcoiffier/Desktop/webserv/./workDir/cgi-bin/phpinfo.php");
 	_instructionsCGI[2] = NULL;
 }
 
@@ -298,7 +298,9 @@ void CgiHandler::pathInfo(const std::string & str)
 	buf = getcwd(buf, 0);
 	if (!buf)
 		throw std::runtime_error("error during getcwd");
-	std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str;
+	// std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str;
+	std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str + _parsedUrl["cgi_path"];
+
 	// std::cout << "path info : " << s2 << std::endl;
 	_vectorEnv.push_back("PATH_INFO=" + s2);
 	_pathForExec = s2;
@@ -340,7 +342,7 @@ bool CgiHandler::scriptName(std::string & str)
 	// scriptname
 	// if (str == "")
 		_vectorEnv.push_back("SCRIPT_NAME=" + str);
-		_pathForExec += str;
+		// _pathForExec += str;
 	// else
 	// {
 	// 	std::string s1 = "/" + str;
