@@ -75,7 +75,7 @@ fclean:			clean
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
 donuts :
-				@gcc donuts.c -o donuts
+				@clang donuts.c -o donuts -lm
 				@./donuts
 
 .PHONY: all clean flcean re show donuts

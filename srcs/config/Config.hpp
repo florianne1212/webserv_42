@@ -3,8 +3,7 @@
 
 class Config;
 
-
-# define WORKPATH "./www"
+# define WORKPATH g_workpath
 
 // # define WORKPATH "./testingDirectory"
 
@@ -18,9 +17,12 @@ class Config;
 # include "usable.hpp"
 # include "Server.hpp"
 
+extern std::string g_workpath;
+
 class Config
 {
 	private :
+		usable<std::string> _workpath;
 		std::map<std::string, Server>	_serverList; //string est le nom du serveur
 		std::map<int, std::string>		_pathErrorFile;
 		usable<size_t>					_bodyMaxSize;
@@ -37,6 +39,7 @@ class Config
 	public :
 		Config();
 		Config(std::string setupFile);
+		bool setWorkpath(std::vector<std::string> workpath);
 		bool addServer(std::string name, Server &server);
 		bool setPathErrorFile(std::vector<std::string> pathErrorFile);
 		bool setBodyMaxSize(size_t bodyMaxSize);
