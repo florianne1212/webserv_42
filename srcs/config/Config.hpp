@@ -4,7 +4,7 @@
 class Config;
 
 
-// # define WORKPATH "./workDir"
+# define WORKPATH "./www"
 
 // # define WORKPATH "./testingDirectory"
 
@@ -17,7 +17,6 @@ class Config;
 # include <sys/stat.h>
 # include "usable.hpp"
 # include "Server.hpp"
-# include "includes.hpp"
 
 class Config
 {
