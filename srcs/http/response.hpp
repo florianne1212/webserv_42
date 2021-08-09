@@ -36,7 +36,8 @@ public:
 	bool getDir();
 	std::string getResponse();
 	usable<std::pair<std::string, std::string> > getAppend();
-
+	bool getCgi();
+	
 	void cleanResponse();
 	void setBody(std::string str);
 	void setBodyPath(std::string str);

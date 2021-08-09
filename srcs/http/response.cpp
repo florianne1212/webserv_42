@@ -151,6 +151,7 @@ void Response::setHeaders(std::string header_name, std::string header_value)
 void Response::setCgiResponse(std::string const & cgiResponse)
 {
 	_response = cgiResponse;
+	_cgiResponse = true;
 }
 
 void Response::setAppend(std::string filename, std::string to_append)
@@ -171,4 +172,9 @@ bool Response::getDir()
 void Response::setDir(bool dir)
 {
 	_dir = dir;
+}
+
+bool Response::getCgi()
+{
+	return(_cgiResponse);
 }

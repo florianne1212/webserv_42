@@ -152,7 +152,8 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 		{
 			if (response.getBodyPath().state == true && response.getDir() == false )
 				response.setBody(_body);
-		   response.create_response();
+			if(response.getCgi() == false)
+		   		response.create_response();
 			_buffer = Buffer(response.getResponse(), 0);
 			_responseSent = false;
 			_append = true;
