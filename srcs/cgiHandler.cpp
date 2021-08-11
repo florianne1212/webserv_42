@@ -126,20 +126,20 @@ void CgiHandler::creationVectorEnviron(void){
 	auth("Authorization"); //DONE
 	contentLength("Content-Length"); //DONE
 	contentType("Content-Type"); //DONE
-	gatewayInterface(); //DONE
+	// gatewayInterface(); //DONE
 	pathInfo(_parsedUrl["additionnal_path"]);//DONE JE CROIS, A VERIFIER SI C EST CE QUE SUJET DEMANDE
 	// pathTranslated("j'y comprend rien!");////////////SHOULD
 	queryString(_parsedUrl["query"]); //DONE
 	remoteAddr(_client.getClientAddress());//DONE
 	remoteHost(); // DONE
 	remoteUser(_parsedUrl["user_name"]);//DONE
-	requestMethod(_request.getMethods()); // DONE
+	// requestMethod(_request.getMethods()); // DONE
 	if (!scriptName(_parsedUrl["cgi_path"]))//DONE, checke existence de lexecutable
 		return;
-	serverName(_parsedUrl["host"]);//DONE
+	// serverName(_parsedUrl["host"]);//DONE
 	serverPort(_parsedUrl["port"]);//DONE
 	serverProtocol();//DONE
-	serverSoftware();//DONE
+	// serverSoftware();//DONE
 	otherMetaVariables();//DONE
 	redirectStatus();
 	// visualizeEnviron();/////A RETIRER BIEN SUR
@@ -660,8 +660,8 @@ std::string & CgiHandler::checkCgiResponse(std::string & response)
 	else
 		body = response.substr(pos + 4);
 	std::string header = response.substr(0, pos);
-	// if (header.substr(0, 4) != "HTTP")
-	// 	header = "HTTP/1.1 404 Not Found\r\n" + header;
+	if (header.substr(0, 4) != "HTTP")
+		header = "HTTP/1.1 " + header;
 	size_t bodySize = body.length();
 	if (header.find("Content-Length:") == header.npos && bodySize)
 	{

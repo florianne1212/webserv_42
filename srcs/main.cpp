@@ -4,6 +4,8 @@
 #include "Config.hpp"
 #include "FDList.hpp"
 
+int	g_signalHandler;
+
 void selector(Config *datas, FDList *listFD)
 {
 	if (listFD->myPoll())
@@ -28,7 +30,7 @@ void selector(Config *datas, FDList *listFD)
 
 int eventLoop(Config *datas, FDList *listFD)
 {
-	while (1)
+	while (g_signalHandler)
 	{
 		selector(datas, listFD);
 	}
@@ -70,13 +72,20 @@ void	ignore(int i)
 	(void)i;
 }
 
+void	control_c(int i)
+{
+	g_signalHandler = 0;
+	(void)i;
+}
+
 int main(int argc, char *argv[])
 {
 	Config *datas;
 	FDList *listFD = new FDList();
+	g_signalHandler = 1;
 
 	signal(SIGPIPE, ignore);
-
+	signal(SIGINT, control_c);
 	try
 	{
 		if (argc > 2)
@@ -94,5 +103,8 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	std::cout << "START" << std::endl;
-	return eventLoop(datas, listFD);
+	eventLoop(datas, listFD);
+	delete datas;
+	delete listFD;
+	return (0);
 }

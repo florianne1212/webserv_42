@@ -1,9 +1,9 @@
 {
-"cgi": ".bla /cgi_tester",
+"cgi": ".php /php-cgi",
 "server": [
     {
       "server_name": "test42",
-	  "listen": "  127.0.0.1:8080   ",
+	  "listen": "  127.0.0.1:8084   ",
       "routes": [{
         "location": "    /    ",
 		"httpRequest": "     GET     "
