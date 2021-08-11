@@ -1,5 +1,7 @@
 #include "Config.hpp"
 
+std::string g_workpath;
+
 static std::vector<std::string> cppSplit(std::string str)
 {
 	std::vector<std::string> ret;
@@ -58,6 +60,8 @@ size_t Config::getValue(std::string::iterator &it, std::string::iterator end, st
 }
 void	Config::putConfig()
 {
+	if (_workpath.state == true)
+		std::cout << "workpath: " << _workpath.value << std::endl;
 	if (_bodyMaxSize.state == true)
 		std::cout <<  "bodyMaxSize: " << _bodyMaxSize.value << std::endl;
 	if (_cgi.state == true)
@@ -74,9 +78,18 @@ void	Config::putConfig()
 void	Config::checker()
 {
 	struct stat useless;
+	if (_workpath.state == true)
+	{
+		if (stat(_workpath.value.c_str(), &useless) != 0)
+			throw std::string("workpath is invalid");
+		else
+			WORKPATH = _workpath.value;
+	}
+	else
+		throw std::string("workpath is undefined");
 	for (std::map<int, std::string>::iterator it = _pathErrorFile.begin(); it != _pathErrorFile.end(); it++)
 		if (stat((WORKPATH + it->second).c_str() , &useless) != 0)
-			throw std::string(it->second + " is a unknow error file");
+			throw std::string(WORKPATH + it->second + " is a unknow error file");
 	for (std::map<std::string, Server>::iterator it = _serverList.begin(); it != _serverList.end(); it++)
 		it->second.checker();
 	if (_cgi.state == true)
@@ -113,6 +126,14 @@ Config::Config(std::string configFile)
 	parser(configFile);
 	checker();
 	//putConfig();
+}
+
+bool Config::setWorkpath(std::vector<std::string> workpath)
+{
+	if (workpath.size() != 1)
+		return false;
+	_workpath = usable<std::string>(workpath[0]);
+	return true;
 }
 
 bool Config::addServer(std::string name, Server &server)
@@ -187,16 +208,27 @@ void	Config::parser(std::string setupFile)
 				throw std::string("No match parametre: Config scope");
 			toCompare = ret[0];
 			it++;
-			if (strcmp(toCompare.c_str(), "error_path") == 0)
+			if (strcmp(toCompare.c_str(), "workpath") == 0)
+			{
+				if (*(it) == ':' && *(it + 1) == '"')
+				{
+					it++;
+					if (setWorkpath(getExpression(it, buffer.end(), "\"workpath\": Config scope")) == false)
+						throw std::string("Error in defining parametre \"workpath\": Config Scope");
+				}
+				else
+					throw std::string("Error in defining parametre \"workpath\": Config Scope");
+			}
+			else if (strcmp(toCompare.c_str(), "error_path") == 0)
 			{
 				if (*(it) == ':' && *(it + 1) == '"')
 				{
 					it++;
 					if (setPathErrorFile(getExpression(it , buffer.end(), "\"error_path\": Config scope")) == false)
-						throw std::string("Error in difining parametre \"error_path\": Config scope");
+						throw std::string("Error in defining parametre \"error_path\": Config scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"error_path\": Config scope");
+					throw std::string("Error in defining parametre \"error_path\": Config scope");
 			}
 			else if (strcmp(toCompare.c_str(), "client_body_max_size") == 0)
 			{
@@ -204,11 +236,11 @@ void	Config::parser(std::string setupFile)
 				{
 					it++;
 					if (setBodyMaxSize(getValue(it , buffer.end(), "\"client_body_max_size\": Config scope")) == false)
-						throw std::string("Error in difining parametre \"client_body_max_size\": Config scope");
+						throw std::string("Error in defining parametre \"client_body_max_size\": Config scope");
 				}
 				else
 				{
-					throw std::string("Error in difining parametre \"client_body_max_size\": Config scope");
+					throw std::string("Error in defining parametre \"client_body_max_size\": Config scope");
 				}
 			}
 			else if (strcmp(toCompare.c_str(), "cgi") == 0)
@@ -217,11 +249,11 @@ void	Config::parser(std::string setupFile)
 				{
 					it++;
 					if (setCGI(getExpression(it , buffer.end(), "\"cgi\": Config scope")) == false)
-						throw std::string("Error in difining parametre \"cgi\": Config scope");
+						throw std::string("Error in defining parametre \"cgi\": Config scope");
 				}
 				else
 				{
-					throw std::string("Error in difining parametre \"client_body_max_size\": Config scope");
+					throw std::string("Error in defining parametre \"client_body_max_size\": Config scope");
 				}
 			}
 			else if (strcmp(toCompare.c_str(), "server") == 0)
@@ -246,15 +278,15 @@ void	Config::parser(std::string setupFile)
 								parserServer(it, buffer);
 							}
 							else
-								throw std::string("Error in difining parametre \"server\": Config scope");
+								throw std::string("Error in defining parametre \"server\": Config scope");
 						}
 						if (*it != ']')
 							throw std::string("Error \"server\" in array: Config scope");
 					}
 					else
-						throw std::string("Error in difining parametre \"server\": Config scope");
+						throw std::string("Error in defining parametre \"server\": Config scope");
 				else
-					throw std::string("Error in difining parametre \"server\": Config scope");
+					throw std::string("Error in defining parametre \"server\": Config scope");
 			}
 			else
 				throw std::string("No match parametre: Config scope");
@@ -290,14 +322,14 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 				{
 					it++;
 					if (name != "")
-						throw std::string("Error in difining parametre \"server_name\": Server scope");
+						throw std::string("Error in defining parametre \"server_name\": Server scope");
 					ret = getExpression(it , buffer.end(), "\"server_name\": Server scope");
 					if (ret.size() != 1)
-						throw std::string("Error in difining parametre \"server_name\": Server scope");
+						throw std::string("Error in defining parametre \"server_name\": Server scope");
 					name = ret[0];
 				}
 				else
-					throw std::string("Error in difining parametre \"server_name\": Server scope");
+					throw std::string("Error in defining parametre \"server_name\": Server scope");
 			}
 			else if (strcmp(toCompare.c_str(), "listen") == 0)
 			{
@@ -305,12 +337,12 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 				{
 					it++;
 					if (tmp.setIp(getExpression(it , buffer.end(), "\"listen\": Server scope")) == false)
-						throw std::string("Error in difining parametre \"listen\": Server scope");
+						throw std::string("Error in defining parametre \"listen\": Server scope");
 					if (tmp.setPort() == false)
-						throw std::string("Error in difining parametre \"listen\": Server scope");
+						throw std::string("Error in defining parametre \"listen\": Server scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"listen\": Server scope");
+					throw std::string("Error in defining parametre \"listen\": Server scope");
 			}
 			else if (strcmp(toCompare.c_str(), "upload_pass") == 0)
 			{
@@ -318,10 +350,10 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 				{
 					it++;
 					if (tmp.setUploadDir(getExpression(it , buffer.end(), "\"upload_pass\": Server scope")) == false)
-						throw std::string("Error in difining parametre \"upload_pass\": Server scope");
+						throw std::string("Error in defining parametre \"upload_pass\": Server scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"upload_pass\": Server scope");
+					throw std::string("Error in defining parametre \"upload_pass\": Server scope");
 			}
 			else if (strcmp(toCompare.c_str(), "client_body_max_size") == 0)
 			{
@@ -329,10 +361,10 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 				{
 					it++;
 					if (tmp.setBodyMaxSize(getValue(it , buffer.end(), "\"client_body_max_size\": Server scope")) == false)
-						throw std::string("Error in difining parametre \"client_body_max_size\": Server scope");
+						throw std::string("Error in defining parametre \"client_body_max_size\": Server scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"client_body_max_size\": Server scope");
+					throw std::string("Error in defining parametre \"client_body_max_size\": Server scope");
 			}
 			else if (strcmp(toCompare.c_str(), "routes") == 0)
 			{
@@ -356,15 +388,15 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 								parserRoutes(it, buffer, tmp);
 							}
 							else
-								throw std::string("Error in difining parametre \"routes\": Server scope");
+								throw std::string("Error in defining parametre \"routes\": Server scope");
 						}
 						if (*it != ']')
 							throw std::string("Error \"routes\" in array: Server scope");
 					}
 					else
-						throw std::string("Error in difining parametre \"routes\": Server scope");
+						throw std::string("Error in defining parametre \"routes\": Server scope");
 				else
-					throw std::string("Error in difining parametre \"routes\": Server scope");
+					throw std::string("Error in defining parametre \"routes\": Server scope");
 			}
 			else
 				throw std::string("No match parametre: Server scope");
@@ -382,7 +414,7 @@ void Config::parserServer(std::string::iterator &it, std::string &buffer)
 		throw std::string("Missin \"}\": Server scope");
 	it++;
 	if (addServer(name, tmp) == false)
-		throw std::string("Error redifining \"" + name + "\": Server scope");
+		throw std::string("Error redefining \"" + name + "\": Server scope");
 }
 
 void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server &serv)
@@ -406,14 +438,14 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				{
 					it++;
 					if (name != "")
-						throw std::string("Error in difining parametre \"location\": Routes scope");
+						throw std::string("Error in defining parametre \"location\": Routes scope");
 					ret = getExpression(it , buffer.end(), "\"location\": Routes scope");
 					if (ret.size() != 1)
-						throw std::string("Error in difining parametre \"location\": Routes scope");
+						throw std::string("Error in defining parametre \"location\": Routes scope");
 					name = ret[0];
 				}
 				else
-					throw std::string("Error in difining parametre \"location\": Routes scope");
+					throw std::string("Error in defining parametre \"location\": Routes scope");
 			}
 			else if (strcmp(toCompare.c_str(), "directory_page") == 0)
 			{
@@ -421,10 +453,10 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				{
 					it++;
 					if (tmp.setDirectoryPage(getExpression(it, buffer.end(), "\"directory_page\": Routes scope")) == false)
-						throw std::string("Error in difining parametre \"directory_page\": Routes scope");
+						throw std::string("Error in defining parametre \"directory_page\": Routes scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"directory_page\": Routes scope");
+					throw std::string("Error in defining parametre \"directory_page\": Routes scope");
 			}
 			else if (strcmp(toCompare.c_str(), "root") == 0)
 			{
@@ -432,10 +464,10 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				{
 					it++;
 					if (tmp.setRoot(getExpression(it, buffer.end(), "\"root\": Routes scope")) == false)
-						throw std::string("Error in difining parametre \"root\": Routes scope");
+						throw std::string("Error in defining parametre \"root\": Routes scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"root\": Routes scope");
+					throw std::string("Error in defining parametre \"root\": Routes scope");
 			}
 			else if (strcmp(toCompare.c_str(), "autoIndex") == 0)
 			{
@@ -443,10 +475,10 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				{
 					it++;
 					if (tmp.setAutoIndex(getExpression(it, buffer.end(), "\"autoIndex\": Routes scope")) == false)
-						throw std::string("Error in difining parametre \"autoIndex\": Routes scope");
+						throw std::string("Error in defining parametre \"autoIndex\": Routes scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"autoIndex\": Routes scope");
+					throw std::string("Error in defining parametre \"autoIndex\": Routes scope");
 			}
 			else if (strcmp(toCompare.c_str(), "httpRequest") == 0)
 			{
@@ -454,10 +486,10 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				{
 					it++;
 					if (tmp.setHttpRequest(getExpression(it, buffer.end(), "\"httpRequest\": Routes scope")) == false)
-						throw std::string("Error in difining parametre \"httpRequest\": Routes scope");
+						throw std::string("Error in defining parametre \"httpRequest\": Routes scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"httpRequest\": Routes scope");
+					throw std::string("Error in defining parametre \"httpRequest\": Routes scope");
 			}
 			else if (strcmp(toCompare.c_str(), "httpRedirection") == 0)
 			{
@@ -465,10 +497,10 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				{
 					it++;
 					if (tmp.setHttpRedirection(getExpression(it, buffer.end(), "\"httpRedirection\": Routes scope")) == false)
-						throw std::string("Error in difining parametre \"httpRedirection\": Routes scope");
+						throw std::string("Error in defining parametre \"httpRedirection\": Routes scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"httpRedirection\": Routes scope");
+					throw std::string("Error in defining parametre \"httpRedirection\": Routes scope");
 			}
 			else if (strcmp(toCompare.c_str(), "client_body_max_size") == 0)
 			{
@@ -476,10 +508,10 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 				{
 					it++;
 					if (tmp.setBodyMaxSize(getValue(it , buffer.end(), "\"client_body_max_size\": Routes scope")) == false)
-						throw std::string("Error in difining parametre \"client_body_max_size\": Routes scope");
+						throw std::string("Error in defining parametre \"client_body_max_size\": Routes scope");
 				}
 				else
-					throw std::string("Error in difining parametre \"client_body_max_size\": Routes scope");
+					throw std::string("Error in defining parametre \"client_body_max_size\": Routes scope");
 			}
 			else
 				throw std::string("No match parametre: Routes scope");
@@ -496,7 +528,7 @@ void Config::parserRoutes(std::string::iterator &it, std::string &buffer, Server
 		throw std::string("Missin \"}\": Routes scope");
 	it++;
 	if (serv.addRoutes(name, tmp) == false)
-		throw std::string("Error redifining \"" + name + "\": Routes scope");
+		throw std::string("Error redefining \"" + name + "\": Routes scope");
 }
 
 usable<std::string> Config::getPathErrorFile(int errorVal) const

@@ -3,8 +3,6 @@
 
 class Server;
 
-// # define WORKPATH "./workDir"
-
 # include <map>
 # include <vector>
 # include <cstring>

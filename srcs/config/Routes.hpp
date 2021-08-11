@@ -3,8 +3,6 @@
 
 class Routes;
 
-// # define WORKPATH "./workDir"
-
 # include <map>
 # include <vector>
 # include <string>
