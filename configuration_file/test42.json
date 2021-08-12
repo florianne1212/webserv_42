@@ -1,9 +1,10 @@
 {
 "cgi": ".php /php-cgi",
+"workpath":"./www",
 "server": [
     {
       "server_name": "test42",
-	  "listen": "  127.0.0.1:8084   ",
+	  "listen": "  127.0.0.1:8085   ",
       "routes": [{
         "location": "    /    ",
 		"httpRequest": "     GET     "

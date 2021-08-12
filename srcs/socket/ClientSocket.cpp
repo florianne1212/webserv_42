@@ -7,7 +7,7 @@ _clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _
 {}
 
 ClientSocket::~ClientSocket(){}
-//en fonction, probable delete[] a faire ou pas si vector
+
 
 ClientSocket::ClientSocket(const ClientSocket & other) : ASocket(){
 	*this = other;
@@ -84,7 +84,7 @@ void ClientSocket::my_append(Response *response, FDList *listFD)
 		listFD->rmFile(_fd_out.fd);
 		_test = true;
 	}
-		
+
 }
 
 void ClientSocket::my_read(Response *response, FDList *listFD)
