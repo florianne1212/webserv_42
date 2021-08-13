@@ -1,6 +1,7 @@
 {
 "cgi": ".php /php-cgi",
 "workpath":"./www",
+"error_path": "404 /../workDir/error/404.html",
 "server": [
     {
       "server_name": "test42",
@@ -11,13 +12,17 @@
 	  },
 	  {
         "location": "    /put_test/    ",
-        "root": "/",
+        "root": "/.",
         "httpRequest": "     PUT     "
 	  },
 	  { "location": "    /post_body    ",
 		"root": "    /    ",
 		"httpRequest": "     POST     ",
 		"client_body_max_size": "   100   "
+	  },
+	  { "location": "    /cgi    ",
+		"root": "    /.    ",
+		"httpRequest": "     POST GET     "
 	  },
 	  {"location":"    /directory    ",
 			"root": "   /YoupiBanane"

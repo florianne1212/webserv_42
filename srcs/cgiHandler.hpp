@@ -29,7 +29,6 @@ protected:
 	std::map<std::string, std::string> _parsedUrl;
 	std::map<std::string, std::string> _headers;
 	std::string _pathForExec;
-	// std::fstream _cgiExecutable;
 
 private:
 	CgiHandler();
@@ -49,7 +48,6 @@ private:
 	void setVarEnv(void);
 	void setInstructionCgi(void);
 	void executingCgi(void);
-
 	void auth(const std::string & str);
 	void contentLength(const std::string & str);
 	void contentType(const std::string & str);
@@ -73,6 +71,7 @@ private:
 	void redirectStatus(void);
 	void parsePathforCgi(void);
 	std::string & checkCgiResponse(std::string & response);
+	void checkIfPhpCgi(void);
 
 };
 

@@ -13,11 +13,12 @@ CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request
 	_parsedUrl = parseTheUri(request.getUrl());
 	parsePathforCgi();//pour scriptname et additionnal path
 	// std::cout << "]]]]]]]]]]]]]]]]]]]]]]]]]]]\non est dans le constructeur de cgi\n";
-	// for (std::map<std::string, std::string>::iterator it = _parsedUrl.begin(); it != _parsedUrl.end(); ++it)
+	// for (std::map<std::string, std::string>::iterator it = _request.getParsedUri().begin(); it != _request.getParsedUri().end(); ++it)
 	// 	std::cout <<it->first << " et " << it->second << "\n";
 	// std::cout << "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n";
 	// // std::cout << "server name = " << client.getServerName() << "\n";
-	// std::cout << "URL transmise = " << request.getUrl()<< "\n";
+	std::cout << "URL transmise = " << request.getUrl()<< "\n";
+	std::cout << "querystring = " << _request.getParsedUri()["query"] << "\n";
 }
 
 CgiHandler::~CgiHandler()
@@ -85,8 +86,8 @@ CgiHandler & CgiHandler::operator= (const CgiHandler & other)
 
 void CgiHandler::executeCgi(void){
 	creationVectorEnviron();
-	// if(_response->getStatus()/100 == 2)
-	// {
+	if(_response->getStatus()/100 == 2)
+	{
 	setVarEnv();
 	setInstructionCgi();
 	std::cout << "..................................\nVar env\n";
@@ -97,10 +98,8 @@ void CgiHandler::executeCgi(void){
 		std::cout << _instructionsCGI[i] << "\n";
 	std::cout << "..................................\npathforexec\n";
 	std::cout << _pathForExec << "\n.............................\n\n";
-
-
 	executingCgi();
-	// }
+	}
 }
 
 /*
@@ -126,23 +125,35 @@ void CgiHandler::creationVectorEnviron(void){
 	auth("Authorization"); //DONE
 	contentLength("Content-Length"); //DONE
 	contentType("Content-Type"); //DONE
-	// gatewayInterface(); //DONE
-	pathInfo(_parsedUrl["additionnal_path"]);//DONE JE CROIS, A VERIFIER SI C EST CE QUE SUJET DEMANDE
-	// pathTranslated("j'y comprend rien!");////////////SHOULD
+	pathInfo(_parsedUrl["additionnal_path"]);//DONE
 	queryString(_parsedUrl["query"]); //DONE
 	remoteAddr(_client.getClientAddress());//DONE
 	remoteHost(); // DONE
 	remoteUser(_parsedUrl["user_name"]);//DONE
-	// requestMethod(_request.getMethods()); // DONE
-	if (!scriptName(_parsedUrl["cgi_path"]))//DONE, checke existence de lexecutable
-		return;
-	// serverName(_parsedUrl["host"]);//DONE
+	scriptName(_parsedUrl["cgi_path"]);//DONE, checke existence de lexecutable
 	serverPort(_parsedUrl["port"]);//DONE
 	serverProtocol();//DONE
-	// serverSoftware();//DONE
 	otherMetaVariables();//DONE
 	redirectStatus();
+	checkIfPhpCgi();
 	// visualizeEnviron();/////A RETIRER BIEN SUR
+}
+
+void CgiHandler::checkIfPhpCgi(void)
+{
+	//resolve php-cgi bug
+	std::string verif;
+	size_t found = (_config.getCGI().value.second).find_last_of("/");
+	if (found != std::string::npos)
+		verif = (_config.getCGI().value.second).substr(found + 1);
+	std::cout << verif << "=verif\n";
+	if(verif == "php-cgi")
+		return;
+	serverName(_parsedUrl["host"]);//DONE
+	serverSoftware();//DONE
+	gatewayInterface(); //DONE
+	requestMethod(_request.getMethods()); // DONE
+
 }
 
 void CgiHandler::setVarEnv(void){
@@ -232,8 +243,8 @@ void CgiHandler::executingCgi(void)
 		cgiResponse += buf;
 		close (fdPipeOut[0]);
 		cgiResponse = checkCgiResponse(cgiResponse);
-		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nla reponse du cgi est : \n" << cgiResponse
-		<< "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+		// std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nla reponse du cgi est : \n" << cgiResponse
+		// << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
 
 		_response->setCgiResponse(cgiResponse);
 		_response->_cgiResponse = true;
@@ -310,12 +321,15 @@ void CgiHandler::pathInfo(const std::string & str)
 
 void CgiHandler::queryString(const std::string & str) //<querystring> from cgi uri
 {
+	if (str != "")
 		_vectorEnv.push_back("QUERY_STRING=" + str);
+	else
+		_vectorEnv.push_back("QUERY_STRING=" + _request.getParsedUri()["query"]);
 }
 
 void CgiHandler::remoteAddr(const std::string & str)
 {
-		_vectorEnv.push_back("REMOTE_ADDR=" + str);
+	_vectorEnv.push_back("REMOTE_ADDR=" + str);
 }
 
 void CgiHandler::remoteHost(void)
@@ -341,7 +355,7 @@ bool CgiHandler::scriptName(std::string & str)
 {
 	// scriptname
 	// if (str == "")
-		_vectorEnv.push_back("SCRIPT_NAME=" + str);
+	_vectorEnv.push_back("SCRIPT_NAME=" + str);
 		// _pathForExec += str;
 	// else
 	// {
@@ -361,10 +375,10 @@ bool CgiHandler::scriptName(std::string & str)
 	// _vectorEnv.push_back("SCRIPT_FILENAME=" + newAddress);
 
 	checkExecutableExistence(str);
-
+	return true;
 	// if (!checkExecutableExistence(newAddress))
 	// 	return false;
-	return true;
+
 }
 
 
@@ -374,6 +388,8 @@ void CgiHandler::serverName(const std::string & str)
 		_vectorEnv.push_back("SERVER_NAME=" + str);
 	else
 		_vectorEnv.push_back("SERVER_NAME=" + _client.getServerName());
+		// _vectorEnv.push_back("SERVER_NAME=" + _config.getIp(_client.getServerName()));
+
 }
 
 void CgiHandler::serverPort(const std::string & str)
@@ -398,7 +414,7 @@ void CgiHandler::serverProtocol(void)
 
 void CgiHandler::serverSoftware(void)
 {
-	_vectorEnv.push_back("SERVER_SOFTWARE=le_Serveur_De_Florianne_Tanguy_Et_Laurent/1.0");
+	_vectorEnv.push_back("SERVER_SOFTWARE=DREAMTEAM/42.42");
 }
 
 void CgiHandler::otherMetaVariables(void)

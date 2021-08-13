@@ -23,6 +23,9 @@ Request& Request::operator=(Request const & ope)
 		this->_url = ope._url;
 		this->_version = ope._version;
 		this->_headers = ope._headers;
+		this->_body = ope._body;
+		this->_parsedUri = ope._parsedUri;
+		this->_error = ope._error;
 	}
 	return (*this);
 }
