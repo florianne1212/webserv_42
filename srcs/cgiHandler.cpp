@@ -16,7 +16,7 @@ CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request
 	// for (std::map<std::string, std::string>::iterator it = _request.getParsedUri().begin(); it != _request.getParsedUri().end(); ++it)
 	// 	std::cout <<it->first << " et " << it->second << "\n";
 	// std::cout << "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n";
-	// // std::cout << "server name = " << client.getServerName() << "\n";
+	// // std::cout << "server name = " << client.getServerName() << "\n"; /
 	std::cout << "URL transmise = " << request.getUrl()<< "\n";
 	std::cout << "querystring = " << _request.getParsedUri()["query"] << "\n";
 }
