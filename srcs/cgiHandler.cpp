@@ -16,7 +16,7 @@ CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request
 	// for (std::map<std::string, std::string>::iterator it = _request.getParsedUri().begin(); it != _request.getParsedUri().end(); ++it)
 	// 	std::cout <<it->first << " et " << it->second << "\n";
 	// std::cout << "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n";
-	// // std::cout << "server name = " << client.getServerName() << "\n"; /
+	// // std::cout << "server name = " << client.getServerName() << "\n";
 	std::cout << "URL transmise = " << request.getUrl()<< "\n";
 	std::cout << "querystring = " << _request.getParsedUri()["query"] << "\n";
 }
@@ -111,7 +111,13 @@ void CgiHandler::setInstructionCgi(void)
 {
 	if (!(_instructionsCGI = new char*[3]))
 		throw std::runtime_error("error allocation setting CGI instructions");
-	std::string toExec = ".";
+	char* buf = NULL;
+	buf = getcwd(buf, 0);
+	if (!buf)
+		throw std::runtime_error("error during getcwd");
+	// std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str;
+	std::string toExec = static_cast<std::string>(buf) + "/" + WORKPATH;
+	// std::string toExec = ".";
 	toExec = toExec + _config.getCGI().value.second;
 	std::cout << "\nooooooooooooooooooooooooo\n" << toExec << "\nooooooooooooooooooooooooo\n";
 	_instructionsCGI[0] = strdup(toExec.c_str());
