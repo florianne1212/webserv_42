@@ -8,6 +8,10 @@ FDList::FDList()
 {
 }
 
+FDList::~FDList()
+{
+}
+
 void FDList::addSocket(ASocket *toAdd)
 {
     _SocketLists.push_back(toAdd);

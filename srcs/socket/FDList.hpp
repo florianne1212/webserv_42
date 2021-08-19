@@ -15,6 +15,7 @@ class FDList
 
     public :
         FDList();
+	~FDList();
         
         void addSocket(ASocket* toAdd);
         void addFile(struct pollfd* toAdd);

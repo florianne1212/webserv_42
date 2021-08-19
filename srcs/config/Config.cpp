@@ -121,7 +121,7 @@ Config::Config()
 {}
 
 Config::Config(std::string configFile)
-: _serverList(), _pathErrorFile(), _bodyMaxSize(), _cgi()
+: _workpath(), _serverList(), _pathErrorFile(), _bodyMaxSize(), _cgi()
 {
 	parser(configFile);
 	checker();

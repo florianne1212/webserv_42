@@ -108,6 +108,7 @@ int main(int argc, char *argv[])
 	catch (std::string err)
 	{
 		std::cerr << err << std::endl;
+		delete listFD;
 		return 0;
 	}
 	std::cout << "START" << std::endl;
