@@ -186,6 +186,9 @@ void	Config::parser(std::string setupFile)
 	std::ifstream ifs(setupFile.c_str());
 	std::string buffer;
 
+	int size = setupFile.size();
+	if (setupFile[size - 1] != 'f' || setupFile[size - 2] != 'n' || setupFile[size - 3] != 'o' || setupFile[size - 4] != 'c')
+		throw std::string("Invalid Config File");
 	if (ifs.fail())
 		throw std::string("Invalid Config File");
 	//get file and del white space
