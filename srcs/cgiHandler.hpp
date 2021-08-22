@@ -10,6 +10,7 @@ class CgiHandler;
 # include <cctype>
 # include <unistd.h>
 # include <iostream>
+#include <fcntl.h>
 # include <exception>
 # include "request.hpp"
 # include "ClientSocket.hpp"

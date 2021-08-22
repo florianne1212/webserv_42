@@ -12,11 +12,6 @@ CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request
 	_headers = request.getHeaders();
 	_parsedUrl = parseTheUri(request.getUrl());
 	parsePathforCgi();//pour scriptname et additionnal path
-	// std::cout << "]]]]]]]]]]]]]]]]]]]]]]]]]]]\non est dans le constructeur de cgi\n";
-	// for (std::map<std::string, std::string>::iterator it = _request.getParsedUri().begin(); it != _request.getParsedUri().end(); ++it)
-	// 	std::cout <<it->first << " et " << it->second << "\n";
-	// std::cout << "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n";
-	// // std::cout << "server name = " << client.getServerName() << "\n";
 	std::cout << "URL transmise = " << request.getUrl()<< "\n";
 	std::cout << "querystring = " << _request.getParsedUri()["query"] << "\n";
 }
@@ -27,14 +22,14 @@ CgiHandler::~CgiHandler()
 	{
 		int i = -1;
 		while (_varEnv[++i])
-			delete (_varEnv[i]);
+			free (_varEnv[i]);
 		delete [] _varEnv;
 	}
 	if (_instructionsCGI)
 	{
 		int j = -1;
 		while (_instructionsCGI[++j])
-			delete(_instructionsCGI[j]);
+			free (_instructionsCGI[j]);
 		delete [] _instructionsCGI;
 	}
 }
@@ -53,14 +48,14 @@ CgiHandler & CgiHandler::operator= (const CgiHandler & other)
 		{
 			int i = -1;
 			while (_varEnv[++i])
-				delete (_varEnv[i]);
+				free (_varEnv[i]);
 			delete [] _varEnv;
 		}
 		if (_instructionsCGI)
 		{
 			int j = -1;
 			while (_instructionsCGI[++j])
-				delete(_instructionsCGI[j]);
+				free (_instructionsCGI[j]);
 			delete [] _instructionsCGI;
 		}
 		_vectorEnv = other._vectorEnv;
@@ -90,14 +85,14 @@ void CgiHandler::executeCgi(void){
 	{
 	setVarEnv();
 	setInstructionCgi();
-	std::cout << "..................................\nVar env\n";
-	for (int i = 0; _varEnv[i] != 0 ; i++)
-		std::cout << _varEnv[i] << "\n";
-	std::cout << "..................................\nargiments\n";
-	for (int i = 0; _instructionsCGI[i] != 0 ; i++)
-		std::cout << _instructionsCGI[i] << "\n";
-	std::cout << "..................................\npathforexec\n";
-	std::cout << _pathForExec << "\n.............................\n\n";
+	// std::cout << "..................................\nVar env\n";
+	// for (int i = 0; _varEnv[i] != 0 ; i++)
+	// 	std::cout << _varEnv[i] << "\n";
+	// std::cout << "..................................\nargiments\n";
+	// for (int i = 0; _instructionsCGI[i] != 0 ; i++)
+	// 	std::cout << _instructionsCGI[i] << "\n";
+	// std::cout << "..................................\npathforexec\n";
+	// std::cout << _pathForExec << "\n.............................\n\n";
 	executingCgi();
 	}
 }
@@ -115,31 +110,29 @@ void CgiHandler::setInstructionCgi(void)
 	buf = getcwd(buf, 0);
 	if (!buf)
 		throw std::runtime_error("error during getcwd");
-	// std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str;
 	std::string toExec = static_cast<std::string>(buf) + "/" + WORKPATH;
-	// std::string toExec = ".";
 	toExec = toExec + _config.getCGI().value.second;
-	std::cout << "\nooooooooooooooooooooooooo\n" << toExec << "\nooooooooooooooooooooooooo\n";
+	free (buf);
+	// std::cout << "\nooooooooooooooooooooooooo\n" << toExec << "\nooooooooooooooooooooooooo\n";
 	_instructionsCGI[0] = strdup(toExec.c_str());
 	_instructionsCGI[1] = strdup(_pathForExec.c_str());
-	// _instructionsCGI[1] = strdup("/Users/laurentcoiffier/Desktop/webserv/./workDir/cgi-bin/phpinfo.php");
 	_instructionsCGI[2] = NULL;
 }
 
 
 void CgiHandler::creationVectorEnviron(void){
-	auth("Authorization"); //DONE
-	contentLength("Content-Length"); //DONE
-	contentType("Content-Type"); //DONE
-	pathInfo(_parsedUrl["additionnal_path"]);//DONE
-	queryString(_parsedUrl["query"]); //DONE
-	remoteAddr(_client.getClientAddress());//DONE
-	remoteHost(); // DONE
-	remoteUser(_parsedUrl["user_name"]);//DONE
-	scriptName(_parsedUrl["cgi_path"]);//DONE, checke existence de lexecutable
-	serverPort(_parsedUrl["port"]);//DONE
-	serverProtocol();//DONE
-	otherMetaVariables();//DONE
+	auth("Authorization");
+	contentLength("Content-Length");
+	contentType("Content-Type");
+	pathInfo(_parsedUrl["additionnal_path"]);
+	queryString(_parsedUrl["query"]);
+	remoteAddr(_client.getClientAddress());
+	remoteHost();
+	remoteUser(_parsedUrl["user_name"]);
+	scriptName(_parsedUrl["cgi_path"]);//checke existence de lexecutable
+	serverPort(_parsedUrl["port"]);
+	serverProtocol();
+	otherMetaVariables();
 	redirectStatus();
 	checkIfPhpCgi();
 	// visualizeEnviron();/////A RETIRER BIEN SUR
@@ -155,10 +148,10 @@ void CgiHandler::checkIfPhpCgi(void)
 	std::cout << verif << "=verif\n";
 	if(verif == "php-cgi")
 		return;
-	serverName(_parsedUrl["host"]);//DONE
-	serverSoftware();//DONE
-	gatewayInterface(); //DONE
-	requestMethod(_request.getMethods()); // DONE
+	serverName(_parsedUrl["host"]);
+	serverSoftware();
+	gatewayInterface();
+	requestMethod(_request.getMethods());
 
 }
 
@@ -184,11 +177,19 @@ void CgiHandler::executingCgi(void)
 
 	if (pipe(fdPipeOut) < 0)
 		throw std::runtime_error("error piping CGI");
+	//set fd as non blocking
+	fcntl(fdPipeOut[0], F_SETFL, O_NONBLOCK);
+	fcntl(fdPipeOut[1], F_SETFL, O_NONBLOCK);
 	if (_request.getMethods() == "POST")
+	{
 		if (pipe(fdPipeIn) < 0)
 			throw std::runtime_error("error piping CGI");
+		//set fd as non blocking
+		fcntl(fdPipeIn[0], F_SETFL, O_NONBLOCK);
+		fcntl(fdPipeIn[1], F_SETFL, O_NONBLOCK);
+	}
 	pid = fork();
-	if (pid < 0)
+	if (pid < 0) //error
 	{
 		close(fdPipeOut[0]);
 		close(fdPipeOut[1]);
@@ -216,9 +217,9 @@ void CgiHandler::executingCgi(void)
 		}
 		// std::cerr << "le chemin pour l'executable est : " << _pathForExec.substr(0, _pathForExec.find_last_of("/") + 1) << "\n";
 		chdir((_pathForExec.substr(0, _pathForExec.find_last_of("/")).c_str())); //on se met dans le bon repertoire pour execve
-		char* buf = NULL;
-	buf = getcwd(buf, 0);
-		std::cerr << " nous sommes dans : " << buf << "\n";
+		char* buf = NULL; ////a retirer
+		buf = getcwd(buf, 0);////a retirer
+		std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
  		if (execve(_instructionsCGI[0], _instructionsCGI, _varEnv)< 0)
 			std::cerr << "error with CGI execution\n";
 		exit(1);
@@ -305,28 +306,19 @@ void CgiHandler::gatewayInterface(void)
 
 void CgiHandler::pathInfo(const std::string & str)
 {
-	// if (str == "") ///JE NE SAIS PAS S IL FAUT METTRE CHEMIN ABSOLU ICI
-	// {
-	// 	_vectorEnv.push_back("PATH_INFO=");
-	// 	return ;
-	// }
 	//mise en place chemin absolu
 	char* buf = NULL;
 	buf = getcwd(buf, 0);
 	if (!buf)
 		throw std::runtime_error("error during getcwd");
-	// std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str;
 	std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str + _parsedUrl["cgi_path"];
-
 	// std::cout << "path info : " << s2 << std::endl;
 	_vectorEnv.push_back("PATH_INFO=" + s2);
 	_pathForExec = s2;
-	if (buf)
-		free (buf);
+	free (buf);
 }
 
-void CgiHandler::queryString(const std::string & str) //<querystring> from cgi uri
-{
+void CgiHandler::queryString(const std::string & str) {
 	if (str != "")
 		_vectorEnv.push_back("QUERY_STRING=" + str);
 	else
