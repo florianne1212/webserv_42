@@ -20,7 +20,10 @@ void CheckPath::handle(ClientSocket &client,Config &config, Request &request, Re
 	while ((pos = url.find(delimiter)) != std::string::npos) {
 		token = url.substr(0, pos);
 		if(token == "..")
-			mylist.pop_back();
+		{
+			if(!mylist.empty())
+				mylist.pop_back();
+		}
 		else if (token == "."|| token == "")
 			;
 		else 
@@ -31,8 +34,11 @@ void CheckPath::handle(ClientSocket &client,Config &config, Request &request, Re
 		// std::cout << "\n my token = ." << token << "." << std::endl;
 		url.erase(0, pos + delimiter.length());
 	}
-	if(url == "..")
-		mylist.pop_back();
+	if(token == "..")
+	{
+		if(!mylist.empty())
+			mylist.pop_back();
+	}
 	else if (url == ".")
 		;
 	else 
@@ -44,11 +50,15 @@ void CheckPath::handle(ClientSocket &client,Config &config, Request &request, Re
     // 	std::cout << ' ' << *it;
 
 	// std::cout << "\n" << std::endl;
+	
 
 	std::string new_url;
+	if(mylist.empty())
+		new_url = "/";
 	for (std::list<std::string>::iterator it=mylist.begin(); it != mylist.end(); ++it)
 		new_url += *it;
-	std::cout << "\n new url ==" << new_url << std::endl;
+
+	request.setUrl(new_url);
 
 	next();
 
