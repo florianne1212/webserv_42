@@ -3,7 +3,7 @@
 
 # include "IMiddleware.hpp"
 
-class CheckBodySize : public IMiddleware {
+class CheckBodySize : public IMiddleware , public Singleton<CheckBodySize> {
 
 	public:
 		virtual ~CheckBodySize();

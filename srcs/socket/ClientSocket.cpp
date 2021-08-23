@@ -61,7 +61,7 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	_request.setHeaders(mymap);
 	_request.setParsedUri(parseTheUri(_request.getUrl()));
 
-	std::cout << "\nMY BODY IS = \n" <<  _parserequest.get_body() << "\n";
+	//std::cout << "\nMY BODY IS = \n" <<  _parserequest.get_body() << "\n";
 
 	_pollFD.events = POLLOUT;
 }

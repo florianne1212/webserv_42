@@ -29,7 +29,7 @@ void CheckPath::handle(ClientSocket &client,Config &config, Request &request, Re
 		else 
 		{
 			mylist.push_back("/" + token);
-			std::cout << "token";
+			//std::cout << "token";
 		}
 		// std::cout << "\n my token = ." << token << "." << std::endl;
 		url.erase(0, pos + delimiter.length());

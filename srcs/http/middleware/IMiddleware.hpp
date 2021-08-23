@@ -9,6 +9,7 @@ class IMiddleware;
 # include "request.hpp"
 # include "response.hpp"
 # include "MiddlewareChain.hpp"
+# include "Singleton.hpp"
 
 class IMiddleware {
 

@@ -3,7 +3,7 @@
 
 # include "IMiddleware.hpp"
 
-class CheckRedir : public IMiddleware {
+class CheckRedir : public IMiddleware , public Singleton<CheckRedir> {
 
 	public:
 		virtual ~CheckRedir();

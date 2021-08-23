@@ -16,16 +16,16 @@ void ManageMiddleware::middlewareStart(ClientSocket &client, Config &config, Req
 {
 	std::list<IMiddleware *> middlewares;
 
-	middlewares.push_back(new IsConnected());
-	middlewares.push_back(new CheckRedir());
-	middlewares.push_back(new CheckPath());
-	middlewares.push_back(new CheckRoot());
-	middlewares.push_back(new CheckRequest());
-	middlewares.push_back(new CheckBodySize());
+	middlewares.push_back(&IsConnected::instance());
+	middlewares.push_back(&CheckRedir::instance());
+	middlewares.push_back(&CheckPath::instance());
+	middlewares.push_back(&CheckRoot::instance());
+	middlewares.push_back(&CheckRequest::instance());
+	middlewares.push_back(&CheckBodySize::instance());
 			
-	middlewares.push_back(new MethodMiddleware());
+	middlewares.push_back(&MethodMiddleware::instance());
 
-	middlewares.push_back(new GetFileError());
+	middlewares.push_back(&GetFileError::instance());
 			
 			
 	_state = S_END;

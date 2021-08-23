@@ -3,7 +3,7 @@
 
 # include "IMiddleware.hpp"
 
-class CheckPath : public IMiddleware {
+class CheckPath : public IMiddleware , public Singleton<CheckPath> {
 
 	public:
 		virtual ~CheckPath();

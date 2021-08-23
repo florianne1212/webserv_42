@@ -3,7 +3,7 @@
 
 # include "IMiddleware.hpp"
 
-class MethodMiddleware : public IMiddleware {
+class MethodMiddleware : public IMiddleware , public Singleton<MethodMiddleware> {
 
 	public:
 		virtual ~MethodMiddleware();

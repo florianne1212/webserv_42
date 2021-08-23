@@ -4,7 +4,7 @@
 # include "IMiddleware.hpp"
 # include "File.hpp"
 
-class GetFileError : public IMiddleware {
+class GetFileError : public IMiddleware , public Singleton<GetFileError> {
 
 	public:
 		virtual ~GetFileError();
