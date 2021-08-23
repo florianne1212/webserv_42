@@ -10,8 +10,6 @@ void CheckPath::handle(ClientSocket &client,Config &config, Request &request, Re
 	(void)response;
 	(void)request;
 	(void)config;
-	
-	std::cout << "\nI AM IN CHECK PATH !!! URL =  \n" << request.getUrl()  << "\n";
 
 	std::string url = request.getUrl();
 	std::string delimiter = "/";
