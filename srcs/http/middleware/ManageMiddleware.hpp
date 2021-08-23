@@ -36,6 +36,7 @@ class ManageMiddleware {
 # include "checkRedir.hpp"
 # include "isConnected.hpp"
 # include "checkRequest.hpp"
+# include "checkPath.hpp"
 # include "checkRoot.hpp"
 # include "checkBodySize.hpp"
 # include "getFileError.hpp"

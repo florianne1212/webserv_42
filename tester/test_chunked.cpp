@@ -29,7 +29,7 @@ int main()
 	//ip address of www.msn.com (get by doing a ping www.msn.com at terminal)
 	server.sin_addr.s_addr = inet_addr("127.0.0.1");
 	server.sin_family = AF_INET;
-	server.sin_port = htons( 9091 );
+	server.sin_port = htons( 9000 );
 
 	//Connect to remote server
 	if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0)
@@ -41,7 +41,7 @@ int main()
 	puts("Connected");
 	
 	//Send some data
-	message = "POST /test.txt HTTP/1.1\r\nHost: 127.0.0.1:9091\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n8\r\nMozilla\n\r\n9\r\nDeveloper\r\n7\r\nNetwork\r\n0\r\n\r\n";
+	message = "GET /mid/content=5/../6 HTTP/1.1\r\nHost: 127.0.0.1:9091\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n8\r\nMozilla\n\r\n9\r\nDeveloper\r\n7\r\nNetwork\r\n0\r\n\r\n";
 
 	if( send(socket_desc , message.c_str() , strlen(message.c_str()) , 0) < 0)
 	{
