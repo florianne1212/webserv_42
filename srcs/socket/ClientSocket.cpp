@@ -2,8 +2,9 @@
 #include "parseRequest.hpp"
 #include "ManageMiddleware.hpp"
 
-ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort) : ASocket(fd, serverName),
-_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true),  _fd_read(), _read(true)
+ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort, FDList* listFD) : ASocket(fd, serverName),
+_clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true),  _fd_read(), _read(true),
+_listFD(listFD)
 {}
 
 ClientSocket::~ClientSocket(){}
@@ -19,12 +20,18 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 		ASocket::operator=(other);
 		_clientAddress = other._clientAddress;
 		_clientPort = other._clientPort;
+		_listFD = other._listFD;
 	}
 	return (*this);
 }
 
 int	ClientSocket::getFd(void) const{
 	return (_fd);
+}
+
+
+FDList* ClientSocket::getListFD(void){
+	return (_listFD);
 }
 
 void ClientSocket::read(Config *datas, FDList *listFD)

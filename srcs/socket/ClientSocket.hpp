@@ -7,6 +7,7 @@ class ClientSocket;
 # include "buffer.hpp"
 # include "request.hpp"
 # include "response.hpp"
+# include "FDList.hpp"
 
 class ClientSocket : public ASocket
 {
@@ -25,11 +26,11 @@ class ClientSocket : public ASocket
 		struct pollfd _fd_read;
 		bool _read;
 		std::string _body;
+		FDList* _listFD;
 
 
 	public :
-		ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort);
-		// ClientSocket(int fd, std::string clientAddress, std::string clientPort);
+		ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort, FDList* listFD);
 		virtual ~ClientSocket();
 		ClientSocket(const ClientSocket & other);
 		ClientSocket & operator=(const ClientSocket & other);
@@ -41,6 +42,7 @@ class ClientSocket : public ASocket
 		std::string getClientPort(void) const;
 		void my_append(Response *response, FDList *listFD);
 		void my_read(Response *response, FDList *listFD);
+		FDList* getListFD(void);
 };
 
 #endif
