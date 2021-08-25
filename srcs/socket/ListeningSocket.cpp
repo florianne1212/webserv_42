@@ -47,8 +47,7 @@ void ListeningSocket::read(Config *datas, FDList *listFD)
 		clientAddress = inet_ntop(_addr.sin_family, (void*)&(_addr.sin_addr), buff, INET6_ADDRSTRLEN);
 		std::cout << "Connexion de " << clientAddress << ":" << _addr.sin_port << std::endl;
 	}
-	ClientSocket *tmp = new ClientSocket(newClientFd, _serverName, clientAddress, clientPort);
-	listFD->addSocket(tmp);
+	listFD->addSocket(new ClientSocket(newClientFd, _serverName, clientAddress, clientPort));
 }
 
 void ListeningSocket::write(Config *datas, FDList *listFD)

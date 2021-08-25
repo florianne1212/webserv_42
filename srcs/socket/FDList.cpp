@@ -10,6 +10,8 @@ FDList::FDList()
 
 FDList::~FDList()
 {
+	for (std::list<ASocket *>::iterator it = _SocketLists.begin(); it != _SocketLists.end(); it++)
+		delete *it;
 }
 
 void FDList::addSocket(ASocket *toAdd)
@@ -27,6 +29,7 @@ void FDList::rmSocket(const int& toRemove)
     std::list<ASocket *>::iterator it = _SocketLists.begin();
     while (it != _SocketLists.end() && (*it)->getFd() != toRemove)
         it++;
+	delete *it;
     _SocketLists.erase(it);
 }
 
