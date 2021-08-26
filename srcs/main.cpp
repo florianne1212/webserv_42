@@ -16,15 +16,13 @@ void selector(Config *datas, FDList *listFD)
 		{
 			if ((*it)->getReadStatus())
 			{
-				(*it)->read(datas, listFD);
 				(*it)->setTime();
-				std::cout << "READ" << std::endl;
+				(*it)->read(datas, listFD);
 			}
 			else if ((*it)->getWriteStatus())
 			{
-				(*it)->write(datas, listFD);
 				(*it)->setTime();
-				std::cout << "WRITE" << std::endl;
+				(*it)->write(datas, listFD);
 			}
 			else if ((*it)->getTimeout())
 			{
