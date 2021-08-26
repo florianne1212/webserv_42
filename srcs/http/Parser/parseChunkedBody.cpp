@@ -3,14 +3,16 @@
 
 ParseChunkedBody::ParseChunkedBody():
 _state(S_LENGTH),
-_count(1)
+_count(1),
+_status(200)
 {
 }
 
 ParseChunkedBody::ParseChunkedBody(std::string Body):
 _body(Body),
 _state(S_LENGTH),
-_count(1)
+_count(1),
+_status(200)
 {
 }
 
@@ -78,7 +80,10 @@ void ParseChunkedBody::parse(char c)
 				_nb.clear();
 				_count = 1;
 				if(c != '\r')
+				{
 					throw std::string("there is supposed to be a '\\r", c);
+					_status = 400;
+				}
 				else
 					_state = S_END_R;
 			}
@@ -89,8 +94,10 @@ void ParseChunkedBody::parse(char c)
 			if(c == '\n')
 				_state = S_END_N;
 			else
+			{
 				throw std::string("there is supposed to be a '\\n");
-			
+				_status = 400;
+			}
 			break;
 		}
 		case(S_END_N):
@@ -123,8 +130,10 @@ void ParseChunkedBody::parse(char c)
 			if(c == '\n')
 				_state = S_END;
 			else
+			{
 				throw std::string("there is supposed to be a '\\n");
-			
+				_status = 400;
+			}
 			break;
 		}
 		case(S_END):

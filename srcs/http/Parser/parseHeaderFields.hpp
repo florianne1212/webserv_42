@@ -24,7 +24,7 @@ class ParseHeaderFields
 		std::string _value;
 		State _state;
 		std::map<std::string, std::string> _headers;
-
+		int _status;
 
 
 	public:
@@ -50,6 +50,16 @@ class ParseHeaderFields
 		std::map<std::string, std::string> get_headers_map()
 		{
 			return(_headers);
+		}
+
+		int getStatus()
+		{
+			return(this->_status);
+		}
+
+		void setStatus(int status)
+		{
+			this->_status=status;
 		}
 };
 

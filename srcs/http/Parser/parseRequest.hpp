@@ -42,6 +42,7 @@ class ParseRequest
 		ParseBody _parseBody;
 		Config _config;
 		bool _error;
+		int _status;
 
 
 
@@ -87,6 +88,16 @@ class ParseRequest
 		bool get_error()
 		{
 			return (_error);
+		}
+
+		int getStatus()
+		{
+			return(this->_status);
+		}
+
+		void setStatus(int status)
+		{
+			this->_status=status;
 		}
 				 
 };

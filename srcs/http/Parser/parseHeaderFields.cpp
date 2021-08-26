@@ -3,7 +3,8 @@
 #include <iostream>
 
 ParseHeaderFields::ParseHeaderFields():
-_state(S_FIELD)
+_state(S_FIELD),
+_status(200)
 {
 }
 
@@ -37,10 +38,15 @@ void ParseHeaderFields::parse(char c)
 			if(c == ' ')
 			{
 				if(_field.empty())
+				{
 					throw std::string("there is some space before field");
+					_status = 400;
+				}
 				else
+				{
 					throw std::string("there is some space before fields");
-				   
+				 	_status = 400;
+				}  
 			}
 			else if(c == ':')
 				 _state=S_COLON;
@@ -115,8 +121,10 @@ void ParseHeaderFields::parse(char c)
 			if (c == '\n')
 				_state = S_END_N;
 			else
+			{
 				throw std::string("there is supposed to be a '\\n");
-
+				_status = 400;
+			}
 			break;
 		}
 
@@ -143,8 +151,10 @@ void ParseHeaderFields::parse(char c)
 			if (c == '\n')
 				_state = S_END;
 			else
+			{	
 				throw std::string("there is supposed to be a '\\n");
-
+				_status = 400;
+			}
 			break;
 		}
 

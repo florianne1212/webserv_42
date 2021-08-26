@@ -24,6 +24,7 @@ private:
 	ParseChunkedBody _parseChunkedBody;
 	Config _config;
 	bool _error;
+	int _status;
 public:
     ParseBody(Config &config);
 	ParseBody(std::string ParseBody, Config &config);
@@ -46,6 +47,16 @@ public:
 	bool get_error()
 	{
 		return(_error);
+	}
+
+	int getStatus()
+	{
+		return(this->_status);
+	}
+
+	void setStatus(int status)
+	{
+		this->_status=status;
 	}
 
 };

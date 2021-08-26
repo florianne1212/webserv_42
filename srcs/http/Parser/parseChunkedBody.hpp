@@ -24,6 +24,7 @@ private:
 	State _state;
 	int _count;
 	std::string _nb;
+	int _status;
 public:
     ParseChunkedBody();
 	ParseChunkedBody(std::string ParseChunkedBody);
@@ -41,6 +42,16 @@ public:
 	State get_state()
 	{
 		return(_state);
+	}
+
+	int getStatus()
+	{
+		return(this->_status);
+	}
+
+	void setStatus(int status)
+	{
+		this->_status=status;
 	}
 
 };

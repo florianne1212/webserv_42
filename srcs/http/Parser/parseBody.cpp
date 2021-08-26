@@ -4,7 +4,8 @@
 ParseBody::ParseBody(Config &config):
 _count(0),
 _config(config),
-_error(false)
+_error(false),
+_status(200)
 {
 }
 
@@ -12,7 +13,8 @@ ParseBody::ParseBody(std::string Body,Config &config):
 _body(Body),
 _count(0),
 _config(config),
-_error(false)
+_error(false),
+_status(200)
 {
 }
 
@@ -42,6 +44,8 @@ void ParseBody::parse_chunked(char c)
 	_parseChunkedBody.parse(c);
 	if(_parseChunkedBody.get_state() == ParseChunkedBody::S_END)
 	{
+		if(_parseChunkedBody.getStatus() != 200)
+			_status = _parseChunkedBody.getStatus();
 		_body = _parseChunkedBody.get_Body();
 		_state = S_END;
 	}
