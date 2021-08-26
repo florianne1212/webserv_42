@@ -8,22 +8,33 @@ int	g_signalHandler;
 
 void selector(Config *datas, FDList *listFD)
 {
-	if (listFD->myPoll())
+	listFD->myPoll();
+	std::list<ASocket *> Socketlist = listFD->getSocketList();
+	for (std::list<ASocket *>::iterator it = Socketlist.begin(); it != Socketlist.end(); it++)
 	{
-		std::list<ASocket *> Socketlist = listFD->getSocketList();
-		for (std::list<ASocket *>::iterator it = Socketlist.begin(); it != Socketlist.end(); it++)
+		try
 		{
-			try
+			if ((*it)->getReadStatus())
 			{
-				if ((*it)->getReadStatus())
-					(*it)->read(datas, listFD);
-				if ((*it)->getWriteStatus())
-					(*it)->write(datas, listFD);
+				(*it)->read(datas, listFD);
+				(*it)->setTime();
+				std::cout << "READ" << std::endl;
 			}
-			catch (std::string err)
+			else if ((*it)->getWriteStatus())
 			{
-				std::cerr << err << std::endl;
+				(*it)->write(datas, listFD);
+				(*it)->setTime();
+				std::cout << "WRITE" << std::endl;
 			}
+			else if ((*it)->getTimeout())
+			{
+				close((*it)->getFd());
+				listFD->rmSocket((*it)->getFd());
+			}
+		}
+		catch (std::string err)
+		{
+			std::cerr << err << std::endl;
 		}
 	}
 }

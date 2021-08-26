@@ -31,6 +31,8 @@ class ASocket
 		struct pollfd getPollFD(void) const;
 		std::string getServerName() const;
 		void setPollFD(struct pollfd toSet);
+		virtual bool getTimeout() = 0;
+		virtual void setTime() = 0;
 };
 
 # include "ClientSocket.hpp"

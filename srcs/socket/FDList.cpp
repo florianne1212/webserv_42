@@ -51,7 +51,7 @@ std::list<struct pollfd*> FDList::getFileList(void) const
     return (_fileList);
 }
 
-bool FDList::myPoll()
+void FDList::myPoll()
 {
     struct pollfd* tab = new struct pollfd[_SocketLists.size() + _fileList.size()];
 
@@ -68,28 +68,22 @@ bool FDList::myPoll()
         i++;
     }
 
-    if (poll(tab, _SocketLists.size() + _fileList.size(), 1000) > 0)
+    poll(tab, _SocketLists.size() + _fileList.size(), 1000);
+    i = 0;
+    for (std::list<ASocket *>::const_iterator it = _SocketLists.begin(); it != _SocketLists.end(); it++)
     {
-        i = 0;
-        for (std::list<ASocket *>::const_iterator it = _SocketLists.begin(); it != _SocketLists.end(); it++)
-        {
-            if (tab[i].fd == (*it)->getFd())
-                (*it)->setPollFD(tab[i]);
-            i++;
-        }
-        
-        for (std::list<struct pollfd*>::iterator it = _fileList.begin(); it != _fileList.end(); it++)
-        {
-            if (tab[i].fd == (*it)->fd)
-            {
-                *(*it) = tab[i];
-            }
-            i++;
-        }
-        
-        delete[] tab;
-        return (1);
+        if (tab[i].fd == (*it)->getFd())
+        (*it)->setPollFD(tab[i]);
+        i++;
     }
+       
+    for (std::list<struct pollfd*>::iterator it = _fileList.begin(); it != _fileList.end(); it++)
+    {
+        if (tab[i].fd == (*it)->fd)
+        {
+            *(*it) = tab[i];
+        }
+        i++;
+    }   
     delete[] tab;
-    return (0);
 }

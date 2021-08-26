@@ -24,7 +24,7 @@ class FDList
 
         std::list<ASocket *> getSocketList(void) const;
         std::list<struct pollfd*> getFileList(void) const;
-        bool myPoll(void);
+        void myPoll(void);
 };
 
 #endif
