@@ -193,6 +193,7 @@ void	Config::parser(std::string setupFile)
 		throw std::string("Invalid Config File");
 	//get file and del white space
 	std::getline(ifs, buffer, '\0');
+	ifs.close();
 	removeIsSpace(buffer);
 
 	//parser json
