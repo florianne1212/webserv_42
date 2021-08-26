@@ -1213,8 +1213,16 @@ Mime& Mime::operator=(Mime const & ope)
 
 std::string Mime::find_mime(std::string ext)
 {
-	std::string message = _storage_mime.find(ext)->second;
-	return(message);
+	std::map<std::string,std::string>::iterator it;
+	it =  _storage_mime.find(ext);
+	if(it != _storage_mime.end())
+	{
+		std::string message = it->second;
+		if (_storage_mime.find(ext) == _storage_mime.end())
+			return("");
+		return(message);
+	}
+	return("");
 }
 
 std::string Mime::get_ext()

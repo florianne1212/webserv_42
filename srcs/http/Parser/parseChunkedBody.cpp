@@ -81,8 +81,9 @@ void ParseChunkedBody::parse(char c)
 				_count = 1;
 				if(c != '\r')
 				{
-					throw std::string("there is supposed to be a '\\r", c);
-					_status = 400;
+					throw(400);
+					//throw std::string("there is supposed to be a '\\r", c);
+					//_status = 400;
 				}
 				else
 					_state = S_END_R;
@@ -95,8 +96,9 @@ void ParseChunkedBody::parse(char c)
 				_state = S_END_N;
 			else
 			{
-				throw std::string("there is supposed to be a '\\n");
-				_status = 400;
+				throw(400);
+				//throw std::string("there is supposed to be a '\\n");
+				//_status = 400;
 			}
 			break;
 		}
@@ -131,8 +133,9 @@ void ParseChunkedBody::parse(char c)
 				_state = S_END;
 			else
 			{
-				throw std::string("there is supposed to be a '\\n");
-				_status = 400;
+				throw(400);
+				//throw std::string("there is supposed to be a '\\n");
+				//_status = 400;
 			}
 			break;
 		}
