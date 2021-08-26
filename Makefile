@@ -6,7 +6,7 @@
 #    By: user42 <user42@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/08/26 15:27:29 by user42           ###   ########.fr        #
+#    Updated: 2021/08/26 16:51:50 by user42           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,8 +74,4 @@ fclean:			clean
 				@rm -f $(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-donuts :
-				@clang donuts.c -o donuts -lm
-				@./donuts
-
-.PHONY: all clean flcean re show donuts
+.PHONY: all clean flcean re show
