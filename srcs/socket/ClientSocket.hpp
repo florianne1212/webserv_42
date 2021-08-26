@@ -29,6 +29,7 @@ class ClientSocket : public ASocket
 		std::string _body;
 		FDList* _listFD;
 		struct timespec _lastInterTime;
+		int _status;
 
 
 	public :

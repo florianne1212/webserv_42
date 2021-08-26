@@ -39,13 +39,15 @@ void ParseHeaderFields::parse(char c)
 			{
 				if(_field.empty())
 				{
-					throw std::string("there is some space before field");
-					_status = 400;
+					//throw std::string("there is some space before field");
+					//_status = 400;
+					throw(400);
 				}
 				else
 				{
-					throw std::string("there is some space before fields");
-				 	_status = 400;
+					throw(400);
+					//throw std::string("there is some space before fields");
+				 	//_status = 400;
 				}  
 			}
 			else if(c == ':')
@@ -122,8 +124,9 @@ void ParseHeaderFields::parse(char c)
 				_state = S_END_N;
 			else
 			{
-				throw std::string("there is supposed to be a '\\n");
-				_status = 400;
+				throw(400);
+				//throw std::string("there is supposed to be a '\\n");
+				//_status = 400;
 			}
 			break;
 		}
@@ -152,8 +155,9 @@ void ParseHeaderFields::parse(char c)
 				_state = S_END;
 			else
 			{	
-				throw std::string("there is supposed to be a '\\n");
-				_status = 400;
+				throw(400);
+				//throw std::string("there is supposed to be a '\\n");
+				//_status = 400;
 			}
 			break;
 		}

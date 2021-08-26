@@ -89,12 +89,17 @@ std::string File::find_content_type()
 	std::size_t found = _path.find_last_of(".");
 	std::string mime;
 	Mime my_mime;
-	
-	if (found!=std::string::npos)
-		ext=_path.substr(found+1);
+	if (found != std::string::npos && found != 0)
+	{
+		if(_path.size() > (found+1))
+			ext=_path.substr(found+1);
+		if(!ext.empty())
+			mime = my_mime.find_mime(ext);
+		return(mime);
+	}
+	return("");
 
-	mime = my_mime.find_mime(ext);
-	return(mime);
+	
 }
 
 std::string File::int_to_str(int n)

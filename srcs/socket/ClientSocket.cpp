@@ -69,6 +69,7 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	std::map<std::string, std::string>  mymap = _parseheader.get_headers_map();
 	_request.setHeaders(mymap);
 	_request.setParsedUri(parseTheUri(_request.getUrl()));
+	_status = _parserequest.getStatus();
 
 	//std::cout << "\nMY BODY IS = \n" <<  _parserequest.get_body() << "\n";
 
@@ -143,7 +144,8 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 {
 	Response response;
 	ManageMiddleware manage;
-
+	response.setStatus(_status);
+	std::cout <<  "\n\nStatus : " << response.getStatus();
 	if (_responseSent)
 	{
 		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
