@@ -115,8 +115,8 @@ void ClientSocket::my_read(Response *response, FDList *listFD)
 	}
 	if (_fd_read.revents == POLLIN)
 	{
-		char BodyBuffer[10001];
-		size_t rod = ::read(_fd_read.fd, BodyBuffer, 10000);
+		char BodyBuffer[131001];
+		size_t rod = ::read(_fd_read.fd, BodyBuffer, 131000);
 		BodyBuffer[rod] = '\0';
 		if (rod > 0)
 		{
