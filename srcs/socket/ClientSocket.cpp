@@ -1,5 +1,5 @@
 #include "ClientSocket.hpp"
-#include "parseRequest.hpp"
+#include "ParseRequest.hpp"
 #include "ManageMiddleware.hpp"
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort, FDList* listFD) : ASocket(fd, serverName),
@@ -145,7 +145,6 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 	Response response;
 	ManageMiddleware manage;
 	response.setStatus(_status);
-	std::cout <<  "\n\nStatus : " << response.getStatus();
 	if (_responseSent)
 	{
 		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";

@@ -1,4 +1,4 @@
-#include "checkRequest.hpp"
+#include "CheckRequest.hpp"
 
 CheckRequest::~CheckRequest() {
 }

@@ -1,4 +1,4 @@
-#include "getMethod.hpp"
+#include "GetMethod.hpp"
 
 GetMethod::GetMethod(/* args */)
 {

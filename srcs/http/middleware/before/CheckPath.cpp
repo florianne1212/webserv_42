@@ -1,4 +1,4 @@
-#include "checkPath.hpp"
+#include "CheckPath.hpp"
 
 
 CheckPath::~CheckPath() {
@@ -29,9 +29,7 @@ void CheckPath::handle(ClientSocket &client,Config &config, Request &request, Re
 		else 
 		{
 			mylist.push_back("/" + token);
-			//std::cout << "token";
 		}
-		// std::cout << "\n my token = ." << token << "." << std::endl;
 		url.erase(0, pos + delimiter.length());
 	}
 	if(token == "..")
@@ -43,13 +41,6 @@ void CheckPath::handle(ClientSocket &client,Config &config, Request &request, Re
 		;
 	else 
 		mylist.push_back("/" + url);
-	// std::cout << url << std::endl;
-
-	// std::cout << "mylist contains:";
-	// for (std::list<std::string>::iterator it=mylist.begin(); it != mylist.end(); ++it)
-    // 	std::cout << ' ' << *it;
-
-	// std::cout << "\n" << std::endl;
 	
 
 	std::string new_url;

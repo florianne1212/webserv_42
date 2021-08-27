@@ -1,5 +1,5 @@
 #include "File.hpp"
-#include "buffer.hpp"
+#include "Buffer.hpp"
 #include <algorithm> 
 
 File::File()

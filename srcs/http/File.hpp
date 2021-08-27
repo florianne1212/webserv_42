@@ -15,7 +15,7 @@ class File;
 # include <iostream>
 # include <stdlib.h>
 # include <fstream> 
-# include "mime.hpp"
+# include "Mime.hpp"
 # include <sstream> 
 # include <cstring>
 

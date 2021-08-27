@@ -1,13 +1,9 @@
-#include "isConnected.hpp"
-// #include "G"
-// #include "File.hpp"
+#include "IsConnected.hpp"
 
 IsConnected::~IsConnected() {
 }
 
 void IsConnected::handle(ClientSocket &client, Config &config,Request &request, Response &response, MiddlewareChain &next) {
-	
-	// File fileGet(request.getUrl());
 	(void)client;
 	(void)response;
 	(void)request;

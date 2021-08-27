@@ -7,8 +7,8 @@ class MiddlewareChain;
 # include "IMiddleware.hpp"
 # include "ClientSocket.hpp"
 # include "Config.hpp"
-# include "request.hpp"
-# include "response.hpp"
+# include "Request.hpp"
+# include "Response.hpp"
 
 
 class MiddlewareChain {

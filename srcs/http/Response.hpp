@@ -4,7 +4,7 @@
 # include <string>
 # include <map>
 # include <iostream>
-# include "httpStatus.hpp"
+# include "HttpStatus.hpp"
 # include <stdlib.h>
 # include "..//utils/usable.hpp"
 # include "usable.hpp"

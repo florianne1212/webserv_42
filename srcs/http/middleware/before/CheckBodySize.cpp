@@ -1,4 +1,4 @@
-#include "checkBodySize.hpp"
+#include "CheckBodySize.hpp"
 
 
 CheckBodySize::~CheckBodySize() {

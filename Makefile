@@ -21,10 +21,10 @@ OBJ_DIR = obj
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 #SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
-SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp parseHeaderFields.cpp \
-parseRequest.cpp parseBody.cpp parseChunkedBody.cpp request.cpp response.cpp deleteMethod.cpp mime.cpp listmime.cpp \
-httpStatus.cpp getMethod.cpp File.cpp IMiddleware.cpp MiddlewareChain.cpp MethodMiddleware.cpp  checkRedir.cpp \
-isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp cgiHandler.cpp buffer.cpp checkRoot.cpp checkBodySize.cpp checkPath.cpp getFileError.cpp
+SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp ParseHeaderFields.cpp \
+ParseRequest.cpp ParseBody.cpp ParseChunkedBody.cpp Request.cpp Response.cpp DeleteMethod.cpp Mime.cpp Listmime.cpp \
+HttpStatus.cpp GetMethod.cpp File.cpp IMiddleware.cpp MiddlewareChain.cpp MethodMiddleware.cpp  CheckRedir.cpp \
+IsConnected.cpp CheckRequest.cpp ManageMiddleware.cpp PostMethod.cpp cgiHandler.cpp Buffer.cpp CheckRoot.cpp CheckBodySize.cpp CheckPath.cpp GetFileError.cpp
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 

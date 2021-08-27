@@ -1,8 +1,8 @@
 #ifndef POSTMETHOD_HPP
 # define POSTMETHOD_HPP
 
-# include "../request.hpp"
-# include "../response.hpp"
+# include "../Request.hpp"
+# include "../Response.hpp"
 # include "ClientSocket.hpp"
 # include "../File.hpp"
 # include <iostream>

@@ -1,4 +1,4 @@
-#include "deleteMethod.hpp"
+#include "DeleteMethod.hpp"
 
 DeleteMethod::DeleteMethod()
 {
