@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fcoudert <fcoudert@student.42.fr>          +#+  +:+       +#+         #
+#    By: lcoiffie <lcoiffie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/08/23 12:25:27 by fcoudert         ###   ########.fr        #
+#    Updated: 2021/08/29 16:56:59 by lcoiffie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,10 +21,10 @@ OBJ_DIR = obj
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 #SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
-SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp parseHeaderFields.cpp \
+SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp CgiSocket.cpp parseHeaderFields.cpp \
 parseRequest.cpp parseBody.cpp parseChunkedBody.cpp request.cpp response.cpp deleteMethod.cpp mime.cpp listmime.cpp \
 httpStatus.cpp getMethod.cpp File.cpp IMiddleware.cpp MiddlewareChain.cpp MethodMiddleware.cpp  checkRedir.cpp \
-isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp cgiHandler.cpp buffer.cpp checkRoot.cpp checkBodySize.cpp checkPath.cpp getFileError.cpp
+isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp CgiHandler.cpp buffer.cpp checkRoot.cpp checkBodySize.cpp checkPath.cpp getFileError.cpp
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 

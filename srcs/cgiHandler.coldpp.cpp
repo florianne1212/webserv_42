@@ -177,14 +177,16 @@ void CgiHandler::executingCgi(void)
 
 	if (pipe(fdPipeOut) < 0)
 		throw std::runtime_error("error piping CGI");
+	//set fd as non blocking
+	// fcntl(fdPipeOut[0], F_SETFL, O_NONBLOCK);
+	// fcntl(fdPipeOut[1], F_SETFL, O_NONBLOCK);
 	if (_request.getMethods() == "POST")
 	{
 		if (pipe(fdPipeIn) < 0)
-		{
-			close (fdPipeOut[0]);
-			close (fdPipeOut[1]);
 			throw std::runtime_error("error piping CGI");
-		}
+		//set fd as non blocking
+		// fcntl(fdPipeIn[0], F_SETFL, O_NONBLOCK);
+		// fcntl(fdPipeIn[1], F_SETFL, O_NONBLOCK);
 	}
 	pid = fork();
 	if (pid < 0) //error
@@ -213,80 +215,40 @@ void CgiHandler::executingCgi(void)
 				std::cerr << "error with dup2 in CGI son\n";
 			close(fdPipeIn[0]);
 		}
-
-		// std::cerr << "-------------Waou---------------- \n"<<_instructionsCGI[0] << "\n" << _instructionsCGI[1] << "\n-------------------uoaW-----------------\n";
-		// // std::cerr << "le chemin pour l'executable est : " << _pathForExec.substr(0, _pathForExec.find_last_of("/") + 1) << "\n";
+		// std::cerr << "le chemin pour l'executable est : " << _pathForExec.substr(0, _pathForExec.find_last_of("/") + 1) << "\n";
 		chdir((_pathForExec.substr(0, _pathForExec.find_last_of("/")).c_str())); //on se met dans le bon repertoire pour execve
-		// char* buf = NULL; ////a retirer
-		// buf = getcwd(buf, 0);////a retirer
-		// std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
+		char* buf = NULL; ////a retirer
+		buf = getcwd(buf, 0);////a retirer
+		std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
  		if (execve(_instructionsCGI[0], _instructionsCGI, _varEnv)< 0)
 			std::cerr << "error with CGI execution\n";
 		exit(1);
 	}
-
 	else if (pid > 0) //pere
 	{
-		// set fd as non blocking
-		fcntl(fdPipeOut[0], F_SETFL, O_NONBLOCK);
-		struct pollfd out;
-		out.fd = fdPipeOut[0];
-		out.events = POLLIN | POLLOUT;
-		out.revents = 0;
-		CgiSocket* socketFromCgi = new CgiSocket(fdPipeOut[0]);
-		socketFromCgi->setPollFD(out);
-		_client.getListFD()->addSocket(socketFromCgi);
-
+		close (fdPipeOut[1]);
 		if (_request.getMethods() == "POST")
 		{
 			close (fdPipeIn[0]);
-			// set fd as non blocking
-			fcntl(fdPipeIn[1], F_SETFL, O_NONBLOCK);
-
-			out.fd = fdPipeIn[1];
-			CgiSocket* socketToCgi = new CgiSocket(fdPipeIn[1]);
-			socketToCgi->setPollFD(out);
-			_client.getListFD()->addSocket(socketToCgi);
-			while (!(socketToCgi->getPollFD().revents & POLLOUT))
-			{
-				usleep(100000); //on attend 100 msec avant nouvelle tentative
-				_client.getListFD()->myPoll();
-				if (socketToCgi->getPollFD().revents & POLLERR)
-					throw std::runtime_error("error while polling CGI");
-			}
 			//la partie qui write le body pour le cgi
 			if (write(fdPipeIn[1], _request.getBody().c_str(), _request.getBody().length()) < 0)
 				throw std::runtime_error("error while writing to CGI");
-			_client.getListFD()->rmSocket(fdPipeIn[1]);
 			close (fdPipeIn[1]);
-			close (fdPipeIn[0]);
 		}
-
-		while (!(socketFromCgi->getPollFD().revents & POLLIN))
-		{
-			usleep(100000); //on attend 100 msec avant nouvelle tentative
-			_client.getListFD()->myPoll();
-			if (socketFromCgi->getPollFD().revents & POLLERR)
-				throw std::runtime_error("error while polling CGI");
-		}
-
+		//la partie qui recupere l'info du cgi
+		//voir si modif boucle pour les chunked unchunked
 		std::string cgiResponse;
 		char buf[2049] = {0};
 		ssize_t readResult;
-		// while ((readResult = read(fdPipeOut[0], buf, 2048)) >= 0)
 		while ((readResult = read(fdPipeOut[0], buf, 2048)) > 0)
 		{
 			cgiResponse += buf;
 			memset(buf, 0, 2049);
 		}
+		if (readResult < 0)
+			throw std::runtime_error("error while receiving cgi response");
 		cgiResponse += buf;
-
-		_client.getListFD()->rmSocket(socketFromCgi->getPollFD().fd);
-		close (fdPipeOut[1]);
 		close (fdPipeOut[0]);
-		// std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nla reponse du cgi est : \n" << cgiResponse
-		// << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
-
 		cgiResponse = checkCgiResponse(cgiResponse);
 		// std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nla reponse du cgi est : \n" << cgiResponse
 		// << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";

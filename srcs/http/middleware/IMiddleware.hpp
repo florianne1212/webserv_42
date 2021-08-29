@@ -23,6 +23,6 @@ class IMiddleware {
 # include "deleteMethod.hpp"
 # include "postMethod.hpp"
 # include "getMethod.hpp"
-# include "cgiHandler.hpp"
+# include "CgiHandler.hpp"
 
 #endif

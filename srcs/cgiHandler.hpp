@@ -16,6 +16,7 @@ class CgiHandler;
 # include "ClientSocket.hpp"
 # include "Config.hpp"
 # include "response.hpp"
+# include "CgiSocket.hpp"
 
 class CgiHandler
 {
