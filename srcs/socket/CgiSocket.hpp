@@ -4,9 +4,9 @@
 class CgiSocket;
 
 # include "ASocket.hpp"
-# include "buffer.hpp"
-# include "request.hpp"
-# include "response.hpp"
+# include "Buffer.hpp"
+# include "Request.hpp"
+# include "Response.hpp"
 # include "FDList.hpp"
 
 class CgiSocket : public ASocket
@@ -21,6 +21,8 @@ class CgiSocket : public ASocket
 		virtual int	getFd(void) const;
 		virtual void read(Config *datas, FDList *listFD);
 		virtual void write(Config *datas, FDList *listFD);
+		virtual bool getTimeout();
+		virtual void setTime();
 };
 
 #endif

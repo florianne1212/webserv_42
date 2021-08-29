@@ -19,3 +19,10 @@ void CgiSocket::write(Config *datas, FDList *listFD)
 	(void)datas;
 	(void)listFD;
 }
+
+bool CgiSocket::getTimeout()
+{
+	return false;
+}
+
+void CgiSocket::setTime(){}
