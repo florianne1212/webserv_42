@@ -3,10 +3,11 @@
 
 class ClientSocket;
 
+# include <sys/time.h>
 # include "ASocket.hpp"
-# include "buffer.hpp"
-# include "request.hpp"
-# include "response.hpp"
+# include "Buffer.hpp"
+# include "Request.hpp"
+# include "Response.hpp"
 # include "FDList.hpp"
 
 class ClientSocket : public ASocket
@@ -27,6 +28,8 @@ class ClientSocket : public ASocket
 		bool _read;
 		std::string _body;
 		FDList* _listFD;
+		struct timespec _lastInterTime;
+		int _status;
 
 
 	public :
@@ -43,6 +46,8 @@ class ClientSocket : public ASocket
 		void my_append(Response *response, FDList *listFD);
 		void my_read(Response *response, FDList *listFD);
 		FDList* getListFD(void);
+		virtual bool getTimeout(void);
+		virtual void setTime(void);
 };
 
 #endif

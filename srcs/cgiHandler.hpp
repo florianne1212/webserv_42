@@ -12,11 +12,11 @@ class CgiHandler;
 # include <iostream>
 #include <fcntl.h>
 # include <exception>
-# include "request.hpp"
+# include "Request.hpp"
 # include "ClientSocket.hpp"
 # include "Config.hpp"
-# include "response.hpp"
 # include "CgiSocket.hpp"
+# include "Response.hpp"
 
 class CgiHandler
 {

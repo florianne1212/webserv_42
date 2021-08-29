@@ -1,11 +1,13 @@
 #include "ClientSocket.hpp"
-#include "parseRequest.hpp"
+#include "ParseRequest.hpp"
 #include "ManageMiddleware.hpp"
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort, FDList* listFD) : ASocket(fd, serverName),
 _clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true),  _fd_read(), _read(true),
 _listFD(listFD)
-{}
+{
+	clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
+}
 
 ClientSocket::~ClientSocket(){}
 
@@ -67,6 +69,7 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	std::map<std::string, std::string>  mymap = _parseheader.get_headers_map();
 	_request.setHeaders(mymap);
 	_request.setParsedUri(parseTheUri(_request.getUrl()));
+	_status = _parserequest.getStatus();
 
 	//std::cout << "\nMY BODY IS = \n" <<  _parserequest.get_body() << "\n";
 
@@ -112,8 +115,8 @@ void ClientSocket::my_read(Response *response, FDList *listFD)
 	}
 	if (_fd_read.revents == POLLIN)
 	{
-		char BodyBuffer[10001];
-		size_t rod = ::read(_fd_read.fd, BodyBuffer, 10000);
+		char BodyBuffer[131001];
+		size_t rod = ::read(_fd_read.fd, BodyBuffer, 131000);
 		BodyBuffer[rod] = '\0';
 		if (rod > 0)
 		{
@@ -141,7 +144,7 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 {
 	Response response;
 	ManageMiddleware manage;
-
+	response.setStatus(_status);
 	if (_responseSent)
 	{
 		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
@@ -173,8 +176,8 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 		_responseSent = _buffer.flush(_fd);
 		if (_responseSent == true)
 		{
-			listFD->rmSocket(_fd);
 			close(_fd);
+			listFD->rmSocket(_fd);
 		}
 	}
 
@@ -186,6 +189,22 @@ std::string ClientSocket::getClientAddress(void) const {
 
 std::string ClientSocket::getClientPort(void) const {
 	return (_clientPort);
+}
+
+bool ClientSocket::getTimeout()
+{
+	struct timespec act;
+	double time_taken;
+
+	clock_gettime(CLOCK_MONOTONIC, &act);
+	time_taken = (act.tv_sec - _lastInterTime.tv_sec) * 1e9;
+    time_taken = (time_taken + (act.tv_nsec - _lastInterTime.tv_nsec)) * 1e-9;
+	return (time_taken > 30);
+}
+
+void ClientSocket::setTime()
+{
+		clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 }
 
 /*

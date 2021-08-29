@@ -55,3 +55,12 @@ void ListeningSocket::write(Config *datas, FDList *listFD)
 	(void)datas;
 	(void)listFD;
 }
+
+bool ListeningSocket::getTimeout()
+{
+	return (false);
+}
+
+void ListeningSocket::setTime()
+{
+}

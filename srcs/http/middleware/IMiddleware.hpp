@@ -6,8 +6,8 @@ class IMiddleware;
 # include <iostream>
 # include "ClientSocket.hpp"
 # include "Config.hpp"
-# include "request.hpp"
-# include "response.hpp"
+# include "Request.hpp"
+# include "Response.hpp"
 # include "MiddlewareChain.hpp"
 # include "Singleton.hpp"
 
@@ -20,9 +20,9 @@ class IMiddleware {
 
 };
 
-# include "deleteMethod.hpp"
-# include "postMethod.hpp"
-# include "getMethod.hpp"
+# include "DeleteMethod.hpp"
+# include "PostMethod.hpp"
+# include "GetMethod.hpp"
 # include "CgiHandler.hpp"
 
 #endif

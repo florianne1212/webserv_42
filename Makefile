@@ -6,7 +6,7 @@
 #    By: lcoiffie <lcoiffie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/08/29 16:56:59 by lcoiffie         ###   ########.fr        #
+#    Updated: 2021/08/29 18:33:10 by lcoiffie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,10 +21,10 @@ OBJ_DIR = obj
 vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 #SRC = $(foreach dir, $(SRC_DIR), $(foreach file, $(wildcard $(dir)/*.cpp), $(notdir $(file))))
-SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp CgiSocket.cpp parseHeaderFields.cpp \
-parseRequest.cpp parseBody.cpp parseChunkedBody.cpp request.cpp response.cpp deleteMethod.cpp mime.cpp listmime.cpp \
-httpStatus.cpp getMethod.cpp File.cpp IMiddleware.cpp MiddlewareChain.cpp MethodMiddleware.cpp  checkRedir.cpp \
-isConnected.cpp checkRequest.cpp ManageMiddleware.cpp postMethod.cpp CgiHandler.cpp buffer.cpp checkRoot.cpp checkBodySize.cpp checkPath.cpp getFileError.cpp
+SRC = main.cpp Config.cpp Server.cpp Routes.cpp ASocket.cpp ClientSocket.cpp FDList.cpp ListeningSocket.cpp ParseHeaderFields.cpp \
+ParseRequest.cpp ParseBody.cpp ParseChunkedBody.cpp Request.cpp Response.cpp DeleteMethod.cpp Mime.cpp Listmime.cpp \
+HttpStatus.cpp GetMethod.cpp File.cpp IMiddleware.cpp MiddlewareChain.cpp MethodMiddleware.cpp  CheckRedir.cpp \
+IsConnected.cpp CheckRequest.cpp ManageMiddleware.cpp PostMethod.cpp CgiHandler.cpp Buffer.cpp CheckRoot.cpp CheckBodySize.cpp CheckPath.cpp GetFileError.cpp
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
@@ -74,8 +74,4 @@ fclean:			clean
 				@rm -f $(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-donuts :
-				@clang donuts.c -o donuts -lm
-				@./donuts
-
-.PHONY: all clean flcean re show donuts
+.PHONY: all clean flcean re show

@@ -27,6 +27,8 @@ class ListeningSocket : public ASocket
 		virtual int	getFd(void) const;
 		virtual void read(Config *datas, FDList *listFD);		//methode connect()
 		virtual void write(Config *datas, FDList *istFD);	//useless methode
+		virtual bool getTimeout();
+		virtual void setTime();
 };
 
 #endif

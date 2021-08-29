@@ -14,4 +14,4 @@ template<typename T>
 			}
 	};
 
-#endif /* SINGLETON_HPP_ */
+#endif
