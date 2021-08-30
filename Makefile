@@ -6,7 +6,7 @@
 #    By: user42 <user42@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/08/26 16:51:50 by user42           ###   ########.fr        #
+#    Updated: 2021/08/30 09:41:51 by user42           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,4 +74,10 @@ fclean:			clean
 				@rm -f $(NAME)
 				@echo "$(_GREEN)DONE$(_WHITE)\n-----"
 
-.PHONY: all clean flcean re show
+docker-build:	all
+				docker build -t webserv-run -f docker/Dockerfile .
+
+docker-run: 	docker-build
+				docker run --rm -it -p 9000:9000 webserv-run
+
+.PHONY: all clean flcean re show docker-build docker-run
