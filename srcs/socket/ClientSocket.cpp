@@ -1,5 +1,5 @@
 #include "ClientSocket.hpp"
-#include "parseRequest.hpp"
+#include "ParseRequest.hpp"
 #include "ManageMiddleware.hpp"
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort, FDList* listFD) : ASocket(fd, serverName),
@@ -115,8 +115,8 @@ void ClientSocket::my_read(Response *response, FDList *listFD)
 	}
 	if (_fd_read.revents == POLLIN)
 	{
-		char BodyBuffer[10001];
-		size_t rod = ::read(_fd_read.fd, BodyBuffer, 10000);
+		char BodyBuffer[131001];
+		size_t rod = ::read(_fd_read.fd, BodyBuffer, 131000);
 		BodyBuffer[rod] = '\0';
 		if (rod > 0)
 		{
@@ -145,7 +145,6 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 	Response response;
 	ManageMiddleware manage;
 	response.setStatus(_status);
-	std::cout <<  "\n\nStatus : " << response.getStatus();
 	if (_responseSent)
 	{
 		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";

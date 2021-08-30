@@ -1,6 +1,4 @@
-#include "getFileError.hpp"
-// #include "G"
-// #include "File.hpp"
+#include "GetFileError.hpp"
 
 GetFileError::~GetFileError() {
 }

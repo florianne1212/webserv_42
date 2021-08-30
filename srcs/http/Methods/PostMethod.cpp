@@ -1,4 +1,4 @@
-#include "postMethod.hpp"
+#include "PostMethod.hpp"
 
 PostMethod::PostMethod(/* args */)
 {

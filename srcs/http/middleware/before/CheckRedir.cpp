@@ -1,4 +1,4 @@
-#include "checkRedir.hpp"
+#include "CheckRedir.hpp"
 
 CheckRedir::~CheckRedir() {
 }

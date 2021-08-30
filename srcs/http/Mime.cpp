@@ -1,4 +1,4 @@
-#include "mime.hpp"
+#include "Mime.hpp"
 #include <map>
 
 const std::map<std::string, std::string> & Mime::init_mime()

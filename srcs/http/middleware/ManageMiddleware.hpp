@@ -5,8 +5,8 @@ class ManageMiddleware;
 
 # include "ClientSocket.hpp"
 # include "Config.hpp"
-# include "request.hpp"
-# include "response.hpp"
+# include "Request.hpp"
+# include "Response.hpp"
 
 class ManageMiddleware {
 
@@ -33,12 +33,12 @@ class ManageMiddleware {
 # include "IMiddleware.hpp"
 # include "MiddlewareChain.hpp"
 # include "MethodMiddleware.hpp"
-# include "checkRedir.hpp"
-# include "isConnected.hpp"
-# include "checkRequest.hpp"
-# include "checkPath.hpp"
-# include "checkRoot.hpp"
-# include "checkBodySize.hpp"
-# include "getFileError.hpp"
+# include "CheckRedir.hpp"
+# include "IsConnected.hpp"
+# include "CheckRequest.hpp"
+# include "CheckPath.hpp"
+# include "CheckRoot.hpp"
+# include "CheckBodySize.hpp"
+# include "GetFileError.hpp"
 
 #endif

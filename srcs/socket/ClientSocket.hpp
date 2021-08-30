@@ -5,9 +5,9 @@ class ClientSocket;
 
 # include <sys/time.h>
 # include "ASocket.hpp"
-# include "buffer.hpp"
-# include "request.hpp"
-# include "response.hpp"
+# include "Buffer.hpp"
+# include "Request.hpp"
+# include "Response.hpp"
 # include "FDList.hpp"
 
 class ClientSocket : public ASocket

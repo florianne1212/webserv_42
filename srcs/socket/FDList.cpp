@@ -32,8 +32,11 @@ void FDList::rmSocket(const int& toRemove)
     std::list<ASocket *>::iterator it = _SocketLists.begin();
     while (it != _SocketLists.end() && (*it)->getFd() != toRemove)
         it++;
-	delete *it;
-    _SocketLists.erase(it);
+	if (it != _SocketLists.end())
+	{
+		delete *it;
+		_SocketLists.erase(it);
+	}
 }
 
 void FDList::rmFile(const int& toRemove)
@@ -64,7 +67,6 @@ void FDList::myPoll()
         tab[i] = (*it)->getPollFD();
         i++;
     }
-    
     for (std::list<struct pollfd*>::iterator it = _fileList.begin(); it != _fileList.end(); it++)
     {
         tab[i] = *(*it);
@@ -79,7 +81,7 @@ void FDList::myPoll()
         (*it)->setPollFD(tab[i]);
         i++;
     }
-       
+
     for (std::list<struct pollfd*>::iterator it = _fileList.begin(); it != _fileList.end(); it++)
     {
         if (tab[i].fd == (*it)->fd)
@@ -87,6 +89,6 @@ void FDList::myPoll()
             *(*it) = tab[i];
         }
         i++;
-    }   
+    }
     delete[] tab;
 }

@@ -2,8 +2,8 @@
 # define PARSEREQUEST_HPP
 
 # include <string>
-# include "parseHeaderFields.hpp"
-# include "parseBody.hpp"
+# include "ParseHeaderFields.hpp"
+# include "ParseBody.hpp"
 # include <stdio.h>
 # include "Config.hpp"
 

@@ -1,4 +1,4 @@
-#include "cgiHandler.hpp"
+#include "CgiHandler.hpp"
 #include <sstream>
 /*
 ** -------------------------------------------------------------------------------
@@ -12,8 +12,6 @@ CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request
 	_headers = request.getHeaders();
 	_parsedUrl = parseTheUri(request.getUrl());
 	parsePathforCgi();//pour scriptname et additionnal path
-	std::cout << "URL transmise = " << request.getUrl()<< "\n";
-	std::cout << "querystring = " << _request.getParsedUri()["query"] << "\n";
 }
 
 CgiHandler::~CgiHandler()
@@ -85,14 +83,6 @@ void CgiHandler::executeCgi(void){
 	{
 	setVarEnv();
 	setInstructionCgi();
-	// std::cout << "..................................\nVar env\n";
-	// for (int i = 0; _varEnv[i] != 0 ; i++)
-	// 	std::cout << _varEnv[i] << "\n";
-	// std::cout << "..................................\nargiments\n";
-	// for (int i = 0; _instructionsCGI[i] != 0 ; i++)
-	// 	std::cout << _instructionsCGI[i] << "\n";
-	// std::cout << "..................................\npathforexec\n";
-	// std::cout << _pathForExec << "\n.............................\n\n";
 	executingCgi();
 	}
 }
@@ -113,7 +103,6 @@ void CgiHandler::setInstructionCgi(void)
 	std::string toExec = static_cast<std::string>(buf) + "/" + WORKPATH;
 	toExec = toExec + _config.getCGI().value.second;
 	free (buf);
-	// std::cout << "\nooooooooooooooooooooooooo\n" << toExec << "\nooooooooooooooooooooooooo\n";
 	_instructionsCGI[0] = strdup(toExec.c_str());
 	_instructionsCGI[1] = strdup(_pathForExec.c_str());
 	_instructionsCGI[2] = NULL;
@@ -135,7 +124,6 @@ void CgiHandler::creationVectorEnviron(void){
 	otherMetaVariables();
 	redirectStatus();
 	checkIfPhpCgi();
-	// visualizeEnviron();/////A RETIRER BIEN SUR
 }
 
 void CgiHandler::checkIfPhpCgi(void)
@@ -177,16 +165,14 @@ void CgiHandler::executingCgi(void)
 
 	if (pipe(fdPipeOut) < 0)
 		throw std::runtime_error("error piping CGI");
-	//set fd as non blocking
-	fcntl(fdPipeOut[0], F_SETFL, O_NONBLOCK);
-	fcntl(fdPipeOut[1], F_SETFL, O_NONBLOCK);
 	if (_request.getMethods() == "POST")
 	{
 		if (pipe(fdPipeIn) < 0)
+		{
+			close (fdPipeOut[0]);
+			close (fdPipeOut[1]);
 			throw std::runtime_error("error piping CGI");
-		//set fd as non blocking
-		fcntl(fdPipeIn[0], F_SETFL, O_NONBLOCK);
-		fcntl(fdPipeIn[1], F_SETFL, O_NONBLOCK);
+		}
 	}
 	pid = fork();
 	if (pid < 0) //error
@@ -215,40 +201,78 @@ void CgiHandler::executingCgi(void)
 				std::cerr << "error with dup2 in CGI son\n";
 			close(fdPipeIn[0]);
 		}
-		// std::cerr << "le chemin pour l'executable est : " << _pathForExec.substr(0, _pathForExec.find_last_of("/") + 1) << "\n";
+
 		chdir((_pathForExec.substr(0, _pathForExec.find_last_of("/")).c_str())); //on se met dans le bon repertoire pour execve
-		char* buf = NULL; ////a retirer
-		buf = getcwd(buf, 0);////a retirer
-		std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
+		// char* buf = NULL; ////a retirer
+		// buf = getcwd(buf, 0);////a retirer
+		// std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
  		if (execve(_instructionsCGI[0], _instructionsCGI, _varEnv)< 0)
 			std::cerr << "error with CGI execution\n";
 		exit(1);
 	}
+
 	else if (pid > 0) //pere
 	{
-		close (fdPipeOut[1]);
+		// set fd as non blocking
+		fcntl(fdPipeOut[0], F_SETFL, O_NONBLOCK);
+		struct pollfd out;
+		out.fd = fdPipeOut[0];
+		out.events = POLLIN | POLLOUT;
+		out.revents = 0;
+		CgiSocket* socketFromCgi = new CgiSocket(fdPipeOut[0]);
+		socketFromCgi->setPollFD(out);
+		_client.getListFD()->addSocket(socketFromCgi);
+
 		if (_request.getMethods() == "POST")
 		{
 			close (fdPipeIn[0]);
+			// set fd as non blocking
+			fcntl(fdPipeIn[1], F_SETFL, O_NONBLOCK);
+
+			out.fd = fdPipeIn[1];
+			CgiSocket* socketToCgi = new CgiSocket(fdPipeIn[1]);
+			socketToCgi->setPollFD(out);
+			_client.getListFD()->addSocket(socketToCgi);
+			while (!(socketToCgi->getPollFD().revents & POLLOUT))
+			{
+				usleep(100000); //on attend 100 msec avant nouvelle tentative
+				_client.getListFD()->myPoll();
+				if (socketToCgi->getPollFD().revents & POLLERR)
+					throw std::runtime_error("error while polling CGI");
+			}
 			//la partie qui write le body pour le cgi
 			if (write(fdPipeIn[1], _request.getBody().c_str(), _request.getBody().length()) < 0)
 				throw std::runtime_error("error while writing to CGI");
+			_client.getListFD()->rmSocket(fdPipeIn[1]);
 			close (fdPipeIn[1]);
+			close (fdPipeIn[0]);
 		}
-		//la partie qui recupere l'info du cgi
-		//voir si modif boucle pour les chunked unchunked
+
+		while (!(socketFromCgi->getPollFD().revents & POLLIN))
+		{
+			usleep(100000); //on attend 100 msec avant nouvelle tentative
+			_client.getListFD()->myPoll();
+			if (socketFromCgi->getPollFD().revents & POLLERR)
+				throw std::runtime_error("error while polling CGI");
+		}
+
 		std::string cgiResponse;
 		char buf[2049] = {0};
 		ssize_t readResult;
+		// while ((readResult = read(fdPipeOut[0], buf, 2048)) >= 0)
 		while ((readResult = read(fdPipeOut[0], buf, 2048)) > 0)
 		{
 			cgiResponse += buf;
 			memset(buf, 0, 2049);
 		}
-		if (readResult < 0)
-			throw std::runtime_error("error while receiving cgi response");
 		cgiResponse += buf;
+
+		_client.getListFD()->rmSocket(socketFromCgi->getPollFD().fd);
+		close (fdPipeOut[1]);
 		close (fdPipeOut[0]);
+		// std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nla reponse du cgi est : \n" << cgiResponse
+		// << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+
 		cgiResponse = checkCgiResponse(cgiResponse);
 		// std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nla reponse du cgi est : \n" << cgiResponse
 		// << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
@@ -351,32 +375,9 @@ void CgiHandler::requestMethod(const std::string & str)
 
 bool CgiHandler::scriptName(std::string & str)
 {
-	// scriptname
-	// if (str == "")
 	_vectorEnv.push_back("SCRIPT_NAME=" + str);
-		// _pathForExec += str;
-	// else
-	// {
-	// 	std::string s1 = "/" + str;
-	// 	_vectorEnv.push_back("SCRIPT_NAME=" + s1);
-	// }
-	//scriptFilename
-	// std::string newAddress = str;
-	// usable<std::pair<std::string, std::string> > locationResponse = _config.getRoot(_client.getServerName(), str);
-	// if (locationResponse.state == true)
-	// {
-	// std::string old = locationResponse.value.first;
-	// std::string newLoc = locationResponse.value.second;
-
-	// newAddress = str.replace(0, old.size(), newLoc);
-	// }
-	// _vectorEnv.push_back("SCRIPT_FILENAME=" + newAddress);
-
 	checkExecutableExistence(str);
 	return true;
-	// if (!checkExecutableExistence(newAddress))
-	// 	return false;
-
 }
 
 
@@ -386,8 +387,6 @@ void CgiHandler::serverName(const std::string & str)
 		_vectorEnv.push_back("SERVER_NAME=" + str);
 	else
 		_vectorEnv.push_back("SERVER_NAME=" + _client.getServerName());
-		// _vectorEnv.push_back("SERVER_NAME=" + _config.getIp(_client.getServerName()));
-
 }
 
 void CgiHandler::serverPort(const std::string & str)
@@ -453,13 +452,8 @@ std::string CgiHandler::upperCaseAndMinus(const std::string & str)
 	if (stat(str1.c_str(), &st) == -1)
 	{
 		_response->setStatus(404);
-		std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
-		std::cout << "cet executable n existe pas : " << str1 << std::endl;
 		return (false);
 	}
-	std::cout << " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n";
-		std::cout << "cet executable existe : " << str1 << std::endl;
-
 	return true;
 }
 
@@ -534,7 +528,6 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	std::string userinfo;
 
 //on cherche si scheme et on l'extrait, http sinon
-
 	found = url.find("//");
 	if (found != url.npos)
 	{
@@ -548,22 +541,14 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	else
 		parsedUrl.insert(std::make_pair("scheme", "http"));
 
-	// //checking scheme (doit etre http pour nous...)
-	// if (parsedUrl["scheme"] != "http")
-	// {
-	// 	std::cout << "je ne supporte que le http !!" << std::endl;
-	// 	parsedUrl.clear();
-	// 	return (parsedUrl);
-	// }
 //on cherche le fragment
-
 	found = url.find_first_of("#");
 	if (found != url.npos)
 	{
 		parsedUrl.insert(std::make_pair("fragment", url.substr(found + 1)));
 		url = url.substr(0, found);
-		//a priori pas besoin de checker car le cgi renvoie erreur si pas bon
 	}
+
 //on cherche le query
 	found = url.find_first_of("?");
 	if (found != url.npos)
@@ -573,7 +558,6 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	}
 
 //on cherche si authority
-
 	if (url.substr(0, 2) == "//" || url.substr(0, 1) != "/") //il existe authority, a parser,
 	{
 		if (url.substr(0, 2) == "//")
@@ -618,36 +602,6 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	{
 		parsedUrl.insert(std::make_pair("path", url));
 	}
-	// //on recherche si script.php
-	// found = parsedUrl["path"].find(".bla");
-	// if (found != std::string::npos)
-	// {
-	// 	//on delimite le path du cgi et le additionnal path
-	// 	std::string cgiPath = parsedUrl["path"].substr(0, found + 4);
-	// 	UrlDecoder(cgiPath);
-	// 	found = parsedUrl["path"].find_first_of("/", found + 4);
-	// 	if (found != std::string::npos)
-	// 	{
-	// 		std::string additionnalPath = parsedUrl["path"].substr(found);
-	// 		UrlDecoder(additionnalPath);
-	// 		parsedUrl.insert(std::make_pair("additionnal_path", additionnalPath));
-	// 	}
-	// 	else
-	// 		parsedUrl.insert(std::make_pair("additionnal_path", ""));
-	// 	//on met le "real path" en fonction de "location  de - \.php"
-	// 	// std::string root =  "";//donnees a recuperer de config
-	// 	// cgiPath = root + "/" + cgiPath;
-	// 	// additionnalPath = root + "/" + additionnalPath;
-	// 	parsedUrl.insert(std::make_pair("cgi_path", cgiPath));
-	// }
-	//else determination de la location en fonction de l'adresse et creation du real path
-	//a enlever
-	std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n PARSED URL\n";
-	for (std::map<std::string, std::string>::iterator it = parsedUrl.begin(); it != parsedUrl.end(); ++it)
-		std::cout << it->first << " : " << it->second <<"\n";
-	std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-	///////////////////////////////////
-	//a enlever
 	return (parsedUrl);
 }
 
