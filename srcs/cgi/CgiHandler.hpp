@@ -17,6 +17,8 @@ class CgiHandler;
 # include "Config.hpp"
 # include "CgiSocket.hpp"
 # include "Response.hpp"
+# include "CgiSocketFromCgi.hpp"
+# include "CgiSocketToCgi.hpp"
 
 class CgiHandler
 {
@@ -74,6 +76,9 @@ private:
 	void parsePathforCgi(void);
 	std::string & checkCgiResponse(std::string & response);
 	void checkIfPhpCgi(void);
+	int checkHeaders(char c, int state);
+	std::string cgiResponseHeaderPreparation(std::string & cgiHeaders);
+	std::string cgiResponseChunkedPreparation(std::string cgiResponse, int readResult);
 
 };
 

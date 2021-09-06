@@ -15,7 +15,6 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 		{
 			CgiHandler myCgi(client, config, request, &response);
 			myCgi.executeCgi();
-			std::cout <<"66666666666666666666666666\nstatus code = " << response.getStatus() << "\n6666666666666666666666\n";
 		}
 		else if(request.getMethods() == "GET")
 		{

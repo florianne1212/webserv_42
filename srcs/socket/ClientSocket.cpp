@@ -23,6 +23,17 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 		_clientAddress = other._clientAddress;
 		_clientPort = other._clientPort;
 		_listFD = other._listFD;
+		_request = other._request;
+		_buffer = other._buffer;
+		_responseSent = other._responseSent;
+		_test = other._test;
+		_append = other._append;
+		_fd_out = other._fd_out;
+		_fd_read = other._fd_read;
+		_read = other._read;
+		_body = other._body;
+		_lastInterTime = other._lastInterTime;
+		_status = other._status;
 	}
 	return (*this);
 }

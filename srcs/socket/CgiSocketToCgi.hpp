@@ -1,7 +1,7 @@
-#ifndef CGISOCKET_HPP
-# define CGISOCKET_HPP
+#ifndef CGISOCKETToCgiTOCGI_HPP
+# define CGISOCKETToCgiTOCGI_HPP
 
-class CgiSocket;
+class CgiSocketToCgi;
 
 # include "ASocket.hpp"
 # include "Buffer.hpp"
@@ -9,19 +9,22 @@ class CgiSocket;
 # include "Response.hpp"
 # include "FDList.hpp"
 # include <sys/time.h>
+# include "ClientSocket.hpp"
 
 
-class CgiSocket : public ASocket
+class CgiSocketToCgi : public ASocket
 {
 	private :
-		CgiSocket();
+		CgiSocketToCgi();
 
 	protected:
 		struct timespec _lastInterTime;
+		Request _request;
+		ClientSocket _client;
 
 	public :
-		CgiSocket(int fd);
-		virtual ~CgiSocket();
+		CgiSocketToCgi(int fd, Request & request, ClientSocket & client);
+		virtual ~CgiSocketToCgi();
 
 		virtual int	getFd(void) const;
 		virtual void read(Config *datas, FDList *listFD);
