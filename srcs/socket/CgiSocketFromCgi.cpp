@@ -3,10 +3,14 @@
 CgiSocketFromCgi::CgiSocketFromCgi(int fd, ClientSocket & client, Response * response): ASocket(fd, ""), _state(0), _response(response), _client(client) {
 	_pollFD.fd = fd;
 	_pollFD.events = POLLIN;
-	std::cout << "ON VIENT DE CREER SOCKET FROM CGI\n";
+	std::cout << "ON VIENT DE CREER SOCKET FROM CGI le fd est " << _fd << "\n";
 }
 
-CgiSocketFromCgi::~CgiSocketFromCgi(){}
+CgiSocketFromCgi::~CgiSocketFromCgi(){
+
+		std::cout << "ON VIENT DE detruire SOCKET FROM CGI le fd est " << _fd << "\n";
+
+}
 
 int	CgiSocketFromCgi::getFd(void) const{
 	return (_fd);
@@ -16,9 +20,12 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 {
 	(void)datas;
 	(void)listFD;
+	std::cout << "ON PASSE DANS LE READ\n";
 	std::string cgiResponse;
 	// std::string cgiHeaders;
 	char buf[2049] = {0};
+		// char buf[100001] = {0};
+
 	ssize_t readResult;
 	bool sended = false;
 
@@ -44,8 +51,10 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 			_state +=1;
 			readResult = cgiResponse.length();
 			cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
-			_response->setCgiResponse(_cgiHeaders + cgiResponse);
-			_response->_cgiResponse = true;
+			std::cout << "le debut de la reponse est : \n" << _cgiHeaders + cgiResponse << "\n\n\n";
+			_client.getResponse()->setCgiResponse(_cgiHeaders + cgiResponse);
+			// _response->setCgiResponse(_cgiHeaders + cgiResponse);
+			// _response->_cgiResponse = true;
 			//envoi du header et du 1er buffer
 			_cgiHeaders.clear();
 			sended = true;
@@ -78,13 +87,14 @@ void CgiSocketFromCgi::write(Config *datas, FDList *listFD)
 
 bool CgiSocketFromCgi::getTimeout()
 {
-	struct timespec act;
-	double time_taken;
+	// struct timespec act;
+	// double time_taken;
 
-	clock_gettime(CLOCK_MONOTONIC, &act);
-	time_taken = (act.tv_sec - _lastInterTime.tv_sec) * 1e9;
-    time_taken = (time_taken + (act.tv_nsec - _lastInterTime.tv_nsec)) * 1e-9;
-	return (time_taken > 30);
+	// clock_gettime(CLOCK_MONOTONIC, &act);
+	// time_taken = (act.tv_sec - _lastInterTime.tv_sec) * 1e9;
+    // time_taken = (time_taken + (act.tv_nsec - _lastInterTime.tv_nsec)) * 1e-9;
+	// return (time_taken > 30);
+	return (false);
 }
 
 void CgiSocketFromCgi::setTime()

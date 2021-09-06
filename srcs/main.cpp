@@ -26,6 +26,7 @@ void selector(Config *datas, FDList *listFD)
 			}
 			else if ((*it)->getTimeout())
 			{
+				std::cout <<"on est dans main avec le fd "<< (*it)->getFd() << "\n";
 				close((*it)->getFd());
 				listFD->rmSocket((*it)->getFd());
 			}

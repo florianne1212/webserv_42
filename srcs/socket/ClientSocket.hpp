@@ -30,6 +30,7 @@ class ClientSocket : public ASocket
 		FDList* _listFD;
 		struct timespec _lastInterTime;
 		int _status;
+		Response* _response;
 
 
 	public :
@@ -48,6 +49,8 @@ class ClientSocket : public ASocket
 		FDList* getListFD(void);
 		virtual bool getTimeout(void);
 		virtual void setTime(void);
+		void setResponse(Response* response);
+		Response* getResponse();
 };
 
 #endif

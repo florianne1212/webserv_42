@@ -3,7 +3,7 @@
 CgiSocketToCgi::CgiSocketToCgi(int fd, Request & request, ClientSocket & client): ASocket(fd, ""), _request(request), _client(client) {
 	_pollFD.fd = fd;
 	_pollFD.events = POLLOUT;
-	std::cout << "ON VIENT DE CREER SOCKET TO CGI\n";
+	std::cout << "ON VIENT DE CREER SOCKET TO CGI le sfd est " << _fd <<"\n";
 }
 
 CgiSocketToCgi::~CgiSocketToCgi(){}
@@ -22,14 +22,19 @@ void CgiSocketToCgi::write(Config *datas, FDList *listFD)
 {
 	(void)datas;
 	(void)listFD;
+		std::cout << "ON PASSE DANS LE WRITE\n";
+
 	size_t writeResult;
 	if ((writeResult = ::write(_fd, _request.getBody().c_str(), _request.getBody().length())) < 0)
 		throw std::runtime_error("error while writing to CGI");
-	if (writeResult == 0)
-	{
-		_client.getListFD()->rmSocket(_fd);
-		close (_fd);
-	}
+	// if (writeResult == 0)
+	// {
+		
+	// 	_client.getListFD()->rmSocket(_fd);
+	// 	close (_fd);
+		
+	// 	std::cout << "ON est PASSE DANS LE WRITE\n";
+	// }
 	//voir avec Florianne si chunked Body
 }
 

@@ -154,6 +154,7 @@ void ClientSocket::my_read(Response *response, FDList *listFD)
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
 	Response response;
+	setResponse(&response);
 	ManageMiddleware manage;
 	response.setStatus(_status);
 	if (_responseSent)
@@ -188,6 +189,7 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 		if (_responseSent == true)
 		{
 			close(_fd);
+			std::cout <<"on est dans client avec le fd "<< _fd << "\n";
 			listFD->rmSocket(_fd);
 		}
 	}
@@ -218,6 +220,15 @@ void ClientSocket::setTime()
 		clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 }
 
+void ClientSocket::setResponse(Response* response)
+{
+	_response = response;
+}
+
+Response* ClientSocket::getResponse()
+{
+	return (_response);
+}
 /*
 class ClientSocket {
 	Response _response;
