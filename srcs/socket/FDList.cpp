@@ -65,6 +65,7 @@ void FDList::myPoll()
     for (std::list<ASocket *>::const_iterator it = _SocketLists.begin(); it != _SocketLists.end(); it++)
     {
         tab[i] = (*it)->getPollFD();
+		// std::cout <<  " A l'entree du poll i = " << i << " fd = " << tab[i].fd << " events = " << tab[i].events << " revents = " << tab[i].revents << "\n";
         i++;
     }
     for (std::list<struct pollfd*>::iterator it = _fileList.begin(); it != _fileList.end(); it++)
@@ -79,6 +80,7 @@ void FDList::myPoll()
     {
         if (tab[i].fd == (*it)->getFd())
         (*it)->setPollFD(tab[i]);
+		// std::cout <<  " A la sortie du poll i = " << i << "fd = " << tab[i].fd << "events = " << tab[i].events << " revents = " << tab[i].revents << "\n";
         i++;
     }
 

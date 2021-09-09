@@ -37,7 +37,7 @@ public:
 	std::string getResponse();
 	usable<std::pair<std::string, std::string> > getAppend();
 	bool getCgi();
-	
+
 	void cleanResponse();
 	void setBody(std::string str);
 	void setBodyPath(std::string str);
@@ -47,6 +47,10 @@ public:
 	void setCgiResponse(std::string const & cgiResponse);
 	void setAppend(std::string filename, std::string to_append);
 	void setDir(bool dir);
+	void responseClassInitialization(void);
+	std::string getCgiResponse();
+
+
 };
 
 

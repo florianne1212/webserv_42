@@ -154,6 +154,11 @@ void Response::setCgiResponse(std::string const & cgiResponse)
 	_cgiResponse = true;
 }
 
+std::string Response::getCgiResponse()
+{
+	return (_response);
+}
+
 void Response::setAppend(std::string filename, std::string to_append)
 {
 	_append = usable<std::pair<std::string, std::string> >(std::pair<std::string, std::string>(filename, to_append));
@@ -177,4 +182,23 @@ void Response::setDir(bool dir)
 bool Response::getCgi()
 {
 	return(_cgiResponse);
+}
+
+void Response::responseClassInitialization(void){
+	_status = 200;
+	_cgiResponse = false;
+	_dir = false;
+	HttpStatus hs;
+	_find_status = hs;
+	std::map <std::string, std::string> h;
+	_headers = h;
+	usable< std::string > b;
+	_body = b;
+	usable< std::string > bp;
+	_body_path = bp;
+	std::string r;
+	_response  =  r;
+	usable<std::pair<std::string, std::string> > a;
+	_append = a;
+
 }

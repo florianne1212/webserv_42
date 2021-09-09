@@ -12,6 +12,7 @@ CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request
 	_headers = request.getHeaders();
 	_parsedUrl = parseTheUri(request.getUrl());
 	parsePathforCgi();//pour scriptname et additionnal path
+	client.setCgiState(CGI_IN_PROGRESS);
 }
 
 CgiHandler::~CgiHandler()
@@ -30,7 +31,6 @@ CgiHandler::~CgiHandler()
 			free (_instructionsCGI[j]);
 		delete [] _instructionsCGI;
 	}
-	std::cout << "on passe dan le cgihandler destructor\n";
 }
 
 CgiHandler::CgiHandler(CgiHandler const & other):
@@ -82,10 +82,12 @@ void CgiHandler::executeCgi(void){
 	creationVectorEnviron();
 	if(_response->getStatus()/100 == 2)
 	{
-	setVarEnv();
-	setInstructionCgi();
-	executingCgi();
+		setVarEnv();
+		setInstructionCgi();
+		executingCgi();
 	}
+	else
+		_client.setCgiState(NO_CGI);
 }
 
 /*
@@ -135,8 +137,8 @@ void CgiHandler::checkIfPhpCgi(void)
 	if (found != std::string::npos)
 		verif = (_config.getCGI().value.second).substr(found + 1);
 	std::cout << verif << "=verif\n";
-	if(verif == "php-cgi")
-		return;
+	// if(verif == "php-cgi")
+	// 	return;
 	serverName(_parsedUrl["host"]);
 	serverSoftware();
 	gatewayInterface();

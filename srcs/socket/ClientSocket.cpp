@@ -4,7 +4,7 @@
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort, FDList* listFD) : ASocket(fd, serverName),
 _clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true),  _fd_read(), _read(true),
-_listFD(listFD)
+_listFD(listFD), _cgiState(0)
 {
 	clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 }
@@ -34,6 +34,8 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 		_body = other._body;
 		_lastInterTime = other._lastInterTime;
 		_status = other._status;
+		_response = other._response;
+		_cgiState = other._cgiState;
 	}
 	return (*this);
 }
@@ -153,30 +155,30 @@ void ClientSocket::my_read(Response *response, FDList *listFD)
 
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
-	Response response;
-	setResponse(&response);
+	reinitResponse();
+	// std::cout << "l'adresse de ma reponse est  : " << &_response << "\n";
 	ManageMiddleware manage;
-	response.setStatus(_status);
+	_response.setStatus(_status);
 	if (_responseSent)
 	{
 		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
 		//std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
-		manage.middlewareStart(*this, *datas, _request, response);
-		if(response.getAppend().state == true && _append)
-			my_append(&response, listFD);
+		manage.middlewareStart(*this, *datas, _request, _response);
+		if(_response.getAppend().state == true && _append)
+			my_append(&_response, listFD);
 		else
 			_append = false;
-		if(response.getBodyPath().state == true && response.getDir() == false && _read == true && _append == false)
-			my_read(&response, listFD);
+		if(_response.getBodyPath().state == true && _response.getDir() == false && _read == true && _append == false)
+			my_read(&_response, listFD);
 		else
 			_read = false;
 		if (_append == false && _read == false)
 		{
-			if (response.getBodyPath().state == true && response.getDir() == false )
-				response.setBody(_body);
-			if(response.getCgi() == false)
-		   		response.create_response();
-			_buffer = Buffer(response.getResponse(), 0);
+			if (_response.getBodyPath().state == true && _response.getDir() == false )
+				_response.setBody(_body);
+			if(_response.getCgi() == false)
+		   		_response.create_response();
+			_buffer = Buffer(_response.getResponse(), 0);
 			_responseSent = false;
 			_append = true;
 			_test = true;
@@ -220,15 +222,30 @@ void ClientSocket::setTime()
 		clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 }
 
-void ClientSocket::setResponse(Response* response)
-{
-	_response = response;
-}
+// void ClientSocket::setResponse(Response response)
+// {
+// 	_response = response;
+// }
 
-Response* ClientSocket::getResponse()
+Response & ClientSocket::getResponse()
 {
 	return (_response);
 }
+
+void ClientSocket::reinitResponse()
+{
+	_response.responseClassInitialization();
+}
+
+int ClientSocket::getcgiState()
+{
+	return (_cgiState);
+}
+void ClientSocket::setCgiState(int cgiState)
+{
+	_cgiState = cgiState;
+}
+
 /*
 class ClientSocket {
 	Response _response;

@@ -9,9 +9,23 @@ class ClientSocket;
 # include "Request.hpp"
 # include "Response.hpp"
 # include "FDList.hpp"
+enum CgiState
+		{
+			NO_CGI,
+			CGI_IN_PROGRESS,
+			CGI_DONE
+		};
 
 class ClientSocket : public ASocket
 {
+	// public :
+	// 	enum CgiState
+	// 	{
+	// 		NO_CGI,
+	// 		CGI_IN_PROGRESS,
+	// 		CGI_DONE
+	// 	};
+
 	private :
 		ClientSocket();
 
@@ -30,7 +44,8 @@ class ClientSocket : public ASocket
 		FDList* _listFD;
 		struct timespec _lastInterTime;
 		int _status;
-		Response* _response;
+		Response _response;
+		int _cgiState;
 
 
 	public :
@@ -49,8 +64,12 @@ class ClientSocket : public ASocket
 		FDList* getListFD(void);
 		virtual bool getTimeout(void);
 		virtual void setTime(void);
-		void setResponse(Response* response);
-		Response* getResponse();
+		// void setResponse(Response response);
+		Response & getResponse();
+		void reinitResponse();
+		int getcgiState();
+		void setCgiState(int cgiState);
+
 };
 
 #endif
