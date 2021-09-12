@@ -6,13 +6,13 @@
 ** -------------------------------------------------------------------------------
 */
 
-CgiHandler::CgiHandler(ClientSocket & client, Config & config, Request & request, Response* response):
+CgiHandler::CgiHandler(ClientSocket* client, Config & config, Request & request, Response* response):
 	_vectorEnv(0), _varEnv(0), _instructionsCGI(0), _client(client),_config(config), _request(request), _response(response)
 {
 	_headers = request.getHeaders();
 	_parsedUrl = parseTheUri(request.getUrl());
 	parsePathforCgi();//pour scriptname et additionnal path
-	client.setCgiState(CGI_IN_PROGRESS);
+	client->setCgiState(CGI_IN_PROGRESS);
 }
 
 CgiHandler::~CgiHandler()
@@ -88,7 +88,7 @@ void CgiHandler::executeCgi(void){
 		executingCgi();
 	}
 	else
-		_client.setCgiState(NO_CGI);
+		_client->setCgiState(NO_CGI);
 }
 
 /*
@@ -119,7 +119,7 @@ void CgiHandler::creationVectorEnviron(void){
 	contentType("Content-Type");
 	pathInfo(_parsedUrl["additionnal_path"]);
 	queryString(_parsedUrl["query"]);
-	remoteAddr(_client.getClientAddress());
+	remoteAddr(_client->getClientAddress());
 	remoteHost();
 	remoteUser(_parsedUrl["user_name"]);
 	scriptName(_parsedUrl["cgi_path"]);//checke existence de lexecutable
@@ -220,7 +220,7 @@ void CgiHandler::executingCgi(void)
 
 	else if (pid > 0) //pere
 	{
-		_client.setCgiFd(fdPipeOut[0], fdPipeOut[1], fdPipeIn[0], fdPipeIn[1]);
+		_client->setCgiFd(fdPipeOut[0], fdPipeOut[1], fdPipeIn[0], fdPipeIn[1]);
 		// set fd as non blocking
 		fcntl(fdPipeOut[0], F_SETFL, O_NONBLOCK);
 		// close (fdPipeOut[1]);
@@ -231,7 +231,7 @@ void CgiHandler::executingCgi(void)
 		// out.revents = 0;
 		CgiSocketFromCgi* socketFromCgi = new CgiSocketFromCgi(fdPipeOut, _client, _response);
 		// socketFromCgi->setPollFD(out);
-		_client.getListFD()->addSocket(socketFromCgi);
+		_client->getListFD()->addSocket(socketFromCgi);
 
 		// if (_request.getMethods() == "POST")
 		// {
@@ -401,7 +401,7 @@ void CgiHandler::remoteAddr(const std::string & str)
 
 void CgiHandler::remoteHost(void)
 {
-	std::string s = _client.getClientAddress();
+	std::string s = _client->getClientAddress();
 	_vectorEnv.push_back("REMOTE_HOST=" + s);
 }
 
@@ -431,14 +431,14 @@ void CgiHandler::serverName(const std::string & str)
 	if (str != "")
 		_vectorEnv.push_back("SERVER_NAME=" + str);
 	else
-		_vectorEnv.push_back("SERVER_NAME=" + _client.getServerName());
+		_vectorEnv.push_back("SERVER_NAME=" + _client->getServerName());
 }
 
 void CgiHandler::serverPort(const std::string & str)
 {
 	if (str == "")
 	{
-		unsigned short port = _config.getPort(_client.getServerName());
+		unsigned short port = _config.getPort(_client->getServerName());
 		std::ostringstream s;
 
 		s << port;

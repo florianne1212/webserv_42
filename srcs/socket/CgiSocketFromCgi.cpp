@@ -1,15 +1,15 @@
 #include "CgiSocketFromCgi.hpp"
 
-CgiSocketFromCgi::CgiSocketFromCgi(int fd[2], ClientSocket & client, Response * response): ASocket(fd[0], ""), _state(0), _response(response), _client(client), _otherFdToClose(fd[1]) {
+CgiSocketFromCgi::CgiSocketFromCgi(int fd[2], ClientSocket * client, Response * response): ASocket(fd[0], ""), _state(0), _response(response), _client(client), _otherFdToClose(fd[1]) {
 	_pollFD.fd = fd[0];
 	_pollFD.events = POLLIN;
 	_compteur = 0;
-	std::cout << "ON VIENT DE CREER SOCKET FROM CGI le fd est " << _fd <<  "le fd du client associe est "<< _client.getFd() << "\n";
+	std::cout << "ON VIENT DE CREER SOCKET FROM CGI le fd est " << _fd <<  "le fd du client associe est "<< _client->getFd() << "\n";
 }
 
 CgiSocketFromCgi::~CgiSocketFromCgi(){
 
-		std::cout << "ON VIENT DE detruire SOCKET FROM CGI le fd est " << _fd <<  "le fd du client associe est "<< _client.getFd() << "\n";
+		std::cout << "ON VIENT DE detruire SOCKET FROM CGI le fd est " << _fd <<  "le fd du client associe est "<< _client->getFd() << "\n";
 
 }
 
@@ -61,7 +61,7 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 			readResult = cgiResponse.length();
 			cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
 			std::cout << "le debut de la reponse est : \n" << _cgiHeaders + cgiResponse << "\n\n\n";
-			_client.getResponse().setCgiResponse(_cgiHeaders + cgiResponse);
+			_client->getResponse().setCgiResponse(_cgiHeaders + cgiResponse);
 			// _response->setCgiResponse(_cgiHeaders + cgiResponse);
 			// _response->_cgiResponse = true;
 			//envoi du header et du 1er buffer
@@ -77,7 +77,7 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 			// _response->_cgiResponse = true;
 			std::cout << "la suite de la reponse est : \n" << cgiResponse << "\n\n\n";
 
-			_client.getResponse().setCgiResponse(cgiResponse);
+			_client->getResponse().setCgiResponse(cgiResponse);
 			// std::cout << "\ndans ma variable response, le cgi response est " << _client.getResponse().getCgiResponse() << "\n\n";
 			sended = true;
 		}
@@ -92,12 +92,12 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 
 		// _response->setCgiResponse(cgiResponse);
 		// _response->_cgiResponse = true;
-		_client.getResponse().setCgiResponse(cgiResponse);
+		_client->getResponse().setCgiResponse(cgiResponse);
 		// _client.getResponse()->_cgiResponse = true;
 		close (_fd);
 		close (_otherFdToClose);
 		// std::cout << "--------------------MAMA MIA----------------------\n";
-		_client.getListFD()->rmSocket(_fd);
+		_client->getListFD()->rmSocket(_fd);
 		// std::cout <<"on est dans cgisocketfromcgi avec le fd "<< _fd << " et on le ferme\n";
 
 	}

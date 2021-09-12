@@ -11,13 +11,14 @@ _listFD(listFD), _response()
 	_cgiFd[1] = 0;
 	_cgiFd[2] = 0;
 	_cgiFd[3] = 0;
+	std::cout << "00000000000000000000000000ouverture d'un socket client , son fd est : " << _fd << "    00000000000000000000000\n";
 }
 
 ClientSocket::~ClientSocket(){
-	std::cout << "fermeture du client socket de fd " << _fd << "\n\n";
-	// for (int i = 0; i < 4; i++)
-	// 	if (_cgiFd[i])
-	// 		close (_cgiFd[i]);
+	std::cout << "(((((((((((((((((((((((fermeture du client socket de fd " << _fd << ")))))))))))))))))))))))))))\n\n";
+	for (int i = 0; i < 4; i++)
+		if (_cgiFd[i])
+			close (_cgiFd[i]);
 }
 
 

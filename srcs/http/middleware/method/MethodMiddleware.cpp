@@ -19,7 +19,7 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 			&& (request.getMethods() == "GET" || request.getMethods() == "POST"))
 		{
 			{
-			CgiHandler myCgi(client, config, request, &response);
+			CgiHandler myCgi(&client, config, request, &response);
 			myCgi.executeCgi();
 			}
 			std::cout << "ON A FERME CGIHANDLER\n";

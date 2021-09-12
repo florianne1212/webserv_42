@@ -26,7 +26,7 @@ protected:
 	std::vector<std::string> _vectorEnv;
 	char** _varEnv;
 	char** _instructionsCGI;
-	ClientSocket _client;
+	ClientSocket* _client;
 	Config _config;
 	Request _request;
 	Response* _response;
@@ -38,7 +38,7 @@ private:
 	CgiHandler();
 
 public:
-	CgiHandler(ClientSocket & client, Config & config, Request & request, Response * response);
+	CgiHandler(ClientSocket * client, Config & config, Request & request, Response * response);
 	~CgiHandler();
 	CgiHandler(CgiHandler const & other);
 	CgiHandler & operator= (const CgiHandler & other);
