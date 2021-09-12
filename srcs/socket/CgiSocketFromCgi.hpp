@@ -22,6 +22,8 @@ class CgiSocketFromCgi : public ASocket
 		std::string _cgiHeaders;
 		Response* _response;
 		ClientSocket _client;
+		int _otherFdToClose;
+		int _compteur;
 
 	protected:
 		int checkHeaders(char c, int state);
@@ -30,7 +32,7 @@ class CgiSocketFromCgi : public ASocket
 		std::string itoaBase16(size_t num);
 
 	public :
-		CgiSocketFromCgi(int fd, ClientSocket & client, Response * response);
+		CgiSocketFromCgi(int fd[2], ClientSocket & client, Response * response);
 		virtual ~CgiSocketFromCgi();
 
 		virtual int	getFd(void) const;

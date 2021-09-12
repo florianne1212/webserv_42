@@ -37,6 +37,7 @@ public:
 	std::string getResponse();
 	usable<std::pair<std::string, std::string> > getAppend();
 	bool getCgi();
+	void setCgi(bool cgiResponse);
 
 	void cleanResponse();
 	void setBody(std::string str);

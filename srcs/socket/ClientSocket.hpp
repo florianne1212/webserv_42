@@ -9,23 +9,9 @@ class ClientSocket;
 # include "Request.hpp"
 # include "Response.hpp"
 # include "FDList.hpp"
-enum CgiState
-		{
-			NO_CGI,
-			CGI_IN_PROGRESS,
-			CGI_DONE
-		};
 
 class ClientSocket : public ASocket
 {
-	// public :
-	// 	enum CgiState
-	// 	{
-	// 		NO_CGI,
-	// 		CGI_IN_PROGRESS,
-	// 		CGI_DONE
-	// 	};
-
 	private :
 		ClientSocket();
 
@@ -45,7 +31,7 @@ class ClientSocket : public ASocket
 		struct timespec _lastInterTime;
 		int _status;
 		Response _response;
-		int _cgiState;
+		int _cgiFd[4];
 
 
 	public :
@@ -67,8 +53,8 @@ class ClientSocket : public ASocket
 		// void setResponse(Response response);
 		Response & getResponse();
 		void reinitResponse();
-		int getcgiState();
-		void setCgiState(int cgiState);
+
+		void setCgiFd(int pipeOut0, int pipeout1, int pipein0, int pipein1 );
 
 };
 

@@ -4,12 +4,21 @@
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort, FDList* listFD) : ASocket(fd, serverName),
 _clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true),  _fd_read(), _read(true),
-_listFD(listFD), _cgiState(0)
+_listFD(listFD), _response()
 {
 	clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
+	_cgiFd[0] = 0;
+	_cgiFd[1] = 0;
+	_cgiFd[2] = 0;
+	_cgiFd[3] = 0;
 }
 
-ClientSocket::~ClientSocket(){}
+ClientSocket::~ClientSocket(){
+	std::cout << "fermeture du client socket de fd " << _fd << "\n\n";
+	// for (int i = 0; i < 4; i++)
+	// 	if (_cgiFd[i])
+	// 		close (_cgiFd[i]);
+}
 
 
 ClientSocket::ClientSocket(const ClientSocket & other) : ASocket(){
@@ -35,7 +44,10 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 		_lastInterTime = other._lastInterTime;
 		_status = other._status;
 		_response = other._response;
-		_cgiState = other._cgiState;
+		_cgiFd[0] = other._cgiFd[0];
+		_cgiFd[1] = other._cgiFd[1];
+		_cgiFd[2] = other._cgiFd[2];
+		_cgiFd[3] = other._cgiFd[3];
 	}
 	return (*this);
 }
@@ -178,7 +190,9 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 				_response.setBody(_body);
 			if(_response.getCgi() == false)
 		   		_response.create_response();
+			// std::cout << "000000000000000000000000\n\nla reponse  envoyee au write du socket "<< _fd <<" est " << _response.getResponse() << "\n\n0000000000000000\n";
 			_buffer = Buffer(_response.getResponse(), 0);
+			// std::cout << "000000000000000000000000\n\nla reponse  envoyee au write du socket "<< _fd <<" est " << _response.getResponse() << "\n\n0000000000000000\n";
 			_responseSent = false;
 			_append = true;
 			_test = true;
@@ -188,14 +202,21 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 	else
 	{
 		_responseSent = _buffer.flush(_fd);
-		if (_responseSent == true)
+		// if (_responseSent == true)
+		if (_responseSent == true && _cgiState != CGI_IN_PROGRESS)
 		{
 			close(_fd);
-			std::cout <<"on est dans client avec le fd "<< _fd << "\n";
+			// std::cout <<"on est dans client avec le fd "<< _fd << " et on le ferme\n";
+					// std::cout << "--------------------MAMA MIA----------------------\n";
+
 			listFD->rmSocket(_fd);
 		}
+		// else
+		// {
+		// 	sleep(1);
+		// 	exit(1);
+		// }
 	}
-
 }
 
 std::string ClientSocket::getClientAddress(void) const {
@@ -237,14 +258,14 @@ void ClientSocket::reinitResponse()
 	_response.responseClassInitialization();
 }
 
-int ClientSocket::getcgiState()
+void ClientSocket::setCgiFd(int pipeOut0, int pipeOut1, int pipeIn0, int pipeIn1 )
 {
-	return (_cgiState);
+	_cgiFd[0] = pipeOut0;
+	_cgiFd[1] = pipeOut1;
+	_cgiFd[2] = pipeIn0;
+	_cgiFd[3] = pipeIn1;
 }
-void ClientSocket::setCgiState(int cgiState)
-{
-	_cgiState = cgiState;
-}
+
 
 /*
 class ClientSocket {

@@ -184,6 +184,12 @@ bool Response::getCgi()
 	return(_cgiResponse);
 }
 
+void Response::setCgi(bool cgiResponse)
+{
+	_cgiResponse = cgiResponse;
+}
+
+
 void Response::responseClassInitialization(void){
 	_status = 200;
 	_cgiResponse = false;

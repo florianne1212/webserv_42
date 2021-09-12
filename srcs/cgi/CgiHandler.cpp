@@ -31,6 +31,7 @@ CgiHandler::~CgiHandler()
 			free (_instructionsCGI[j]);
 		delete [] _instructionsCGI;
 	}
+	// std::cout << "--------------fermeture CGI handler-----------------\n";
 }
 
 CgiHandler::CgiHandler(CgiHandler const & other):
@@ -219,28 +220,29 @@ void CgiHandler::executingCgi(void)
 
 	else if (pid > 0) //pere
 	{
+		_client.setCgiFd(fdPipeOut[0], fdPipeOut[1], fdPipeIn[0], fdPipeIn[1]);
 		// set fd as non blocking
 		fcntl(fdPipeOut[0], F_SETFL, O_NONBLOCK);
-		close (fdPipeOut[1]);
+		// close (fdPipeOut[1]);
 
 		// struct pollfd out;
 		// out.fd = fdPipeOut[0];
 		// out.events = POLLIN | POLLOUT;
 		// out.revents = 0;
-		CgiSocketFromCgi* socketFromCgi = new CgiSocketFromCgi(fdPipeOut[0], _client, _response);
+		CgiSocketFromCgi* socketFromCgi = new CgiSocketFromCgi(fdPipeOut, _client, _response);
 		// socketFromCgi->setPollFD(out);
 		_client.getListFD()->addSocket(socketFromCgi);
 
 		// if (_request.getMethods() == "POST")
 		// {
-			// set fd as non blocking
+			// // set fd as non blocking
 										// fcntl(fdPipeIn[1], F_SETFL, O_NONBLOCK);
-										// close (fdPipeIn[0]);
+										// // close (fdPipeIn[0]);
 										// // out.fd = fdPipeIn[1];
 										// CgiSocketToCgi* socketToCgi = new CgiSocketToCgi(fdPipeIn[1], _request, _client);
 										// // socketToCgi->setPollFD(out);
 										// _client.getListFD()->addSocket(socketToCgi);
-										// _response->_cgiResponse = true;
+										_response->_cgiResponse = true;
 		// while (!(socketToCgi->getPollFD().revents & POLLOUT))
 		// {
 		// 	usleep(100000); //on attend 100 msec avant nouvelle tentative

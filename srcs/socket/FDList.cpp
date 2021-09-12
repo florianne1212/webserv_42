@@ -10,9 +10,10 @@ FDList::FDList()
 
 FDList::~FDList()
 {
+	std::cout << "c'est quoi ce BAZAR !!!!!!!\n\n";
 	for (std::list<ASocket *>::iterator it = _SocketLists.begin(); it != _SocketLists.end(); it++)
     {
-        close((*it)->getFd());
+		close((*it)->getFd());
 		delete *it;
     }
 }
@@ -29,7 +30,8 @@ void FDList::addFile(struct pollfd* toAdd)
 
 void FDList::rmSocket(const int& toRemove)
 {
-    std::list<ASocket *>::iterator it = _SocketLists.begin();
+    std::cout << "on passe dans rmSocket pour le fd " << toRemove << "\n\n";
+	std::list<ASocket *>::iterator it = _SocketLists.begin();
     while (it != _SocketLists.end() && (*it)->getFd() != toRemove)
         it++;
 	if (it != _SocketLists.end())
@@ -80,10 +82,17 @@ void FDList::myPoll()
     {
         if (tab[i].fd == (*it)->getFd())
         (*it)->setPollFD(tab[i]);
-		// std::cout <<  " A la sortie du poll i = " << i << "fd = " << tab[i].fd << "events = " << tab[i].events << " revents = " << tab[i].revents << "\n";
-        i++;
+		// std::cout <<  " A la sortie du poll fd =    " << tab[i].fd << "     events = " << tab[i].events << " revents = " << tab[i].revents << "\n";
+        // if (tab[i].revents & (POLLNVAL | POLLHUP) )
+        // if (tab[i].revents & (POLLNVAL) )
+		// {
+		// 	std::cout << "ahah, fd " << tab[i].fd << "has hung up !!\n";
+		// 	// usleep (0000);
+		// 	// exit(1);
+		// }
+		i++;
     }
-
+	// std::cout << "\n\n";
     for (std::list<struct pollfd*>::iterator it = _fileList.begin(); it != _fileList.end(); it++)
     {
         if (tab[i].fd == (*it)->fd)

@@ -24,9 +24,16 @@ void selector(Config *datas, FDList *listFD)
 				(*it)->setTime();
 				(*it)->write(datas, listFD);
 			}
+			else if ((*it)->endFromCgiStatus())
+			{
+				std::cout << "HOURRA !!!!\n";
+				exit(1);
+
+				(*it)->setCgiState(NO_CGI);
+			}
 			else if ((*it)->getTimeout())
 			{
-				std::cout <<"on est dans main avec le fd "<< (*it)->getFd() << "\n";
+				// std::cout <<"on est dans main avec le fd "<< (*it)->getFd() << " et on le ferme\n";
 				close((*it)->getFd());
 				listFD->rmSocket((*it)->getFd());
 			}

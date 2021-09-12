@@ -8,6 +8,15 @@ class ASocket;
 # include "Config.hpp"
 # include "FDList.hpp"
 
+enum CgiState
+{
+	NO_CGI,
+	CGI_IN_PROGRESS, //client
+	CGI_DONE, //client
+	FROM_CGI_IN_PROGRESS, //cgisocketfromcgi
+	TO_CGI_IN_PROGRESS //cgisockettocgi
+};
+
 class ASocket
 {
 	protected:
@@ -16,6 +25,7 @@ class ASocket
 		int _fd;
 		struct pollfd _pollFD;
 		std::string _serverName;
+		int _cgiState;
 
 	public:
 		ASocket(int fd, std::string ServerName);
@@ -28,11 +38,15 @@ class ASocket
 		virtual void write(Config *datas, FDList *listFD) = 0;
 		bool getReadStatus(void) const;
 		bool getWriteStatus(void) const;
+		bool endFromCgiStatus(void) const;
 		struct pollfd getPollFD(void) const;
 		std::string getServerName() const;
 		void setPollFD(struct pollfd toSet);
 		virtual bool getTimeout() = 0;
 		virtual void setTime() = 0;
+		int getcgiState();
+		void setCgiState(int cgiState);
+
 };
 
 # include "ClientSocket.hpp"
