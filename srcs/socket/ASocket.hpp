@@ -46,7 +46,7 @@ class ASocket
 		virtual void setTime() = 0;
 		int getcgiState();
 		void setCgiState(int cgiState);
-
+		virtual void prepareCgiEnd();
 };
 
 # include "ClientSocket.hpp"

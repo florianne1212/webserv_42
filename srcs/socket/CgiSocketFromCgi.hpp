@@ -40,6 +40,7 @@ class CgiSocketFromCgi : public ASocket
 		virtual void write(Config *datas, FDList *listFD);
 		virtual bool getTimeout();
 		virtual void setTime();
+		virtual void prepareCgiEnd();
 
 };
 

@@ -14,6 +14,7 @@ Response::Response (Response const & copy)
 
 Response::~Response()
 {
+	std::cout << "mmmmmmmmmmmm\nfermeture de la reponse d'adresse " << this <<"    mmmmmmmmmmmmm\n";
 }
 
 Response& Response::operator=(Response const & ope)

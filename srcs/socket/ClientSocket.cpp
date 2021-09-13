@@ -168,12 +168,17 @@ void ClientSocket::my_read(Response *response, FDList *listFD)
 
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
-	reinitResponse();
+	// std::cout << "cache? : \n" << _response.getResponse() << " Youpi\n\n";
+	if (_cgiState == NO_CGI)
+		reinitResponse();
+	// std::cout << "cache? : \n" << _response.getResponse() << " Youpi\n\n";
+
 	// std::cout << "l'adresse de ma reponse est  : " << &_response << "\n";
 	ManageMiddleware manage;
 	_response.setStatus(_status);
 	if (_responseSent)
 	{
+		// std::cout << "cache2 : \n" << _response.getResponse() << " Youpi\n\n";
 		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
 		//std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
 		manage.middlewareStart(*this, *datas, _request, _response);
@@ -191,7 +196,8 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 				_response.setBody(_body);
 			if(_response.getCgi() == false)
 		   		_response.create_response();
-			// std::cout << "000000000000000000000000\n\nla reponse  envoyee au write du socket "<< _fd <<" est " << _response.getResponse() << "\n\n0000000000000000\n";
+			// std::cout << "l'adresse de la reponse est " << &_response << "\n\n";
+			std::cout << "000000000000000000000000\n\nla reponse  envoyee au write du socket "<< _fd <<" est " << _response.getResponse() << "\n\n0000000000000000\n";
 			_buffer = Buffer(_response.getResponse(), 0);
 			// std::cout << "000000000000000000000000\n\nla reponse  envoyee au write du socket "<< _fd <<" est " << _response.getResponse() << "\n\n0000000000000000\n";
 			_responseSent = false;

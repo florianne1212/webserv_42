@@ -28,8 +28,8 @@ void selector(Config *datas, FDList *listFD)
 			{
 				std::cout << "HOURRA !!!!\n";
 				exit(1);
-
-				(*it)->setCgiState(NO_CGI);
+				(*it)->prepareCgiEnd();
+				// (*it)->setCgiState(NO_CGI);
 			}
 			else if ((*it)->getTimeout())
 			{

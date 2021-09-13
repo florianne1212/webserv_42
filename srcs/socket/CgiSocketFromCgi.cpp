@@ -27,13 +27,13 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 	// std::cout << "ON PASSE DANS LE READ\n";
 	std::string cgiResponse;
 	// std::string cgiHeaders;
-	char buf[10] = {0};
+	char buf[2049] = {0};
 		// char buf[100001] = {0};
 	// std::cout << "\n||||||||||||||||||||||||||||||||| le compteur est a " << _compteur++ << "\n|||||||||||||||||||||||||\n\n";
 	_compteur++;
 	ssize_t readResult;
 	bool sended = false;
-	readResult = ::read(_fd, buf, 9);
+	readResult = ::read(_fd, buf, 2048);
 	// std::cout << "readresult = " << readResult << " compteur : " << _compteur << "\n";
 	// exit(1);
  	// if((readResult = ::read(_fd, buf, 2048)) > 0)//et snded = false a rtravailler ++
@@ -189,4 +189,9 @@ std::string CgiSocketFromCgi::itoaBase16(size_t num)
 		num = num / 16;
 	}
 	return (ret);
+}
+
+void CgiSocketFromCgi::prepareCgiEnd()
+{
+	_client->getResponse().setCgiResponse("0\r\n\r\n");
 }
