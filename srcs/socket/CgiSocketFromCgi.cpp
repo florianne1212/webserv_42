@@ -28,13 +28,13 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 	// std::cout << "ON PASSE DANS LE READ\n";
 	std::string cgiResponse;
 	// std::string cgiHeaders;
-	char buf[2049] = {0};
+	char buf[80001] = {0};
 		// char buf[100001] = {0};
 	// std::cout << "\n||||||||||||||||||||||||||||||||| le compteur est a " << _compteur++ << "\n|||||||||||||||||||||||||\n\n";
 	// _compteur++;
 	ssize_t readResult;
 	bool sended = false;
-	readResult = ::read(_fd, buf, 2048);
+	readResult = ::read(_fd, buf, 80000);
 	// std::cout << "readresult = " << readResult << " compteur : " << _compteur << "\n";
 	// exit(1);
  	// if((readResult = ::read(_fd, buf, 2048)) > 0)//et snded = false a rtravailler ++
@@ -59,9 +59,10 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 		{
 			_cgiHeaders = cgiResponseHeaderPreparation(_cgiHeaders);
 			_state +=1;
+			std::cout << "----------------------------------------------------COUCOU1\n";
 			readResult = cgiResponse.length();
 			cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
-			std::cout << "le debut de la reponse est : \n" << _cgiHeaders + cgiResponse << "\n\n\n";
+			// std::cout << "le debut de la reponse est : \n" << _cgiHeaders + cgiResponse << "\n\n\n";
 			_client->getResponse().setCgiResponse(_cgiHeaders + cgiResponse);
 			// _response->setCgiResponse(_cgiHeaders + cgiResponse);
 			// _response->_cgiResponse = true;
@@ -73,13 +74,15 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 		else if (_state > 4) //le header a deja ete envoye
 		{
 			// exit(1);
+						std::cout << "----------------------------------------------------COUCOU2\n";
+
 			cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
 			// _response->setCgiResponse(cgiResponse);
 			// _response->_cgiResponse = true;
-			std::cout << "la suite de la reponse est : \n" << cgiResponse << "\n\n\n";
+			// std::cout << "la suite de la reponse est : \n" << cgiResponse << "\n\n\n";
 
 			_client->getResponse().setCgiResponse(cgiResponse);
-			// std::cout << "\ndans ma variable response, le cgi response est " << _client.getResponse().getCgiResponse() << "\n\n";
+			// std::cout << "\ndans ma variable response, le cgi response est " << _client->getResponse().getCgiResponse() << "\n\n";
 			sended = true;
 		}
 		else if (_state < 4)
@@ -194,5 +197,25 @@ std::string CgiSocketFromCgi::itoaBase16(size_t num)
 
 void CgiSocketFromCgi::prepareCgiEnd()
 {
-	_client->getResponse().setCgiResponse("0\r\n\r\n");
+	if (_cgiState == FROM_CGI_IN_PROGRESS)
+	{
+		std::cout << "on passe dans preparecgiend\n";
+		_compteur = 0;
+		_client->getResponse().setCgiResponse("0\r\n\r\n");
+		// _client->setCgiState(CGI_DONE);
+		_cgiState = FROM_CGI_DONE;
+		_state = 0;
+
+	}
+	else
+	{
+		// _compteur++;
+		// std::cout << " mon compteur est a " << _compteur << "\n\n";
+		std::cout << "il faut detruire les cgisockets\n";
+		// _client->destroyCgiSockets();
+		// if (_compteur > 2)
+			_cgiState = NO_CGI;
+			_client->setCgiState(NO_CGI);
+			// exit(1);
+	}
 }

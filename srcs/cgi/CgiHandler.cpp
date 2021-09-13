@@ -137,9 +137,9 @@ void CgiHandler::checkIfPhpCgi(void)
 	size_t found = (_config.getCGI().value.second).find_last_of("/");
 	if (found != std::string::npos)
 		verif = (_config.getCGI().value.second).substr(found + 1);
-	std::cout << verif << "=verif\n";
-	// if(verif == "php-cgi")
-	// 	return;
+	// std::cout << verif << "=verif\n";
+	if(verif == "php-cgi")
+		return;
 	serverName(_parsedUrl["host"]);
 	serverSoftware();
 	gatewayInterface();
