@@ -182,10 +182,12 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
 		//std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
 		manage.middlewareStart(*this, *datas, _request, _response);
+		//when there is a post open the file and append the content
 		if(_response.getAppend().state == true && _append)
 			my_append(&_response, listFD);
 		else
 			_append = false;
+		//when there is a get open the file and write the content in the _body
 		if(_response.getBodyPath().state == true && _response.getDir() == false && _read == true && _append == false)
 			my_read(&_response, listFD);
 		else
@@ -205,12 +207,15 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 			_test = true;
 			_read = true;
 		}
+		//the response is fully created and is ready to be sent
 	}
 	else
 	{
+		//the response is send
 		_responseSent = _buffer.flush(_fd);
 		// if (_responseSent == true)
 		if (_responseSent == true && _cgiState != CGI_IN_PROGRESS)
+		//when the response is fully sent everything get closed
 		{
 			close(_fd);
 			// std::cout <<"on est dans client avec le fd "<< _fd << " et on le ferme\n";
