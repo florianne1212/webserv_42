@@ -1,6 +1,7 @@
 #include "CgiSocketFromCgi.hpp"
 
 CgiSocketFromCgi::CgiSocketFromCgi(int fd[2], ClientSocket * client, Response * response): ASocket(fd[0], ""), _state(0), _response(response), _client(client), _otherFdToClose(fd[1]) {
+	clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 	_pollFD.fd = fd[0];
 	_pollFD.events = POLLIN;
 	_compteur = 0;
@@ -30,7 +31,7 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 	char buf[2049] = {0};
 		// char buf[100001] = {0};
 	// std::cout << "\n||||||||||||||||||||||||||||||||| le compteur est a " << _compteur++ << "\n|||||||||||||||||||||||||\n\n";
-	_compteur++;
+	// _compteur++;
 	ssize_t readResult;
 	bool sended = false;
 	readResult = ::read(_fd, buf, 2048);

@@ -14,7 +14,9 @@ enum CgiState
 	CGI_IN_PROGRESS, //client
 	CGI_DONE, //client
 	FROM_CGI_IN_PROGRESS, //cgisocketfromcgi
-	TO_CGI_IN_PROGRESS //cgisockettocgi
+	TO_CGI_IN_PROGRESS, //cgisockettocgi
+	FROM_CGI_DONE,
+	TO_CGI_DONE
 };
 
 class ASocket

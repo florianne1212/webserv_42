@@ -37,7 +37,7 @@ bool ASocket::getWriteStatus(void) const {
 }
 
 bool ASocket::endFromCgiStatus(void) const {
-	return ((_cgiState == FROM_CGI_IN_PROGRESS) && (!(_pollFD.revents == POLLIN)));
+	return ((_cgiState == FROM_CGI_IN_PROGRESS || _cgiState == FROM_CGI_DONE) && (!(_pollFD.revents == POLLIN)));
 }
 
 
