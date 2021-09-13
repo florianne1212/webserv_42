@@ -241,7 +241,7 @@ void CgiHandler::executingCgi(void)
 										// // out.fd = fdPipeIn[1];
 										// CgiSocketToCgi* socketToCgi = new CgiSocketToCgi(fdPipeIn[1], _request, _client);
 										// // socketToCgi->setPollFD(out);
-										// _client.getListFD()->addSocket(socketToCgi);
+										// _client->getListFD()->addSocket(socketToCgi);
 										_response->_cgiResponse = true;
 		// while (!(socketToCgi->getPollFD().revents & POLLOUT))
 		// {
