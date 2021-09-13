@@ -62,3 +62,6 @@ void ASocket::setCgiState(int cgiState)
 {
 	_cgiState = cgiState;
 }
+
+void ASocket::prepareCgiEnd()
+{}

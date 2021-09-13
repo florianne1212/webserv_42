@@ -41,7 +41,7 @@ int main()
 	puts("Connected");
 	
 	//Send some data
-	message = "GET /../../../../../../../../ HTTP/1\r\nHost: 127.0.0.1:9091\r\nContent-Type: text/plain\r\nTransfer-Encoding: chunked\r\n\r\n8\r\nMozilla\n\r\n9\r\nDeveloper\r\n7\r\nNetwork\r\n0\r\n\r\n";
+	message = "GET / HTTP/1.1\r\nHost: 127.0.0.98\r\n";
 
 	if( send(socket_desc , message.c_str() , strlen(message.c_str()) , 0) < 0)
 	{
