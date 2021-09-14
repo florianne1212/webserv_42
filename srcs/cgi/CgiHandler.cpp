@@ -138,7 +138,7 @@ void CgiHandler::checkIfPhpCgi(void)
 	if (found != std::string::npos)
 		verif = (_config.getCGI().value.second).substr(found + 1);
 	// std::cout << verif << "=verif\n";
-	if(verif == "php-cgi")
+	if(verif.find("php") != std::string::npos)
 		return;
 	serverName(_parsedUrl["host"]);
 	serverSoftware();
