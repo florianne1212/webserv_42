@@ -20,10 +20,10 @@ class CgiSocketToCgi : public ASocket
 	protected:
 		struct timespec _lastInterTime;
 		Request _request;
-		ClientSocket _client;
+		ClientSocket * _client;
 
 	public :
-		CgiSocketToCgi(int fd, Request & request, ClientSocket & client);
+		CgiSocketToCgi(int fd, Request & request, ClientSocket * client);
 		virtual ~CgiSocketToCgi();
 
 		virtual int	getFd(void) const;

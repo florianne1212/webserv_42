@@ -55,6 +55,10 @@ class ClientSocket : public ASocket
 		void reinitResponse();
 
 		void setCgiFd(int pipeOut0, int pipeout1, int pipein0, int pipein1 );
+		void setCgiFd(int index, int value);
+		int getCgiFdValue(int index);
+		void destroyCgiSockets();
+
 
 };
 

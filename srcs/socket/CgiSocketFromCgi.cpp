@@ -211,11 +211,12 @@ void CgiSocketFromCgi::prepareCgiEnd()
 	{
 		// _compteur++;
 		// std::cout << " mon compteur est a " << _compteur << "\n\n";
-		std::cout << "il faut detruire les cgisockets\n";
-		// _client->destroyCgiSockets();
+		// std::cout << "il faut detruire les cgisockets\n";
 		// if (_compteur > 2)
-			_cgiState = NO_CGI;
-			_client->setCgiState(NO_CGI);
+		_cgiState = NO_CGI;
+		_client->setCgiState(NO_CGI);
 			// exit(1);
+		_client->destroyCgiSockets();
+
 	}
 }

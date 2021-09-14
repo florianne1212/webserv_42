@@ -11,16 +11,18 @@ _listFD(listFD), _response()
 	_cgiFd[1] = 0;
 	_cgiFd[2] = 0;
 	_cgiFd[3] = 0;
-	std::cout << "00000000000000000000000000ouverture d'un socket client , son fd est : " << _fd << "    00000000000000000000000\n";
+	// std::cout << "00000000000000000000000000ouverture d'un socket client , son fd est : " << _fd << "    00000000000000000000000\n";
 }
 
 ClientSocket::~ClientSocket(){
-	std::cout << "(((((((((((((((((((((((fermeture du client socket de fd " << _fd << ")))))))))))))))))))))))))))\n\n";
+	// std::cout << "(((((((((((((((((((((((fermeture du client socket de fd " << _fd << ")))))))))))))))))))))))))))\n\n";
 	for (int i = 0; i < 4; i++)
 		if (_cgiFd[i])
+		{
 			close (_cgiFd[i]);
+			_cgiFd[i] = 0;
+		}
 }
-
 
 ClientSocket::ClientSocket(const ClientSocket & other) : ASocket(){
 	*this = other;
@@ -278,6 +280,44 @@ void ClientSocket::setCgiFd(int pipeOut0, int pipeOut1, int pipeIn0, int pipeIn1
 	_cgiFd[2] = pipeIn0;
 	_cgiFd[3] = pipeIn1;
 }
+
+void ClientSocket::setCgiFd(int index, int value)
+{
+	_cgiFd[index] = value;
+}
+
+int ClientSocket::getCgiFdValue(int index)
+{
+	return (_cgiFd[index]);
+}
+
+void ClientSocket::destroyCgiSockets()
+{
+	std::cout << "on passe dans cgisockets destruktor !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+	if (_cgiFd[2])
+	{
+		close (_cgiFd[2]);
+		_cgiFd[2] = 0;
+	}
+	if (_cgiFd[3])
+	{
+		close (_cgiFd[3]);
+		_listFD->rmSocket(_cgiFd[3]);
+		_cgiFd[3] = 0;
+	}
+	if (_cgiFd[1])
+	{
+		close (_cgiFd[1]);
+		_cgiFd[1] = 0;
+	}
+	if (_cgiFd[0])
+	{
+		close (_cgiFd[0]);
+		_listFD->rmSocket(_cgiFd[0]);
+		_cgiFd[0] = 0;
+	}
+}
+
 
 
 /*
