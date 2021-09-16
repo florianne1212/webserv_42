@@ -59,7 +59,7 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 		{
 			_cgiHeaders = cgiResponseHeaderPreparation(_cgiHeaders);
 			_state +=1;
-			std::cout << "----------------------------------------------------COUCOU1\n";
+			// std::cout << "----------------------------------------------------COUCOU1\n";
 			readResult = cgiResponse.length();
 			cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
 			// std::cout << "le debut de la reponse est : \n" << _cgiHeaders + cgiResponse << "\n\n\n";
@@ -74,7 +74,7 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 		else if (_state > 4) //le header a deja ete envoye
 		{
 			// exit(1);
-						std::cout << "----------------------------------------------------COUCOU2\n";
+						// std::cout << "----------------------------------------------------COUCOU2\n";
 
 			cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
 			// _response->setCgiResponse(cgiResponse);
@@ -97,12 +97,16 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 		// _response->setCgiResponse(cgiResponse);
 		// _response->_cgiResponse = true;
 		_client->getResponse().setCgiResponse(cgiResponse);
+		_client->setCgiState(NO_CGI);
+			// exit(1);
+		_client->destroyCgiSockets();
 		// _client.getResponse()->_cgiResponse = true;
-		close (_fd);
-		close (_otherFdToClose);
-		// std::cout << "--------------------MAMA MIA----------------------\n";
-		_client->getListFD()->rmSocket(_fd);
-		// std::cout <<"on est dans cgisocketfromcgi avec le fd "<< _fd << " et on le ferme\n";
+
+		// close (_fd);
+		// close (_otherFdToClose);
+		// // std::cout << "--------------------MAMA MIA----------------------\n";
+		// _client->getListFD()->rmSocket(_fd);
+		// // std::cout <<"on est dans cgisocketfromcgi avec le fd "<< _fd << " et on le ferme\n";
 
 	}
 	// std::cout << "\n\n FIN DU READ DE CGISOCKET \n\n";
