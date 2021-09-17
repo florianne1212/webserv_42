@@ -80,15 +80,23 @@ CgiHandler & CgiHandler::operator= (const CgiHandler & other)
 */
 
 void CgiHandler::executeCgi(void){
-	creationVectorEnviron();
-	if(_response->getStatus()/100 == 2)
+	try
 	{
-		setVarEnv();
-		setInstructionCgi();
-		executingCgi();
+		creationVectorEnviron();
+		if(_response->getStatus()/100 == 2)
+		{
+			setVarEnv();
+			setInstructionCgi();
+			executingCgi();
+		}
+		else
+			_client->setCgiState(NO_CGI);
 	}
-	else
+	catch(const std::exception& e)
+	{
 		_client->setCgiState(NO_CGI);
+		std::cerr << e.what() << '\n';
+	}
 }
 
 /*
@@ -169,6 +177,7 @@ void CgiHandler::executingCgi(void)
 
 	if (pipe(fdPipeOut) < 0)
 		throw std::runtime_error("error piping CGI");
+
 	// if (_request.getMethods() == "POST")
 	// {
 	if (pipe(fdPipeIn) < 0)
