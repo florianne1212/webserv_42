@@ -11,6 +11,7 @@ void selector(Config *datas, FDList *listFD)
 	listFD->myPoll();
 	std::list<ASocket *> Socketlist = listFD->getSocketList();
 	for (std::list<ASocket *>::iterator it = Socketlist.begin(); it != Socketlist.end(); it++)
+	// for (std::list<ASocket *>::iterator it = listFD->getSocketList().begin(); it != listFD->getSocketList().end(); it++)
 	{
 		try
 		{

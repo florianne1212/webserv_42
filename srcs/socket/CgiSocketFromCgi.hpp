@@ -24,6 +24,7 @@ class CgiSocketFromCgi : public ASocket
 		ClientSocket* _client;
 		int _otherFdToClose;
 		int _compteur;
+		bool _contentLengthPresent;
 
 	protected:
 		int checkHeaders(char c, int state);

@@ -4,7 +4,7 @@
 
 ClientSocket::ClientSocket(int fd, std::string serverName, std::string clientAddress, std::string clientPort, FDList* listFD) : ASocket(fd, serverName),
 _clientAddress(clientAddress), _clientPort(clientPort), _request(), _buffer(), _responseSent(true), _test(true), _append(true),  _fd_read(), _read(true),
-_listFD(listFD), _response()
+_listFD(listFD), _response(), _closeToCgiSocket(false)
 {
 	clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 	_cgiFd[0] = 0;
@@ -51,6 +51,7 @@ ClientSocket & ClientSocket::operator=(const ClientSocket & other){
 		_cgiFd[1] = other._cgiFd[1];
 		_cgiFd[2] = other._cgiFd[2];
 		_cgiFd[3] = other._cgiFd[3];
+		_closeToCgiSocket = other._closeToCgiSocket;
 	}
 	return (*this);
 }
@@ -294,17 +295,18 @@ int ClientSocket::getCgiFdValue(int index)
 void ClientSocket::destroyCgiSockets()
 {
 	std::cout << "on passe dans cgisockets destruktor !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-	if (_cgiFd[2])
-	{
-		close (_cgiFd[2]);
-		_cgiFd[2] = 0;
-	}
-	if (_cgiFd[3])
-	{
-		close (_cgiFd[3]);
-		_listFD->rmSocket(_cgiFd[3]);
-		_cgiFd[3] = 0;
-	}
+	// if (_cgiFd[2])
+	// {
+	// 	close (_cgiFd[2]);
+	// 	_cgiFd[2] = 0;
+	// }
+	// if (_cgiFd[3])
+	// {
+	// 	close (_cgiFd[3]);
+	// 	_listFD->rmSocket(_cgiFd[3]);
+	// 	_cgiFd[3] = 0;
+	// }
+	_closeToCgiSocket = true;
 	if (_cgiFd[1])
 	{
 		close (_cgiFd[1]);
@@ -317,6 +319,16 @@ void ClientSocket::destroyCgiSockets()
 		_cgiFd[0] = 0;
 	}
 }
+
+bool ClientSocket::getCloseToCgi(void) {
+	return (_closeToCgiSocket);
+}
+
+void ClientSocket::setCloseToCgi(bool value) {
+	_closeToCgiSocket = value;
+}
+
+
 
 
 

@@ -1,16 +1,16 @@
 #include "CgiSocketFromCgi.hpp"
 
-CgiSocketFromCgi::CgiSocketFromCgi(int fd[2], ClientSocket * client, Response * response): ASocket(fd[0], ""), _state(0), _response(response), _client(client), _otherFdToClose(fd[1]) {
+CgiSocketFromCgi::CgiSocketFromCgi(int fd[2], ClientSocket * client, Response * response): ASocket(fd[0], ""), _state(0), _response(response), _client(client), _otherFdToClose(fd[1]), _contentLengthPresent(false){
 	clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 	_pollFD.fd = fd[0];
 	_pollFD.events = POLLIN;
 	_compteur = 0;
-	std::cout << "ON VIENT DE CREER SOCKET FROM CGI le fd est " << _fd <<  "le fd du client associe est "<< _client->getFd() << "\n";
+	// std::cout << "ON VIENT DE CREER SOCKET FROM CGI le fd est " << _fd <<  "le fd du client associe est "<< _client->getFd() << "\n";
 }
 
 CgiSocketFromCgi::~CgiSocketFromCgi(){
 
-		std::cout << "ON VIENT DE detruire SOCKET FROM CGI le fd est " << _fd <<  "le fd du client associe est "<< _client->getFd() << "\n";
+		// std::cout << "ON VIENT DE detruire SOCKET FROM CGI le fd est " << _fd <<  "le fd du client associe est "<< _client->getFd() << "\n";
 
 }
 
@@ -60,8 +60,11 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 			_cgiHeaders = cgiResponseHeaderPreparation(_cgiHeaders);
 			_state +=1;
 			// std::cout << "----------------------------------------------------COUCOU1\n";
-			readResult = cgiResponse.length();
-			cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
+			if (_contentLengthPresent == false)
+			{
+				readResult = cgiResponse.length();
+				cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
+			}
 			// std::cout << "le debut de la reponse est : \n" << _cgiHeaders + cgiResponse << "\n\n\n";
 			_client->getResponse().setCgiResponse(_cgiHeaders + cgiResponse);
 			// _response->setCgiResponse(_cgiHeaders + cgiResponse);
@@ -76,7 +79,8 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 			// exit(1);
 						// std::cout << "----------------------------------------------------COUCOU2\n";
 
-			cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
+			if (_contentLengthPresent == false)
+				cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
 			// _response->setCgiResponse(cgiResponse);
 			// _response->_cgiResponse = true;
 			// std::cout << "la suite de la reponse est : \n" << cgiResponse << "\n\n\n";
@@ -98,6 +102,7 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 		// _response->_cgiResponse = true;
 		_client->getResponse().setCgiResponse(cgiResponse);
 		_client->setCgiState(NO_CGI);
+		_contentLengthPresent = false;
 			// exit(1);
 		_client->destroyCgiSockets();
 		// _client.getResponse()->_cgiResponse = true;
@@ -174,6 +179,8 @@ std::string CgiSocketFromCgi::cgiResponseHeaderPreparation(std::string & cgiHead
 	std::string encoding;
 	if ((cgiHeaders.find("Content-Length") == cgiHeaders.npos) && (cgiHeaders.find("Transfer-Encoding") == cgiHeaders.npos))
 		encoding = "Transfer-Encoding: chunked\r\n";
+	if (cgiHeaders.find("Content-Length") != cgiHeaders.npos)
+		_contentLengthPresent = true;
 	return (firstLine + encoding + cgiHeaders);
 }
 

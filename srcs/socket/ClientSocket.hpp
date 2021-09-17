@@ -32,6 +32,7 @@ class ClientSocket : public ASocket
 		int _status;
 		Response _response;
 		int _cgiFd[4];
+		bool _closeToCgiSocket;
 
 
 	public :
@@ -58,6 +59,8 @@ class ClientSocket : public ASocket
 		void setCgiFd(int index, int value);
 		int getCgiFdValue(int index);
 		void destroyCgiSockets();
+		bool getCloseToCgi(void);
+		void setCloseToCgi(bool value);
 
 
 };
