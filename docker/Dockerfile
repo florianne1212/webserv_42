@@ -8,8 +8,8 @@ RUN apt-get install -y git wget vim clang make zsh valgrind siege
 
 RUN sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-#RUN apt-get install -y php php-cgi php-mysql
-#php php-cgi php-cli php-mbstring php-fpm php-mysql
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get install -y php php-cgi php-mysql
 
 RUN mkdir /app
 
@@ -18,4 +18,4 @@ EXPOSE 9000
 
 COPY . /app
 
-CMD valgrind --track-fds=yes /app/webserv configuration_file/testDocker.conf
+CMD valgrind --track-fds=yes /app/webserv /app/configuration_file/testDocker.conf

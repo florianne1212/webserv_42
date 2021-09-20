@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lcoiffie <lcoiffie@student.42.fr>          +#+  +:+       +#+         #
+#    By: user42 <user42@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/16 08:17:15 by ldutriez          #+#    #+#              #
-#    Updated: 2021/09/16 12:56:46 by lcoiffie         ###   ########.fr        #
+#    Updated: 2021/09/20 11:15:57 by user42           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ IsConnected.cpp CheckRequest.cpp ManageMiddleware.cpp PostMethod.cpp CgiHandler.
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -std=c++98 #-g3 -fsanitize=address
 
 IFLAGS = $(foreach dir, $(INC_DIR), -I$(dir))
 # Colors
