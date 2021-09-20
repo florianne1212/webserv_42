@@ -46,22 +46,6 @@ void CgiSocketToCgi::write(Config *datas, FDList *listFD)
 	{
 		std::cerr << e.what() << '\n';
 	}
-		// std::cout << "ON PASSE DANS LE WRITE\n";
-
-	// if (writeResult)
-	// 	_cgiState = TO_CGI_IN_PROGRESS;
-	// if (writeResult == 0 && _cgiState == TO_CGI_IN_PROGRESS) //plus rien a ecrire
-	// {
-	// 	close(_client->getCgiFdValue(2));
-	// 	close(_client->getCgiFdValue(3));
-	// 	_client->getListFD()->rmSocket(_fd);
-	// 	_client->setCgiFd(2, 0);
-	// 	_client->setCgiFd(3, 0);
-
-
-		// std::cout << "ON est PASSE DANS LE WRITE\n";
-	// }
-	//voir avec Florianne si chunked Body
 }
 
 bool CgiSocketToCgi::getTimeout()

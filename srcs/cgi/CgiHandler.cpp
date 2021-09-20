@@ -216,11 +216,17 @@ void CgiHandler::executingCgi(void)
 		// }
 
 		chdir((_pathForExec.substr(0, _pathForExec.find_last_of("/")).c_str())); //on se met dans le bon repertoire pour execve
-		// char* buf = NULL; ////a retirer
-		// buf = getcwd(buf, 0);////a retirer
-		// std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
-		// std::cerr << " arg[0] : " << _instructionsCGI[0] << "\n";///a retirer
-		// std::cerr << " arg[1] : " << _instructionsCGI[1] << "\n";///a retirer
+		char* buf = NULL; ////a retirer
+		buf = getcwd(buf, 0);////a retirer
+		std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
+		std::cerr << " arg[0] : " << _instructionsCGI[0] << "\n";///a retirer
+		std::cerr << " arg[1] : " << _instructionsCGI[1] << "\n";///a retirer
+		int i = 0;
+		while (_varEnv[i])//a retirer
+		{// aretirer
+		std::cerr << " varenv : " << _varEnv[i] << "\n";///a retirer
+		i++; //a retirer
+		}//a retirer
 
  		if (execve(_instructionsCGI[0], _instructionsCGI, _varEnv)< 0)
 			std::cerr << "error with CGI execution\n";
@@ -232,107 +238,14 @@ void CgiHandler::executingCgi(void)
 		_client->setCgiFd(fdPipeOut[0], fdPipeOut[1], fdPipeIn[0], fdPipeIn[1]);
 		// set fd as non blocking
 		fcntl(fdPipeOut[0], F_SETFL, O_NONBLOCK);
-		// close (fdPipeOut[1]);
 
-		// struct pollfd out;
-		// out.fd = fdPipeOut[0];
-		// out.events = POLLIN | POLLOUT;
-		// out.revents = 0;
 		CgiSocketFromCgi* socketFromCgi = new CgiSocketFromCgi(fdPipeOut, _client, _response);
-		// socketFromCgi->setPollFD(out);
 		_client->getListFD()->addSocket(socketFromCgi);
 
-		// if (_request.getMethods() == "POST")
-		// {
-			// // set fd as non blocking
-										fcntl(fdPipeIn[1], F_SETFL, O_NONBLOCK);
-										// // close (fdPipeIn[0]);
-										// // out.fd = fdPipeIn[1];
-										CgiSocketToCgi* socketToCgi = new CgiSocketToCgi(fdPipeIn[1], _request, _client);
-										// // socketToCgi->setPollFD(out);
-										_client->getListFD()->addSocket(socketToCgi);
-										_response->_cgiResponse = true;
-		// while (!(socketToCgi->getPollFD().revents & POLLOUT))
-		// {
-		// 	usleep(100000); //on attend 100 msec avant nouvelle tentative
-		// 	_client.getListFD()->myPoll();
-		// 	if (socketToCgi->getPollFD().revents & POLLERR)
-		// 		throw std::runtime_error("error while polling CGI");
-		// }
-		//la partie qui write le body pour le cgi
-		// if (write(fdPipeIn[1], _request.getBody().c_str(), _request.getBody().length()) < 0)
-		// 	throw std::runtime_error("error while writing to CGI");
-		// _client.getListFD()->rmSocket(fdPipeIn[1]);
-		// close (fdPipeIn[1]);
-
-		// }
-
-		// while (!(socketFromCgi->getPollFD().revents & POLLIN))
-		// {
-		// 	usleep(100000); //on attend 100 msec avant nouvelle tentative
-		// 	_client.getListFD()->myPoll();
-		// 	if (socketFromCgi->getPollFD().revents & POLLERR)
-		// 		throw std::runtime_error("error while polling CGI");
-		// }
-
-		// std::string cgiResponse;
-		// std::string cgiHeaders;
-		// char buf[2049] = {0};
-		// ssize_t readResult;
-		// int state = 0;///onmonte jusqu'a 4 pour trouver la fin du header attention a mettre dans une structure qui reviendra
-		// bool sended = false;
-
-		//ATTENTION A PRIORI A TERME PAS DE WHILE MAIS UN IF
-		// if((readResult = read(fdPipeOut[0], buf, 2048)) > 0)//et snded = false a rtravailler ++
-
-		// while ((readResult = read(fdPipeOut[0], buf, 2048)) > 0)//et snded = false a rtravailler ++
-		// {
-		// 	int i = 0;
-		// 	char c;
-		// 	while (buf[i])
-		// 	{
-		// 		c = buf[i];
-		// 		if (state < 4)
-		// 		{
-		// 			state = checkHeaders(c, state);//on cree le header
-		// 			cgiHeaders += c;
-		// 		}
-		// 		else
-		// 			cgiResponse += c;
-		// 		i++;
-		// 	}
-			// if (state == 4)///on vient juste de passer le header et la fin du buffer
-			// {
-			// 	cgiHeaders = cgiResponseHeaderPreparation(cgiHeaders);
-			// 	state +=1;
-			// 	readResult = cgiResponse.length();
-			// 	cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
-			// 	_response->setCgiResponse(cgiHeaders + cgiResponse);
-			// 	_response->_cgiResponse = true;
-			// 	//envoi du header et du 1er buffer
-			// 	sended = true;
-			// }
-		// 	else if (state > 4) //le header a deja ete envoye
-		// 	{
-		// 		cgiResponse = cgiResponseChunkedPreparation(cgiResponse, readResult);
-		// 		_response->setCgiResponse(cgiResponse);
-		// 		_response->_cgiResponse = true;
-		// 		sended = true;
-		// 	}
-		// 	memset(buf, 0, 2049);
-		// }
-		// if (sended == false) //ie le read = 0 ou error
-		// {
-		// 	cgiResponse = cgiResponseChunkedPreparation("", 0);
-		// 	_response->setCgiResponse(cgiResponse);
-		// 	_response->_cgiResponse = true;
-		// 	_client.getListFD()->rmSocket(socketFromCgi->getPollFD().fd);
-		// 	close (fdPipeOut[1]);
-		// 	close (fdPipeOut[0]);
-		// }
-		// //sinon on ne clot rien
-		// std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nla reponse du cgi est : \n" << cgiResponse
-		// << "\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+		fcntl(fdPipeIn[1], F_SETFL, O_NONBLOCK);
+		CgiSocketToCgi* socketToCgi = new CgiSocketToCgi(fdPipeIn[1], _request, _client);
+		_client->getListFD()->addSocket(socketToCgi);
+		_response->_cgiResponse = true;
 	}
 }
 
@@ -529,10 +442,6 @@ void CgiHandler::parsePathforCgi(void)
 		}
 		else
 			_parsedUrl.insert(std::make_pair("additionnal_path", ""));
-		//on met le "real path" en fonction de "location  de - \.php"
-		// std::string root =  "";//donnees a recuperer de config
-		// cgiPath = root + "/" + cgiPath;
-		// additionnalPath = root + "/" + additionnalPath;
 		_parsedUrl.insert(std::make_pair("cgi_path", cgiPath));
 	}
 }
@@ -695,67 +604,3 @@ std::string & CgiHandler::checkCgiResponse(std::string & response)
 	}
 	return (response = header + "\r\n\r\n" + body);
 }
-
-// int CgiHandler::checkHeaders(char c, int state)
-// {
-// 	if ((c == '\r') && ((state % 2) == 0))
-// 		state ++;
-// 	else if ((c == '\n') && ((state % 2) == 1))
-// 		state ++;
-// 	else
-// 		state = 0;
-// 	return (state);
-// }
-
-// std::string CgiHandler::cgiResponseHeaderPreparation(std::string & cgiHeaders)
-// {
-// 	//on checke si HTTP
-// 	size_t found;
-// 	size_t found2;
-// 	std::string firstLine;
-// 	if (!(cgiHeaders.substr(0, 4) == "HTTP"))
-// 		//on checke si status et on cree la premiere ligne
-// 	{
-// 		std::string status;
-// 		if ((found = cgiHeaders.find("Status:")) != cgiHeaders.npos) //il existe une ligne status
-// 		{
-// 			found2 = cgiHeaders.find("\r\n", found);
-// 			status = cgiHeaders.substr(found + 7, found2 - found - 7);
-// 			cgiHeaders = cgiHeaders.erase(found, 9 + status.length());
-// 		}
-// 		firstLine = "HTTP/1.1" + status + "\r\n";
-// 	}
-// 	else
-// 	{
-// 		firstLine = cgiHeaders.substr(0, (cgiHeaders.find("\r\n") + 2));
-// 		cgiHeaders = cgiHeaders.erase(0, firstLine.length());
-// 	}
-// 	// on check si Content-Length ou Transfer-Encoding
-// 	//si non existant on cree un header Transfer-Encoding: chunked
-// 	std::string encoding;
-// 	if ((cgiHeaders.find("Content-Length") == cgiHeaders.npos) && (cgiHeaders.find("Transfer-Encoding") == cgiHeaders.npos))
-// 		encoding = "Transfer-Encoding: chunked\r\n";
-// 	return (firstLine + encoding + cgiHeaders);
-// }
-
-// std::string CgiHandler::cgiResponseChunkedPreparation(std::string cgiResponse, int readResult)
-// {
-// 	 return(itoaBase16(readResult) + "\r\n" + cgiResponse + "\r\n");
-// }
-
-// std::string itoaBase16(size_t num)
-// {
-// 	std::string ret;
-// 	if (num == 0)
-// 		return ("0");
-// 	while (num != 0)
-// 	{
-// 		size_t temp = num % 16;
-// 		char unit = (temp > 9)? (temp - 10) + 'A' : temp + '0';
-// 		ret.insert(ret.begin(), unit);
-// 		num = num / 16;
-// 	}
-// 	return (ret);
-// }
-
-
