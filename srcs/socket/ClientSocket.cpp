@@ -11,11 +11,9 @@ _listFD(listFD), _response(), _closeToCgiSocket(false)
 	_cgiFd[1] = 0;
 	_cgiFd[2] = 0;
 	_cgiFd[3] = 0;
-	// std::cout << "00000000000000000000000000ouverture d'un socket client , son fd est : " << _fd << "    00000000000000000000000\n";
 }
 
 ClientSocket::~ClientSocket(){
-	// std::cout << "(((((((((((((((((((((((fermeture du client socket de fd " << _fd << ")))))))))))))))))))))))))))\n\n";
 	for (int i = 0; i < 4; i++)
 		if (_cgiFd[i])
 		{
@@ -294,18 +292,6 @@ int ClientSocket::getCgiFdValue(int index)
 
 void ClientSocket::destroyCgiSockets()
 {
-	std::cout << "on passe dans cgisockets destruktor !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-	// if (_cgiFd[2])
-	// {
-	// 	close (_cgiFd[2]);
-	// 	_cgiFd[2] = 0;
-	// }
-	// if (_cgiFd[3])
-	// {
-	// 	close (_cgiFd[3]);
-	// 	_listFD->rmSocket(_cgiFd[3]);
-	// 	_cgiFd[3] = 0;
-	// }
 	_closeToCgiSocket = true;
 	if (_cgiFd[1])
 	{

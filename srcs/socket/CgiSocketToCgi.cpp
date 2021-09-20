@@ -33,7 +33,6 @@ void CgiSocketToCgi::write(Config *datas, FDList *listFD)
 			throw std::runtime_error("error while writing to CGI");
 		if (_client->getCloseToCgi())
 		{
-			// std::cout << "ON PASSE PAR LA ENFIN\n";
 			close(_client->getCgiFdValue(2));
 			close(_client->getCgiFdValue(3));
 			_client->setCgiFd(2, 0);

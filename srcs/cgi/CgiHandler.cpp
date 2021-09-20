@@ -146,13 +146,14 @@ void CgiHandler::checkIfPhpCgi(void)
 	if (found != std::string::npos)
 		verif = (_config.getCGI().value.second).substr(found + 1);
 	// std::cout << verif << "=verif\n";
-	if(verif.find("php") != std::string::npos)
-		return;
+	//if(verif.find("php") != std::string::npos)
+	//	return;
 	serverName(_parsedUrl["host"]);
 	serverSoftware();
 	gatewayInterface();
 	requestMethod(_request.getMethods());
 
+	//_vectorEnv.push_back("SCRIPT_FILENAME=/Users/lcoiffie/Desktop/Webserv42/./workDir/cgi-bin/phpinfo.php");
 }
 
 void CgiHandler::setVarEnv(void){
@@ -219,6 +220,8 @@ void CgiHandler::executingCgi(void)
 		char* buf = NULL; ////a retirer
 		buf = getcwd(buf, 0);////a retirer
 		std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
+		// std::string str = "/usr/bin/php";
+		// _instructionsCGI[0] = strdup(str.c_str());
 		std::cerr << " arg[0] : " << _instructionsCGI[0] << "\n";///a retirer
 		std::cerr << " arg[1] : " << _instructionsCGI[1] << "\n";///a retirer
 		int i = 0;
@@ -305,6 +308,7 @@ void CgiHandler::pathInfo(const std::string & str)
 	std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str + _parsedUrl["cgi_path"];
 	// std::cout << "path info : " << s2 << std::endl;
 	_vectorEnv.push_back("PATH_INFO=" + s2);
+	_vectorEnv.push_back("SCRIPT_FILENAME=" + s2);
 	_pathForExec = s2;
 	free (buf);
 }

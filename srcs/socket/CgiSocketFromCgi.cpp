@@ -167,7 +167,6 @@ void CgiSocketFromCgi::prepareCgiEnd()
 {
 	if (_cgiState == FROM_CGI_IN_PROGRESS)
 	{
-		std::cout << "on passe dans preparecgiend\n";
 		_compteur = 0;
 		_client->getResponse().setCgiResponse("0\r\n\r\n");
 		_cgiState = FROM_CGI_DONE;

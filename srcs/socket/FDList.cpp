@@ -30,7 +30,6 @@ void FDList::addFile(struct pollfd* toAdd)
 
 void FDList::rmSocket(const int& toRemove)
 {
-    std::cout << "on passe dans rmSocket pour le fd " << toRemove << "\n\n";
 	std::list<ASocket *>::iterator it = _SocketLists.begin();
     while (it != _SocketLists.end() && (*it)->getFd() != toRemove)
         it++;
