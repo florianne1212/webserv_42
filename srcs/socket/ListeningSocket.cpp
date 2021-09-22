@@ -1,6 +1,5 @@
 #include "ListeningSocket.hpp"
 #include "fcntl.h"
-// ListeningSocket::ListeningSocket(int fd, sockaddr_in addr) : ASocket(fd), _addr(addr) {}
 
 ListeningSocket::ListeningSocket(int fd, std::string serverName, sockaddr_in addr) : ASocket(fd, serverName), _addr(addr){}
 
@@ -26,12 +25,8 @@ int	ListeningSocket::getFd(void) const{
 void ListeningSocket::read(Config *datas, FDList *listFD)
 {
 	(void)datas;
-	// socklen_t i = 0;
 
 	std::cout << "adding client" << std::endl;
-	// int fd = accept(_fd, NULL, &i);
-	// ClientSocket *tmp = new ClientSocket(fd, _serverName);
-	// listFD->addSocket(tmp);
 
 	struct sockaddr_in from;
 	socklen_t addrlen = sizeof(_addr);

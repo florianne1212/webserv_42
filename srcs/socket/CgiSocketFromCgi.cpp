@@ -165,10 +165,11 @@ void CgiSocketFromCgi::prepareCgiEnd()
 {
 	if (_cgiState == FROM_CGI_IN_PROGRESS)
 	{
-		_client->getResponse().setCgiResponse("0\r\n\r\n");
 		_cgiState = FROM_CGI_DONE;
 		_state = 0;
-
+		if (_contentLengthPresent)
+			return;
+		_client->getResponse().setCgiResponse("0\r\n\r\n");
 	}
 	else
 	{

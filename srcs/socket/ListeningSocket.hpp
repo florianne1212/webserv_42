@@ -18,7 +18,6 @@ class ListeningSocket : public ASocket
 		sockaddr_in _addr;
 
 	public :
-		// ListeningSocket(int fd, sockaddr_in addr);
 		ListeningSocket(int fd, std::string ServerName, sockaddr_in addr);
 		virtual ~ListeningSocket();
 		ListeningSocket(const ListeningSocket & other);

@@ -7,21 +7,7 @@
 # include <algorithm>
 # include <stdio.h>
 
-struct SocketA //les sockets autres que les socket listen
-{
-	int fd;
-	// bool read; //true si en attente
-	// bool write; // true si en attente d'envoyer donnees (ces 2 bool peuvent etre en un seul)
-	bool status; //true = read, false = write
-	std::string input; //ce que l'on recoit du client
-	std::string output; //ce que l'on renvoie au client/
-	/* autres champs a determiner
-	*/
-
-};
-
-//////////////template de fonction split//////////////////////
-
+////////////// template de fonction split //////////////////////
 
 struct split
 {

@@ -26,21 +26,6 @@ void UrlDecoder(std::string & str)
 	}
 }
 
-
-// MAIN DE TEST
-// int main(int argc, char* argv[])
-// {
-// 	if (argc !=2)
-// 		return (0);
-// 	std::string str = argv[1];
-// 	std::cout << str << std::endl;
-
-// 	UrlDecoder(str);
-// 	std::cout << str << std::endl;
-
-// 	return (0);
-// }
-
 #include <map>
 #include <iostream>
 #include <string>
@@ -140,15 +125,3 @@ std::map<std::string, std::string> parseTheUri(std::string url)
 	return (parsedUrl);
 
 }
-
-// MAIN DE TEST
-// int main(int argc,char* argv[])
-// {
-// 	if (argc != 2)
-// 		return (0);
-// 	std::map<std::string, std::string> parseduri = parseTheUri(argv[1]);
-// 	std::map<std::string, std::string>::iterator it;
-// 	for (it = parseduri.begin(); it != parseduri.end(); ++it)
-// 		std::cout << it->first << "->" << it->second <<std::endl;
-// 	return (0);
-// }

@@ -98,8 +98,6 @@ void ClientSocket::read(Config *datas, FDList *listFD)
 	_request.setParsedUri(parseTheUri(_request.getUrl()));
 	_status = _parserequest.getStatus();
 
-	//std::cout << "\nMY BODY IS = \n" <<  _parserequest.get_body() << "\n";
-
 	_pollFD.events = POLLOUT;
 }
 
