@@ -125,7 +125,7 @@ void CgiHandler::creationVectorEnviron(void){
 	auth("Authorization");
 	contentLength("Content-Length");
 	contentType("Content-Type");
-	pathInfo(_parsedUrl["additionnal_path"]);
+	pathInfo(_parsedUrl["additionnal_path"]); //initialise aussi path filename
 	queryString(_parsedUrl["query"]);
 	remoteAddr(_client->getClientAddress());
 	remoteHost();
@@ -153,7 +153,6 @@ void CgiHandler::checkIfPhpCgi(void)
 	gatewayInterface();
 	requestMethod(_request.getMethods());
 
-	//_vectorEnv.push_back("SCRIPT_FILENAME=/Users/lcoiffie/Desktop/Webserv42/./workDir/cgi-bin/phpinfo.php");
 }
 
 void CgiHandler::setVarEnv(void){
@@ -179,25 +178,20 @@ void CgiHandler::executingCgi(void)
 	if (pipe(fdPipeOut) < 0)
 		throw std::runtime_error("error piping CGI");
 
-	// if (_request.getMethods() == "POST")
-	// {
 	if (pipe(fdPipeIn) < 0)
 	{
 		close (fdPipeOut[0]);
 		close (fdPipeOut[1]);
 		throw std::runtime_error("error piping CGI");
 	}
-	// }
 	pid = fork();
+
 	if (pid < 0) //error
 	{
 		close(fdPipeOut[0]);
 		close(fdPipeOut[1]);
-		// if (_request.getMethods() == "POST")
-		// {
 		close (fdPipeIn[0]);
 		close (fdPipeOut[1]);
-		// }
 		throw std::runtime_error("error forking CGI");
 	}
 
@@ -208,28 +202,12 @@ void CgiHandler::executingCgi(void)
 			std::cerr << "error with dup2 in CGI son\n";
 		close(fdPipeOut[1]);
 
-		// if (_request.getMethods() == "POST")
-		// {
 		close(fdPipeIn[1]);
 		if(dup2(fdPipeIn[0], STDIN_FILENO) < 0)
 			std::cerr << "error with dup2 in CGI son\n";
 		close(fdPipeIn[0]);
-		// }
 
 		chdir((_pathForExec.substr(0, _pathForExec.find_last_of("/")).c_str())); //on se met dans le bon repertoire pour execve
-		char* buf = NULL; ////a retirer
-		buf = getcwd(buf, 0);////a retirer
-		std::cerr << " nous sommes dans : " << buf << "\n";///a retirer
-		// std::string str = "/usr/bin/php";
-		// _instructionsCGI[0] = strdup(str.c_str());
-		std::cerr << " arg[0] : " << _instructionsCGI[0] << "\n";///a retirer
-		std::cerr << " arg[1] : " << _instructionsCGI[1] << "\n";///a retirer
-		int i = 0;
-		while (_varEnv[i])//a retirer
-		{// aretirer
-		std::cerr << " varenv : " << _varEnv[i] << "\n";///a retirer
-		i++; //a retirer
-		}//a retirer
 
  		if (execve(_instructionsCGI[0], _instructionsCGI, _varEnv)< 0)
 			std::cerr << "error with CGI execution\n";
@@ -306,9 +284,8 @@ void CgiHandler::pathInfo(const std::string & str)
 	if (!buf)
 		throw std::runtime_error("error during getcwd");
 	std::string s2 = static_cast<std::string>(buf) + "/" + WORKPATH + str + _parsedUrl["cgi_path"];
-	// std::cout << "path info : " << s2 << std::endl;
 	_vectorEnv.push_back("PATH_INFO=" + s2);
-	_vectorEnv.push_back("SCRIPT_FILENAME=" + s2);
+	_vectorEnv.push_back("SCRIPT_FILENAME=" + s2);//necessaire pour pas avoir le 'bug php-cgi'
 	_pathForExec = s2;
 	free (buf);
 }

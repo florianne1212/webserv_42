@@ -169,19 +169,12 @@ void ClientSocket::my_read(Response *response, FDList *listFD)
 
 void ClientSocket::write(Config *datas, FDList *listFD)
 {
-	// std::cout << "cache? : \n" << _response.getResponse() << " Youpi\n\n";
 	if (_cgiState == NO_CGI)
 		reinitResponse();
-	// std::cout << "-------------cache? : \n" << _response.getResponse() << "\n\n";
-
-	// std::cout << "l'adresse de ma reponse est  : " << &_response << "\n";
 	ManageMiddleware manage;
 	_response.setStatus(_status);
 	if (_responseSent)
 	{
-		// std::cout << "cache2 : \n" << _response.getResponse() << " Youpi\n\n";
-		//std::cout << "\n STATUS = "<< response.getBodyPath().state <<"\n";
-		//std::cout << "\n STATUS = "<< response.getBody().state <<"\n";
 		manage.middlewareStart(*this, *datas, _request, _response);
 		//when there is a post open the file and append the content
 		if(_response.getAppend().state == true && _append)
@@ -199,11 +192,7 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 				_response.setBody(_body);
 			if(_response.getCgi() == false)
 		   		_response.create_response();
-			// std::cout << "l'adresse de la reponse est " << &_response << "\n\n";
-			// std::cout << "000000000000000000000000\n\nla reponse  envoyee au write du socket "<< _fd <<" est " << _response.getResponse() << "\n\n0000000000000000\n";
-			// std::cout << "la reponse  envoyee au write du socket "<< _fd <<" est " << _response.getResponse() << "\n0000000000000000\n";
 			_buffer = Buffer(_response.getResponse(), 0);
-			// std::cout << "000000000000000000000000\n\nla reponse  envoyee au write du socket "<< _fd <<" est " << _response.getResponse() << "\n\n0000000000000000\n";
 			_responseSent = false;
 			_append = true;
 			_test = true;
@@ -215,21 +204,12 @@ void ClientSocket::write(Config *datas, FDList *listFD)
 	{
 		//the response is send
 		_responseSent = _buffer.flush(_fd);
-		// if (_responseSent == true)
 		if (_responseSent == true && _cgiState != CGI_IN_PROGRESS)
 		//when the response is fully sent everything get closed
 		{
 			close(_fd);
-			// std::cout <<"on est dans client avec le fd "<< _fd << " et on le ferme\n";
-					// std::cout << "--------------------MAMA MIA----------------------\n";
-
 			listFD->rmSocket(_fd);
 		}
-		// else
-		// {
-		// 	sleep(1);
-		// 	exit(1);
-		// }
 	}
 }
 
@@ -256,11 +236,6 @@ void ClientSocket::setTime()
 {
 		clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 }
-
-// void ClientSocket::setResponse(Response response)
-// {
-// 	_response = response;
-// }
 
 Response & ClientSocket::getResponse()
 {
@@ -313,35 +288,3 @@ bool ClientSocket::getCloseToCgi(void) {
 void ClientSocket::setCloseToCgi(bool value) {
 	_closeToCgiSocket = value;
 }
-
-
-
-
-
-/*
-class ClientSocket {
-	Response _response;
-	bool _sendableReponse;
-	bool _responseSent;
-	void write() {
-		if (_sendableResponse && !_responseSent) {
-			_responseSent = _response.write()
-		}
-	}
-}
-*/
-
-/*
-class Buffer {
-	std::string _content;
-	size_t _sent;
-	bool flush(int fd) {
-		ssize_t wrote = ::wrote(fd, _content.c_str() + _sent, _content.length() - _sent);
-		if (wrote != -1) {
-			_sent += wrote;
-		}
-		return (_sent == _content.length());
-	}
-}
-*/
-

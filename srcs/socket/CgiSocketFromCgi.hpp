@@ -23,7 +23,6 @@ class CgiSocketFromCgi : public ASocket
 		Response* _response;
 		ClientSocket* _client;
 		int _otherFdToClose;
-		int _compteur;
 		bool _contentLengthPresent;
 
 	protected:

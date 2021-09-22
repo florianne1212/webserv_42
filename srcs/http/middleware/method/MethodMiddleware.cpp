@@ -12,7 +12,6 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 	{
 		if (client.getcgiState() != NO_CGI)
 		{
-			// std::cout << "\n\non passe par la LULU\n";
 			response.setCgi(true);
 		}
 		else if ((config.getCGI().state) && (request.getUrl().find(config.getCGI().value.first) != std::string::npos)
@@ -20,7 +19,6 @@ void MethodMiddleware::handle(ClientSocket &client, Config &config,Request &requ
 		{
 			CgiHandler myCgi(&client, config, request, &response);
 			myCgi.executeCgi();
-			// std::cout << "ON A FERME CGIHANDLER\n";
 		}
 		else if(request.getMethods() == "GET")
 		{

@@ -11,7 +11,6 @@ void selector(Config *datas, FDList *listFD)
 	listFD->myPoll();
 	std::list<ASocket *> Socketlist = listFD->getSocketList();
 	for (std::list<ASocket *>::iterator it = Socketlist.begin(); it != Socketlist.end(); it++)
-	// for (std::list<ASocket *>::iterator it = listFD->getSocketList().begin(); it != listFD->getSocketList().end(); it++)
 	{
 		try
 		{
@@ -27,16 +26,11 @@ void selector(Config *datas, FDList *listFD)
 			}
 			else if ((*it)->endFromCgiStatus())
 			{
-				// std::cout << "HOURRA !!!!\n";
-				// exit(1);
 				(*it)->setTime();
 				(*it)->prepareCgiEnd();
-				// exit(1);
-				// (*it)->setCgiState(NO_CGI);
 			}
 			else if ((*it)->getTimeout())
 			{
-				// std::cout <<"on est dans main avec le fd "<< (*it)->getFd() << " et on le ferme\n";
 				close((*it)->getFd());
 				listFD->rmSocket((*it)->getFd());
 			}
@@ -90,7 +84,6 @@ void openSocket(Config *datas, FDList *listFD)
 		if (::setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &true_value, sizeof(int)) == -1)
 			throw std::string("could not set reusable");
 
-		// listFD->addSocket(new ListeningSocket(sock, it->first));
 		listFD->addSocket(new ListeningSocket(sock, it->first, sin)); //pour avoir ip et port
 	}
 }
@@ -121,7 +114,7 @@ int main(int argc, char *argv[])
 		else if (argc == 2)
 			datas = new Config((std::string)argv[1]);
 		else
-			datas = new Config("chemin par defaut");
+			datas = new Config("configuration_file/test3.conf");
 
 		openSocket(datas, listFD);
 	}

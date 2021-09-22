@@ -51,18 +51,15 @@ class ClientSocket : public ASocket
 		FDList* getListFD(void);
 		virtual bool getTimeout(void);
 		virtual void setTime(void);
-		// void setResponse(Response response);
 		Response & getResponse();
 		void reinitResponse();
 
 		void setCgiFd(int pipeOut0, int pipeout1, int pipein0, int pipein1 );
 		void setCgiFd(int index, int value);
 		int getCgiFdValue(int index);
-		void destroyCgiSockets();
+		void destroyCgiSockets(void);
 		bool getCloseToCgi(void);
 		void setCloseToCgi(bool value);
-
-
 };
 
 #endif

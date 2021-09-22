@@ -4,11 +4,9 @@ CgiSocketToCgi::CgiSocketToCgi(int fd, Request & request, ClientSocket * client)
 	clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 	_pollFD.fd = fd;
 	_pollFD.events = POLLOUT;
-	std::cout << "ON VIENT DE CREER SOCKET TO CGI le sfd est " << _fd <<"\n";
 }
 
 CgiSocketToCgi::~CgiSocketToCgi(){
-	// std::cout << "TROP TARD\n";
 }
 
 int	CgiSocketToCgi::getFd(void) const{

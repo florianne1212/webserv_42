@@ -4,7 +4,6 @@ CgiSocketFromCgi::CgiSocketFromCgi(int fd[2], ClientSocket * client, Response * 
 	clock_gettime(CLOCK_MONOTONIC, &_lastInterTime);
 	_pollFD.fd = fd[0];
 	_pollFD.events = POLLIN;
-	_compteur = 0;
 }
 
 CgiSocketFromCgi::~CgiSocketFromCgi(){}
@@ -18,11 +17,12 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 	_cgiState = FROM_CGI_IN_PROGRESS;
 	(void)datas;
 	(void)listFD;
+
 	std::string cgiResponse;
 	char buf[80001] = {0};
-	ssize_t readResult;
 	bool sended = false;
-	readResult = ::read(_fd, buf, 80000);
+
+	ssize_t readResult = ::read(_fd, buf, 80000);
 	if (readResult > 0)
 	{
 		int i = 0;
@@ -68,9 +68,7 @@ void CgiSocketFromCgi::read(Config *datas, FDList *listFD)
 		_client->getResponse().setCgiResponse(cgiResponse);
 		_client->setCgiState(NO_CGI);
 		_contentLengthPresent = false;
-			// exit(1);
 		_client->destroyCgiSockets();
-
 	}
 }
 
@@ -167,7 +165,6 @@ void CgiSocketFromCgi::prepareCgiEnd()
 {
 	if (_cgiState == FROM_CGI_IN_PROGRESS)
 	{
-		_compteur = 0;
 		_client->getResponse().setCgiResponse("0\r\n\r\n");
 		_cgiState = FROM_CGI_DONE;
 		_state = 0;
@@ -178,6 +175,5 @@ void CgiSocketFromCgi::prepareCgiEnd()
 		_cgiState = NO_CGI;
 		_client->setCgiState(NO_CGI);
 		_client->destroyCgiSockets();
-
 	}
 }
