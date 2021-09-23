@@ -78,6 +78,6 @@ docker-build:	all
 				docker build -t webserv-run -f docker/Dockerfile .
 
 docker-run: 	docker-build
-				docker run --rm -it -p 9000:9000 webserv-run
+				docker run --rm -it --network host webserv-run
 
 .PHONY: all clean flcean re show docker-build docker-run

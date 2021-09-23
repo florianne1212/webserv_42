@@ -605,10 +605,10 @@ usable<std::string> Config::getServerName(std::string ip) const
 
 	if (strncmp(ip.c_str(), "localhost", 9) == 0)
 	{
-		if (ip.substr(0, 9).find_first_not_of("0123456789:") != std::string::npos)
+		if (ip.substr(9).find_first_not_of("0123456789:") != std::string::npos)
 			return usable<std::string>();
 		else
-			adr_ip = "127.0.0.2";
+			adr_ip = "127.0.0.1";
 	}
 	else if (ip.find_first_not_of("0123456789.:") != std::string::npos)
 		return usable<std::string>();
@@ -616,7 +616,10 @@ usable<std::string> Config::getServerName(std::string ip) const
 	{
 		adr_ip = ip.substr(0, ip.find(":"));
 	}
-	port_ip = atoi(ip.substr(ip.find(":") + 1).c_str());
+	if (ip.find(":") != std::string::npos)
+		port_ip = atoi(ip.substr(ip.find(":") + 1).c_str());
+	else
+		port_ip = 80;
 
 	for (std::map<std::string, Server>::const_iterator it = _serverList.begin(); it != _serverList.end(); it++)
 	{
