@@ -2,6 +2,7 @@
 
 
 ParseBody::ParseBody(Config &config):
+_state(S_PARSE),
 _count(0),
 _config(config),
 _error(false),
@@ -11,6 +12,7 @@ _status(200)
 
 ParseBody::ParseBody(std::string Body,Config &config):
 _body(Body),
+_state(S_PARSE),
 _count(0),
 _config(config),
 _error(false),

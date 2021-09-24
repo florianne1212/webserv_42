@@ -41,7 +41,7 @@ void GetFileError::handle(ClientSocket &client,Config &config, Request &request,
 				"	<title>"+ response.int_to_str(response.getStatus())  +"</title>\n"
 				"	<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
 				"	<style>\n"
-				"		body {background-color:#006d77;left: 0;margin-top: -160px;position: absolute;text-align: center;top: 50%;width: 100%}\n"
+				"		body {background-color:#1c7d76;left: 0;margin-top: -160px;position: absolute;text-align: center;top: 50%;width: 100%}\n"
 				"		h1{font-family:Arial, serif;color:#000000;font-size:80px}\n"
 				"		p {font-family:Arial, serif;font-size:20px;font-style:normal;font-weight:normal;color:#000000;}\n"
 				"	</style>\n"

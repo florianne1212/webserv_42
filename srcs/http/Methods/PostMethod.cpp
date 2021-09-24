@@ -45,8 +45,10 @@ void PostMethod::handlePost(ClientSocket &client, Config &config,Request &reques
         }
     }
     else {
-        filePost.fileCreate(url);
+        if(filePost.fileCreate(url) == false)
+            response.setStatus(422);
         if(filePost.isFile())
 			response.setAppend(url, request.getBody());
+        response.setStatus(201);
     }
 }

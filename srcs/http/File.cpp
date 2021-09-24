@@ -56,7 +56,8 @@ bool File::fileCreate(std::string filename)
 	int fd;
 
 	fd = open(filename.c_str(), O_CREAT, 0644);
-
+	if(fd == -1)
+		return (false);
 	close(fd);
 
 	return(true);
