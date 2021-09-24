@@ -101,7 +101,7 @@ void	control_c(int i)
 
 int main(int argc, char *argv[])
 {
-	Config *datas;
+	Config *datas = NULL;
 	FDList *listFD = new FDList();
 	g_signalHandler = 1;
 
@@ -120,6 +120,8 @@ int main(int argc, char *argv[])
 	}
 	catch (std::string err)
 	{
+		if (datas != NULL)
+     		delete(datas);
 		std::cerr << err << std::endl;
 		delete listFD;
 		return 0;
