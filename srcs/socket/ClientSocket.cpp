@@ -110,6 +110,7 @@ void ClientSocket::my_append(Response *response, FDList *listFD)
 		_fd_out.events = POLLOUT;
 		listFD->addFile(&_fd_out);
 		_test = false;
+		return;
 	}
 	if (_fd_out.revents == POLLOUT)
 		_append = !out.flush(_fd_out.fd);

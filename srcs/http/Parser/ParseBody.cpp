@@ -68,7 +68,7 @@ void ParseBody::parse_identity(char c, std::map<std::string, std::string> _heade
 	else
 	{
 		_body.push_back(c);
-		std::cout << "\nBody = " << _body; 
+		//std::cout << "\nBody = " << _body; 
 		_state = S_END;
 	}
 }
